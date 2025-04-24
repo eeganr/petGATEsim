@@ -1,0 +1,59 @@
+/gate/source/addSource CylinderSource
+# background radiation set to be 5.29 kBq/ml
+#/gate/source/CylinderSource/setActivity 1682676.295 becquerel
+/gate/source/CylinderSource/setActivity 0 becquerel
+/gate/source/CylinderSource/setType backtoback
+/gate/source/CylinderSource/gps/particle gamma
+/gate/source/CylinderSource/gps/energytype Mono
+/gate/source/CylinderSource/gps/monoenergy 0.511 MeV
+/gate/source/CylinderSource/gps/type Volume
+/gate/source/CylinderSource/gps/shape Cylinder
+#/gate/source/CylinderSource/gps/radius 6.000000
+/gate/source/CylinderSource/gps/radius 45.00000 mm
+/gate/source/CylinderSource/gps/halfz 25.00000 mm
+/gate/source/CylinderSource/gps/angtype iso
+/gate/source/CylinderSource/gps/centre 0. 0. 0. mm
+
+/gate/source/addSource F18LineSource0
+# hot regions should have 4 times the activity of warm cylinder
+#/gate/source/F18LineSource0/setActivity 6730705.181 becquerel
+/gate/source/F18LineSource0/setActivity 200000 becquerel
+/gate/source/F18LineSource0/setType backtoback
+/gate/source/F18LineSource0/gps/particle gamma
+/gate/source/F18LineSource0/gps/energytype Mono
+/gate/source/F18LineSource0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0/gps/type Volume
+/gate/source/F18LineSource0/gps/shape Cylinder
+/gate/source/F18LineSource0/gps/radius 7.00000 mm
+/gate/source/F18LineSource0/gps/halfz 25.0000 mm
+/gate/source/F18LineSource0/gps/angtype iso
+/gate/source/F18LineSource0/gps/centre 20.00000 20.00000 0.000000 mm
+
+/gate/source/addSource F18LineSource1
+#/gate/source/F18LineSource1/setActivity 6730705.181 becquerel
+/gate/source/F18LineSource1/setActivity 200000 becquerel
+/gate/source/F18LineSource1/setType backtoback
+/gate/source/F18LineSource1/gps/particle gamma
+/gate/source/F18LineSource1/gps/energytype Mono
+/gate/source/F18LineSource1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1/gps/type Volume
+/gate/source/F18LineSource1/gps/shape Cylinder
+/gate/source/F18LineSource1/gps/radius 5.00000 mm
+/gate/source/F18LineSource1/gps/halfz 25.0000 mm
+/gate/source/F18LineSource1/gps/angtype iso
+/gate/source/F18LineSource1/gps/centre 20.0000 0.00000 0.000000 cm
+
+/gate/source/addSource F18LineSource2
+/gate/source/F18LineSource2/setActivity 200000 becquerel
+#/gate/source/F18LineSource2/setActivity 6730705.181 becquerel
+/gate/source/F18LineSource2/setType backtoback
+/gate/source/F18LineSource2/gps/particle gamma
+/gate/source/F18LineSource2/gps/energytype Mono
+/gate/source/F18LineSource2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2/gps/type Volume
+/gate/source/F18LineSource2/gps/shape Cylinder
+/gate/source/F18LineSource2/gps/radius  2.50000 mm
+/gate/source/F18LineSource2/gps/halfz 25.0000 mm
+/gate/source/F18LineSource2/gps/angtype iso
+/gate/source/F18LineSource2/gps/centre 20.00000 -20.0000 0.000000 cm
+

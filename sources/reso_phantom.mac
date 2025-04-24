@@ -1,0 +1,1364 @@
+/gate/source/addSource CylinderSource
+/gate/source/CylinderSource/setActivity 0 Bq
+/gate/source/CylinderSource/setType backtoback
+/gate/source/CylinderSource/gps/particle gamma
+/gate/source/CylinderSource/gps/energytype Mono
+/gate/source/CylinderSource/gps/monoenergy 0.511 MeV
+/gate/source/CylinderSource/gps/type Volume
+/gate/source/CylinderSource/gps/shape Cylinder
+/gate/source/CylinderSource/gps/radius 30 mm
+/gate/source/CylinderSource/gps/halfz 40.0 mm
+/gate/source/CylinderSource/gps/angtype iso
+/gate/source/CylinderSource/gps/centre 0. 0. 0. mm
+
+########################## 1.2 mm #######################
+
+/gate/source/addSource F18LineSource0_0
+/gate/source/F18LineSource0_0/setActivity 200000 Bq
+/gate/source/F18LineSource0_0/setType backtoback
+/gate/source/F18LineSource0_0/gps/particle gamma
+/gate/source/F18LineSource0_0/gps/energytype Mono
+/gate/source/F18LineSource0_0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_0/gps/type Volume
+/gate/source/F18LineSource0_0/gps/shape Cylinder
+/gate/source/F18LineSource0_0/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_0/gps/angtype iso
+/gate/source/F18LineSource0_0/gps/radius 0.6 mm
+/gate/source/F18LineSource0_0/gps/centre 0.0 7.078460969082652 0.000000 mm
+
+/gate/source/addSource F18LineSource0_1
+/gate/source/F18LineSource0_1/setActivity 200000 Bq
+/gate/source/F18LineSource0_1/setType backtoback
+/gate/source/F18LineSource0_1/gps/particle gamma
+/gate/source/F18LineSource0_1/gps/energytype Mono
+/gate/source/F18LineSource0_1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_1/gps/type Volume
+/gate/source/F18LineSource0_1/gps/shape Cylinder
+/gate/source/F18LineSource0_1/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_1/gps/angtype iso
+/gate/source/F18LineSource0_1/gps/radius 0.6 mm
+/gate/source/F18LineSource0_1/gps/centre -1.2 9.156921938165304 0.000000 mm
+
+/gate/source/addSource F18LineSource0_2
+/gate/source/F18LineSource0_2/setActivity 200000 Bq
+/gate/source/F18LineSource0_2/setType backtoback
+/gate/source/F18LineSource0_2/gps/particle gamma
+/gate/source/F18LineSource0_2/gps/energytype Mono
+/gate/source/F18LineSource0_2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_2/gps/type Volume
+/gate/source/F18LineSource0_2/gps/shape Cylinder
+/gate/source/F18LineSource0_2/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_2/gps/angtype iso
+/gate/source/F18LineSource0_2/gps/radius 0.6 mm
+/gate/source/F18LineSource0_2/gps/centre 1.2 9.156921938165304 0.000000 mm
+
+/gate/source/addSource F18LineSource0_3
+/gate/source/F18LineSource0_3/setActivity 200000 Bq
+/gate/source/F18LineSource0_3/setType backtoback
+/gate/source/F18LineSource0_3/gps/particle gamma
+/gate/source/F18LineSource0_3/gps/energytype Mono
+/gate/source/F18LineSource0_3/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_3/gps/type Volume
+/gate/source/F18LineSource0_3/gps/shape Cylinder
+/gate/source/F18LineSource0_3/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_3/gps/angtype iso
+/gate/source/F18LineSource0_3/gps/radius 0.6 mm
+/gate/source/F18LineSource0_3/gps/centre -2.4 11.235382907247958 0.000000 mm
+
+/gate/source/addSource F18LineSource0_4
+/gate/source/F18LineSource0_4/setActivity 200000 Bq
+/gate/source/F18LineSource0_4/setType backtoback
+/gate/source/F18LineSource0_4/gps/particle gamma
+/gate/source/F18LineSource0_4/gps/energytype Mono
+/gate/source/F18LineSource0_4/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_4/gps/type Volume
+/gate/source/F18LineSource0_4/gps/shape Cylinder
+/gate/source/F18LineSource0_4/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_4/gps/angtype iso
+/gate/source/F18LineSource0_4/gps/radius 0.6 mm
+/gate/source/F18LineSource0_4/gps/centre 0.0 11.235382907247958 0.000000 mm
+
+/gate/source/addSource F18LineSource0_5
+/gate/source/F18LineSource0_5/setActivity 200000 Bq
+/gate/source/F18LineSource0_5/setType backtoback
+/gate/source/F18LineSource0_5/gps/particle gamma
+/gate/source/F18LineSource0_5/gps/energytype Mono
+/gate/source/F18LineSource0_5/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_5/gps/type Volume
+/gate/source/F18LineSource0_5/gps/shape Cylinder
+/gate/source/F18LineSource0_5/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_5/gps/angtype iso
+/gate/source/F18LineSource0_5/gps/radius 0.6 mm
+/gate/source/F18LineSource0_5/gps/centre 2.4 11.235382907247958 0.000000 mm
+
+/gate/source/addSource F18LineSource0_6
+/gate/source/F18LineSource0_6/setActivity 200000 Bq
+/gate/source/F18LineSource0_6/setType backtoback
+/gate/source/F18LineSource0_6/gps/particle gamma
+/gate/source/F18LineSource0_6/gps/energytype Mono
+/gate/source/F18LineSource0_6/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_6/gps/type Volume
+/gate/source/F18LineSource0_6/gps/shape Cylinder
+/gate/source/F18LineSource0_6/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_6/gps/angtype iso
+/gate/source/F18LineSource0_6/gps/radius 0.6 mm
+/gate/source/F18LineSource0_6/gps/centre -3.5999999999999996 13.31384387633061 0.000000 mm
+
+/gate/source/addSource F18LineSource0_7
+/gate/source/F18LineSource0_7/setActivity 200000 Bq
+/gate/source/F18LineSource0_7/setType backtoback
+/gate/source/F18LineSource0_7/gps/particle gamma
+/gate/source/F18LineSource0_7/gps/energytype Mono
+/gate/source/F18LineSource0_7/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_7/gps/type Volume
+/gate/source/F18LineSource0_7/gps/shape Cylinder
+/gate/source/F18LineSource0_7/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_7/gps/angtype iso
+/gate/source/F18LineSource0_7/gps/radius 0.6 mm
+/gate/source/F18LineSource0_7/gps/centre -1.1999999999999997 13.31384387633061 0.000000 mm
+
+/gate/source/addSource F18LineSource0_8
+/gate/source/F18LineSource0_8/setActivity 200000 Bq
+/gate/source/F18LineSource0_8/setType backtoback
+/gate/source/F18LineSource0_8/gps/particle gamma
+/gate/source/F18LineSource0_8/gps/energytype Mono
+/gate/source/F18LineSource0_8/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_8/gps/type Volume
+/gate/source/F18LineSource0_8/gps/shape Cylinder
+/gate/source/F18LineSource0_8/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_8/gps/angtype iso
+/gate/source/F18LineSource0_8/gps/radius 0.6 mm
+/gate/source/F18LineSource0_8/gps/centre 1.2000000000000002 13.31384387633061 0.000000 mm
+
+/gate/source/addSource F18LineSource0_9
+/gate/source/F18LineSource0_9/setActivity 200000 Bq
+/gate/source/F18LineSource0_9/setType backtoback
+/gate/source/F18LineSource0_9/gps/particle gamma
+/gate/source/F18LineSource0_9/gps/energytype Mono
+/gate/source/F18LineSource0_9/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_9/gps/type Volume
+/gate/source/F18LineSource0_9/gps/shape Cylinder
+/gate/source/F18LineSource0_9/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_9/gps/angtype iso
+/gate/source/F18LineSource0_9/gps/radius 0.6 mm
+/gate/source/F18LineSource0_9/gps/centre 3.5999999999999996 13.31384387633061 0.000000 mm
+
+/gate/source/addSource F18LineSource0_10
+/gate/source/F18LineSource0_10/setActivity 200000 Bq
+/gate/source/F18LineSource0_10/setType backtoback
+/gate/source/F18LineSource0_10/gps/particle gamma
+/gate/source/F18LineSource0_10/gps/energytype Mono
+/gate/source/F18LineSource0_10/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_10/gps/type Volume
+/gate/source/F18LineSource0_10/gps/shape Cylinder
+/gate/source/F18LineSource0_10/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_10/gps/angtype iso
+/gate/source/F18LineSource0_10/gps/radius 0.6 mm
+/gate/source/F18LineSource0_10/gps/centre -4.8 15.392304845413262 0.000000 mm
+
+/gate/source/addSource F18LineSource0_11
+/gate/source/F18LineSource0_11/setActivity 200000 Bq
+/gate/source/F18LineSource0_11/setType backtoback
+/gate/source/F18LineSource0_11/gps/particle gamma
+/gate/source/F18LineSource0_11/gps/energytype Mono
+/gate/source/F18LineSource0_11/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_11/gps/type Volume
+/gate/source/F18LineSource0_11/gps/shape Cylinder
+/gate/source/F18LineSource0_11/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_11/gps/angtype iso
+/gate/source/F18LineSource0_11/gps/radius 0.6 mm
+/gate/source/F18LineSource0_11/gps/centre -2.4 15.392304845413262 0.000000 mm
+
+/gate/source/addSource F18LineSource0_12
+/gate/source/F18LineSource0_12/setActivity 200000 Bq
+/gate/source/F18LineSource0_12/setType backtoback
+/gate/source/F18LineSource0_12/gps/particle gamma
+/gate/source/F18LineSource0_12/gps/energytype Mono
+/gate/source/F18LineSource0_12/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_12/gps/type Volume
+/gate/source/F18LineSource0_12/gps/shape Cylinder
+/gate/source/F18LineSource0_12/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_12/gps/angtype iso
+/gate/source/F18LineSource0_12/gps/radius 0.6 mm
+/gate/source/F18LineSource0_12/gps/centre 0.0 15.392304845413262 0.000000 mm
+
+/gate/source/addSource F18LineSource0_13
+/gate/source/F18LineSource0_13/setActivity 200000 Bq
+/gate/source/F18LineSource0_13/setType backtoback
+/gate/source/F18LineSource0_13/gps/particle gamma
+/gate/source/F18LineSource0_13/gps/energytype Mono
+/gate/source/F18LineSource0_13/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_13/gps/type Volume
+/gate/source/F18LineSource0_13/gps/shape Cylinder
+/gate/source/F18LineSource0_13/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_13/gps/angtype iso
+/gate/source/F18LineSource0_13/gps/radius 0.6 mm
+/gate/source/F18LineSource0_13/gps/centre 2.3999999999999995 15.392304845413262 0.000000 mm
+
+/gate/source/addSource F18LineSource0_14
+/gate/source/F18LineSource0_14/setActivity 200000 Bq
+/gate/source/F18LineSource0_14/setType backtoback
+/gate/source/F18LineSource0_14/gps/particle gamma
+/gate/source/F18LineSource0_14/gps/energytype Mono
+/gate/source/F18LineSource0_14/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_14/gps/type Volume
+/gate/source/F18LineSource0_14/gps/shape Cylinder
+/gate/source/F18LineSource0_14/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_14/gps/angtype iso
+/gate/source/F18LineSource0_14/gps/radius 0.6 mm
+/gate/source/F18LineSource0_14/gps/centre 4.8 15.392304845413262 0.000000 mm
+
+/gate/source/addSource F18LineSource0_15
+/gate/source/F18LineSource0_15/setActivity 200000 Bq
+/gate/source/F18LineSource0_15/setType backtoback
+/gate/source/F18LineSource0_15/gps/particle gamma
+/gate/source/F18LineSource0_15/gps/energytype Mono
+/gate/source/F18LineSource0_15/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_15/gps/type Volume
+/gate/source/F18LineSource0_15/gps/shape Cylinder
+/gate/source/F18LineSource0_15/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_15/gps/angtype iso
+/gate/source/F18LineSource0_15/gps/radius 0.6 mm
+/gate/source/F18LineSource0_15/gps/centre -6.0 17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource0_16
+/gate/source/F18LineSource0_16/setActivity 200000 Bq
+/gate/source/F18LineSource0_16/setType backtoback
+/gate/source/F18LineSource0_16/gps/particle gamma
+/gate/source/F18LineSource0_16/gps/energytype Mono
+/gate/source/F18LineSource0_16/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_16/gps/type Volume
+/gate/source/F18LineSource0_16/gps/shape Cylinder
+/gate/source/F18LineSource0_16/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_16/gps/angtype iso
+/gate/source/F18LineSource0_16/gps/radius 0.6 mm
+/gate/source/F18LineSource0_16/gps/centre -3.6 17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource0_17
+/gate/source/F18LineSource0_17/setActivity 200000 Bq
+/gate/source/F18LineSource0_17/setType backtoback
+/gate/source/F18LineSource0_17/gps/particle gamma
+/gate/source/F18LineSource0_17/gps/energytype Mono
+/gate/source/F18LineSource0_17/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_17/gps/type Volume
+/gate/source/F18LineSource0_17/gps/shape Cylinder
+/gate/source/F18LineSource0_17/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_17/gps/angtype iso
+/gate/source/F18LineSource0_17/gps/radius 0.6 mm
+/gate/source/F18LineSource0_17/gps/centre -1.2000000000000002 17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource0_18
+/gate/source/F18LineSource0_18/setActivity 200000 Bq
+/gate/source/F18LineSource0_18/setType backtoback
+/gate/source/F18LineSource0_18/gps/particle gamma
+/gate/source/F18LineSource0_18/gps/energytype Mono
+/gate/source/F18LineSource0_18/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_18/gps/type Volume
+/gate/source/F18LineSource0_18/gps/shape Cylinder
+/gate/source/F18LineSource0_18/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_18/gps/angtype iso
+/gate/source/F18LineSource0_18/gps/radius 0.6 mm
+/gate/source/F18LineSource0_18/gps/centre 1.1999999999999993 17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource0_19
+/gate/source/F18LineSource0_19/setActivity 200000 Bq
+/gate/source/F18LineSource0_19/setType backtoback
+/gate/source/F18LineSource0_19/gps/particle gamma
+/gate/source/F18LineSource0_19/gps/energytype Mono
+/gate/source/F18LineSource0_19/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_19/gps/type Volume
+/gate/source/F18LineSource0_19/gps/shape Cylinder
+/gate/source/F18LineSource0_19/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_19/gps/angtype iso
+/gate/source/F18LineSource0_19/gps/radius 0.6 mm
+/gate/source/F18LineSource0_19/gps/centre 3.5999999999999996 17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource0_20
+/gate/source/F18LineSource0_20/setActivity 200000 Bq
+/gate/source/F18LineSource0_20/setType backtoback
+/gate/source/F18LineSource0_20/gps/particle gamma
+/gate/source/F18LineSource0_20/gps/energytype Mono
+/gate/source/F18LineSource0_20/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource0_20/gps/type Volume
+/gate/source/F18LineSource0_20/gps/shape Cylinder
+/gate/source/F18LineSource0_20/gps/halfz 40.0 mm
+/gate/source/F18LineSource0_20/gps/angtype iso
+/gate/source/F18LineSource0_20/gps/radius 0.6 mm
+/gate/source/F18LineSource0_20/gps/centre 6.0 17.470765814495916 0.000000 mm
+
+########################## 1.4 mm #######################
+
+/gate/source/addSource F18LineSource1_0
+/gate/source/F18LineSource1_0/setActivity 200000 Bq
+/gate/source/F18LineSource1_0/setType backtoback
+/gate/source/F18LineSource1_0/gps/particle gamma
+/gate/source/F18LineSource1_0/gps/energytype Mono
+/gate/source/F18LineSource1_0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_0/gps/type Volume
+/gate/source/F18LineSource1_0/gps/shape Cylinder
+/gate/source/F18LineSource1_0/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_0/gps/angtype iso
+/gate/source/F18LineSource1_0/gps/radius 0.7 mm
+/gate/source/F18LineSource1_0/gps/centre -6.430127018922192 3.7124355652982146 0.000000 mm
+
+/gate/source/addSource F18LineSource1_1
+/gate/source/F18LineSource1_1/setActivity 200000 Bq
+/gate/source/F18LineSource1_1/setType backtoback
+/gate/source/F18LineSource1_1/gps/particle gamma
+/gate/source/F18LineSource1_1/gps/energytype Mono
+/gate/source/F18LineSource1_1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_1/gps/type Volume
+/gate/source/F18LineSource1_1/gps/shape Cylinder
+/gate/source/F18LineSource1_1/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_1/gps/angtype iso
+/gate/source/F18LineSource1_1/gps/radius 0.7 mm
+/gate/source/F18LineSource1_1/gps/centre -9.230127018922191 3.7124355652982146 0.000000 mm
+
+/gate/source/addSource F18LineSource1_2
+/gate/source/F18LineSource1_2/setActivity 200000 Bq
+/gate/source/F18LineSource1_2/setType backtoback
+/gate/source/F18LineSource1_2/gps/particle gamma
+/gate/source/F18LineSource1_2/gps/energytype Mono
+/gate/source/F18LineSource1_2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_2/gps/type Volume
+/gate/source/F18LineSource1_2/gps/shape Cylinder
+/gate/source/F18LineSource1_2/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_2/gps/angtype iso
+/gate/source/F18LineSource1_2/gps/radius 0.7 mm
+/gate/source/F18LineSource1_2/gps/centre -7.830127018922192 6.137306695894642 0.000000 mm
+
+/gate/source/addSource F18LineSource1_3
+/gate/source/F18LineSource1_3/setActivity 200000 Bq
+/gate/source/F18LineSource1_3/setType backtoback
+/gate/source/F18LineSource1_3/gps/particle gamma
+/gate/source/F18LineSource1_3/gps/energytype Mono
+/gate/source/F18LineSource1_3/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_3/gps/type Volume
+/gate/source/F18LineSource1_3/gps/shape Cylinder
+/gate/source/F18LineSource1_3/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_3/gps/angtype iso
+/gate/source/F18LineSource1_3/gps/radius 0.7 mm
+/gate/source/F18LineSource1_3/gps/centre -12.030127018922192 3.712435565298216 0.000000 mm
+
+/gate/source/addSource F18LineSource1_4
+/gate/source/F18LineSource1_4/setActivity 200000 Bq
+/gate/source/F18LineSource1_4/setType backtoback
+/gate/source/F18LineSource1_4/gps/particle gamma
+/gate/source/F18LineSource1_4/gps/energytype Mono
+/gate/source/F18LineSource1_4/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_4/gps/type Volume
+/gate/source/F18LineSource1_4/gps/shape Cylinder
+/gate/source/F18LineSource1_4/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_4/gps/angtype iso
+/gate/source/F18LineSource1_4/gps/radius 0.7 mm
+/gate/source/F18LineSource1_4/gps/centre -10.630127018922192 6.137306695894644 0.000000 mm
+
+/gate/source/addSource F18LineSource1_5
+/gate/source/F18LineSource1_5/setActivity 200000 Bq
+/gate/source/F18LineSource1_5/setType backtoback
+/gate/source/F18LineSource1_5/gps/particle gamma
+/gate/source/F18LineSource1_5/gps/energytype Mono
+/gate/source/F18LineSource1_5/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_5/gps/type Volume
+/gate/source/F18LineSource1_5/gps/shape Cylinder
+/gate/source/F18LineSource1_5/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_5/gps/angtype iso
+/gate/source/F18LineSource1_5/gps/radius 0.7 mm
+/gate/source/F18LineSource1_5/gps/centre -9.230127018922191 8.562177826491071 0.000000 mm
+
+/gate/source/addSource F18LineSource1_6
+/gate/source/F18LineSource1_6/setActivity 200000 Bq
+/gate/source/F18LineSource1_6/setType backtoback
+/gate/source/F18LineSource1_6/gps/particle gamma
+/gate/source/F18LineSource1_6/gps/energytype Mono
+/gate/source/F18LineSource1_6/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_6/gps/type Volume
+/gate/source/F18LineSource1_6/gps/shape Cylinder
+/gate/source/F18LineSource1_6/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_6/gps/angtype iso
+/gate/source/F18LineSource1_6/gps/radius 0.7 mm
+/gate/source/F18LineSource1_6/gps/centre -14.830127018922191 3.712435565298216 0.000000 mm
+
+/gate/source/addSource F18LineSource1_7
+/gate/source/F18LineSource1_7/setActivity 200000 Bq
+/gate/source/F18LineSource1_7/setType backtoback
+/gate/source/F18LineSource1_7/gps/particle gamma
+/gate/source/F18LineSource1_7/gps/energytype Mono
+/gate/source/F18LineSource1_7/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_7/gps/type Volume
+/gate/source/F18LineSource1_7/gps/shape Cylinder
+/gate/source/F18LineSource1_7/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_7/gps/angtype iso
+/gate/source/F18LineSource1_7/gps/radius 0.7 mm
+/gate/source/F18LineSource1_7/gps/centre -13.43012701892219 6.137306695894644 0.000000 mm
+
+/gate/source/addSource F18LineSource1_8
+/gate/source/F18LineSource1_8/setActivity 200000 Bq
+/gate/source/F18LineSource1_8/setType backtoback
+/gate/source/F18LineSource1_8/gps/particle gamma
+/gate/source/F18LineSource1_8/gps/energytype Mono
+/gate/source/F18LineSource1_8/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_8/gps/type Volume
+/gate/source/F18LineSource1_8/gps/shape Cylinder
+/gate/source/F18LineSource1_8/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_8/gps/angtype iso
+/gate/source/F18LineSource1_8/gps/radius 0.7 mm
+/gate/source/F18LineSource1_8/gps/centre -12.03012701892219 8.562177826491071 0.000000 mm
+
+/gate/source/addSource F18LineSource1_9
+/gate/source/F18LineSource1_9/setActivity 200000 Bq
+/gate/source/F18LineSource1_9/setType backtoback
+/gate/source/F18LineSource1_9/gps/particle gamma
+/gate/source/F18LineSource1_9/gps/energytype Mono
+/gate/source/F18LineSource1_9/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_9/gps/type Volume
+/gate/source/F18LineSource1_9/gps/shape Cylinder
+/gate/source/F18LineSource1_9/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_9/gps/angtype iso
+/gate/source/F18LineSource1_9/gps/radius 0.7 mm
+/gate/source/F18LineSource1_9/gps/centre -10.630127018922192 10.987048957087499 0.000000 mm
+
+/gate/source/addSource F18LineSource1_10
+/gate/source/F18LineSource1_10/setActivity 200000 Bq
+/gate/source/F18LineSource1_10/setType backtoback
+/gate/source/F18LineSource1_10/gps/particle gamma
+/gate/source/F18LineSource1_10/gps/energytype Mono
+/gate/source/F18LineSource1_10/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_10/gps/type Volume
+/gate/source/F18LineSource1_10/gps/shape Cylinder
+/gate/source/F18LineSource1_10/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_10/gps/angtype iso
+/gate/source/F18LineSource1_10/gps/radius 0.7 mm
+/gate/source/F18LineSource1_10/gps/centre -17.63012701892219 3.7124355652982155 0.000000 mm
+
+/gate/source/addSource F18LineSource1_11
+/gate/source/F18LineSource1_11/setActivity 200000 Bq
+/gate/source/F18LineSource1_11/setType backtoback
+/gate/source/F18LineSource1_11/gps/particle gamma
+/gate/source/F18LineSource1_11/gps/energytype Mono
+/gate/source/F18LineSource1_11/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_11/gps/type Volume
+/gate/source/F18LineSource1_11/gps/shape Cylinder
+/gate/source/F18LineSource1_11/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_11/gps/angtype iso
+/gate/source/F18LineSource1_11/gps/radius 0.7 mm
+/gate/source/F18LineSource1_11/gps/centre -16.23012701892219 6.137306695894644 0.000000 mm
+
+/gate/source/addSource F18LineSource1_12
+/gate/source/F18LineSource1_12/setActivity 200000 Bq
+/gate/source/F18LineSource1_12/setType backtoback
+/gate/source/F18LineSource1_12/gps/particle gamma
+/gate/source/F18LineSource1_12/gps/energytype Mono
+/gate/source/F18LineSource1_12/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_12/gps/type Volume
+/gate/source/F18LineSource1_12/gps/shape Cylinder
+/gate/source/F18LineSource1_12/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_12/gps/angtype iso
+/gate/source/F18LineSource1_12/gps/radius 0.7 mm
+/gate/source/F18LineSource1_12/gps/centre -14.830127018922191 8.562177826491071 0.000000 mm
+
+/gate/source/addSource F18LineSource1_13
+/gate/source/F18LineSource1_13/setActivity 200000 Bq
+/gate/source/F18LineSource1_13/setType backtoback
+/gate/source/F18LineSource1_13/gps/particle gamma
+/gate/source/F18LineSource1_13/gps/energytype Mono
+/gate/source/F18LineSource1_13/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_13/gps/type Volume
+/gate/source/F18LineSource1_13/gps/shape Cylinder
+/gate/source/F18LineSource1_13/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_13/gps/angtype iso
+/gate/source/F18LineSource1_13/gps/radius 0.7 mm
+/gate/source/F18LineSource1_13/gps/centre -13.43012701892219 10.987048957087499 0.000000 mm
+
+/gate/source/addSource F18LineSource1_14
+/gate/source/F18LineSource1_14/setActivity 200000 Bq
+/gate/source/F18LineSource1_14/setType backtoback
+/gate/source/F18LineSource1_14/gps/particle gamma
+/gate/source/F18LineSource1_14/gps/energytype Mono
+/gate/source/F18LineSource1_14/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_14/gps/type Volume
+/gate/source/F18LineSource1_14/gps/shape Cylinder
+/gate/source/F18LineSource1_14/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_14/gps/angtype iso
+/gate/source/F18LineSource1_14/gps/radius 0.7 mm
+/gate/source/F18LineSource1_14/gps/centre -12.03012701892219 13.411920087683928 0.000000 mm
+
+/gate/source/addSource F18LineSource1_15
+/gate/source/F18LineSource1_15/setActivity 200000 Bq
+/gate/source/F18LineSource1_15/setType backtoback
+/gate/source/F18LineSource1_15/gps/particle gamma
+/gate/source/F18LineSource1_15/gps/energytype Mono
+/gate/source/F18LineSource1_15/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_15/gps/type Volume
+/gate/source/F18LineSource1_15/gps/shape Cylinder
+/gate/source/F18LineSource1_15/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_15/gps/angtype iso
+/gate/source/F18LineSource1_15/gps/radius 0.7 mm
+/gate/source/F18LineSource1_15/gps/centre -20.430127018922192 3.7124355652982155 0.000000 mm
+
+/gate/source/addSource F18LineSource1_16
+/gate/source/F18LineSource1_16/setActivity 200000 Bq
+/gate/source/F18LineSource1_16/setType backtoback
+/gate/source/F18LineSource1_16/gps/particle gamma
+/gate/source/F18LineSource1_16/gps/energytype Mono
+/gate/source/F18LineSource1_16/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_16/gps/type Volume
+/gate/source/F18LineSource1_16/gps/shape Cylinder
+/gate/source/F18LineSource1_16/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_16/gps/angtype iso
+/gate/source/F18LineSource1_16/gps/radius 0.7 mm
+/gate/source/F18LineSource1_16/gps/centre -19.030127018922194 6.137306695894644 0.000000 mm
+
+/gate/source/addSource F18LineSource1_17
+/gate/source/F18LineSource1_17/setActivity 200000 Bq
+/gate/source/F18LineSource1_17/setType backtoback
+/gate/source/F18LineSource1_17/gps/particle gamma
+/gate/source/F18LineSource1_17/gps/energytype Mono
+/gate/source/F18LineSource1_17/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_17/gps/type Volume
+/gate/source/F18LineSource1_17/gps/shape Cylinder
+/gate/source/F18LineSource1_17/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_17/gps/angtype iso
+/gate/source/F18LineSource1_17/gps/radius 0.7 mm
+/gate/source/F18LineSource1_17/gps/centre -17.63012701892219 8.562177826491071 0.000000 mm
+
+/gate/source/addSource F18LineSource1_18
+/gate/source/F18LineSource1_18/setActivity 200000 Bq
+/gate/source/F18LineSource1_18/setType backtoback
+/gate/source/F18LineSource1_18/gps/particle gamma
+/gate/source/F18LineSource1_18/gps/energytype Mono
+/gate/source/F18LineSource1_18/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_18/gps/type Volume
+/gate/source/F18LineSource1_18/gps/shape Cylinder
+/gate/source/F18LineSource1_18/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_18/gps/angtype iso
+/gate/source/F18LineSource1_18/gps/radius 0.7 mm
+/gate/source/F18LineSource1_18/gps/centre -16.230127018922193 10.987048957087499 0.000000 mm
+
+/gate/source/addSource F18LineSource1_19
+/gate/source/F18LineSource1_19/setActivity 200000 Bq
+/gate/source/F18LineSource1_19/setType backtoback
+/gate/source/F18LineSource1_19/gps/particle gamma
+/gate/source/F18LineSource1_19/gps/energytype Mono
+/gate/source/F18LineSource1_19/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_19/gps/type Volume
+/gate/source/F18LineSource1_19/gps/shape Cylinder
+/gate/source/F18LineSource1_19/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_19/gps/angtype iso
+/gate/source/F18LineSource1_19/gps/radius 0.7 mm
+/gate/source/F18LineSource1_19/gps/centre -14.830127018922193 13.411920087683928 0.000000 mm
+
+/gate/source/addSource F18LineSource1_20
+/gate/source/F18LineSource1_20/setActivity 200000 Bq
+/gate/source/F18LineSource1_20/setType backtoback
+/gate/source/F18LineSource1_20/gps/particle gamma
+/gate/source/F18LineSource1_20/gps/energytype Mono
+/gate/source/F18LineSource1_20/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource1_20/gps/type Volume
+/gate/source/F18LineSource1_20/gps/shape Cylinder
+/gate/source/F18LineSource1_20/gps/halfz 40.0 mm
+/gate/source/F18LineSource1_20/gps/angtype iso
+/gate/source/F18LineSource1_20/gps/radius 0.7 mm
+/gate/source/F18LineSource1_20/gps/centre -13.430127018922192 15.836791218280357 0.000000 mm
+
+########################## 1.6 mm #######################
+
+/gate/source/addSource F18LineSource2_0
+/gate/source/F18LineSource2_0/setActivity 200000 Bq
+/gate/source/F18LineSource2_0/setType backtoback
+/gate/source/F18LineSource2_0/gps/particle gamma
+/gate/source/F18LineSource2_0/gps/energytype Mono
+/gate/source/F18LineSource2_0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_0/gps/type Volume
+/gate/source/F18LineSource2_0/gps/shape Cylinder
+/gate/source/F18LineSource2_0/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_0/gps/angtype iso
+/gate/source/F18LineSource2_0/gps/radius 0.8 mm
+/gate/source/F18LineSource2_0/gps/centre -6.730127018922194 -3.8856406460551005 0.000000 mm
+
+/gate/source/addSource F18LineSource2_1
+/gate/source/F18LineSource2_1/setActivity 200000 Bq
+/gate/source/F18LineSource2_1/setType backtoback
+/gate/source/F18LineSource2_1/gps/particle gamma
+/gate/source/F18LineSource2_1/gps/energytype Mono
+/gate/source/F18LineSource2_1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_1/gps/type Volume
+/gate/source/F18LineSource2_1/gps/shape Cylinder
+/gate/source/F18LineSource2_1/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_1/gps/angtype iso
+/gate/source/F18LineSource2_1/gps/radius 0.8 mm
+/gate/source/F18LineSource2_1/gps/centre -8.330127018922195 -6.656921938165304 0.000000 mm
+
+/gate/source/addSource F18LineSource2_2
+/gate/source/F18LineSource2_2/setActivity 200000 Bq
+/gate/source/F18LineSource2_2/setType backtoback
+/gate/source/F18LineSource2_2/gps/particle gamma
+/gate/source/F18LineSource2_2/gps/energytype Mono
+/gate/source/F18LineSource2_2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_2/gps/type Volume
+/gate/source/F18LineSource2_2/gps/shape Cylinder
+/gate/source/F18LineSource2_2/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_2/gps/angtype iso
+/gate/source/F18LineSource2_2/gps/radius 0.8 mm
+/gate/source/F18LineSource2_2/gps/centre -9.930127018922192 -3.8856406460550996 0.000000 mm
+
+/gate/source/addSource F18LineSource2_3
+/gate/source/F18LineSource2_3/setActivity 200000 Bq
+/gate/source/F18LineSource2_3/setType backtoback
+/gate/source/F18LineSource2_3/gps/particle gamma
+/gate/source/F18LineSource2_3/gps/energytype Mono
+/gate/source/F18LineSource2_3/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_3/gps/type Volume
+/gate/source/F18LineSource2_3/gps/shape Cylinder
+/gate/source/F18LineSource2_3/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_3/gps/angtype iso
+/gate/source/F18LineSource2_3/gps/radius 0.8 mm
+/gate/source/F18LineSource2_3/gps/centre -9.930127018922196 -9.428203230275509 0.000000 mm
+
+/gate/source/addSource F18LineSource2_4
+/gate/source/F18LineSource2_4/setActivity 200000 Bq
+/gate/source/F18LineSource2_4/setType backtoback
+/gate/source/F18LineSource2_4/gps/particle gamma
+/gate/source/F18LineSource2_4/gps/energytype Mono
+/gate/source/F18LineSource2_4/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_4/gps/type Volume
+/gate/source/F18LineSource2_4/gps/shape Cylinder
+/gate/source/F18LineSource2_4/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_4/gps/angtype iso
+/gate/source/F18LineSource2_4/gps/radius 0.8 mm
+/gate/source/F18LineSource2_4/gps/centre -11.530127018922196 -6.656921938165304 0.000000 mm
+
+/gate/source/addSource F18LineSource2_5
+/gate/source/F18LineSource2_5/setActivity 200000 Bq
+/gate/source/F18LineSource2_5/setType backtoback
+/gate/source/F18LineSource2_5/gps/particle gamma
+/gate/source/F18LineSource2_5/gps/energytype Mono
+/gate/source/F18LineSource2_5/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_5/gps/type Volume
+/gate/source/F18LineSource2_5/gps/shape Cylinder
+/gate/source/F18LineSource2_5/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_5/gps/angtype iso
+/gate/source/F18LineSource2_5/gps/radius 0.8 mm
+/gate/source/F18LineSource2_5/gps/centre -13.130127018922195 -3.8856406460551 0.000000 mm
+
+/gate/source/addSource F18LineSource2_6
+/gate/source/F18LineSource2_6/setActivity 200000 Bq
+/gate/source/F18LineSource2_6/setType backtoback
+/gate/source/F18LineSource2_6/gps/particle gamma
+/gate/source/F18LineSource2_6/gps/energytype Mono
+/gate/source/F18LineSource2_6/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_6/gps/type Volume
+/gate/source/F18LineSource2_6/gps/shape Cylinder
+/gate/source/F18LineSource2_6/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_6/gps/angtype iso
+/gate/source/F18LineSource2_6/gps/radius 0.8 mm
+/gate/source/F18LineSource2_6/gps/centre -11.530127018922194 -12.19948452238571 0.000000 mm
+
+/gate/source/addSource F18LineSource2_7
+/gate/source/F18LineSource2_7/setActivity 200000 Bq
+/gate/source/F18LineSource2_7/setType backtoback
+/gate/source/F18LineSource2_7/gps/particle gamma
+/gate/source/F18LineSource2_7/gps/energytype Mono
+/gate/source/F18LineSource2_7/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_7/gps/type Volume
+/gate/source/F18LineSource2_7/gps/shape Cylinder
+/gate/source/F18LineSource2_7/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_7/gps/angtype iso
+/gate/source/F18LineSource2_7/gps/radius 0.8 mm
+/gate/source/F18LineSource2_7/gps/centre -13.130127018922193 -9.428203230275507 0.000000 mm
+
+/gate/source/addSource F18LineSource2_8
+/gate/source/F18LineSource2_8/setActivity 200000 Bq
+/gate/source/F18LineSource2_8/setType backtoback
+/gate/source/F18LineSource2_8/gps/particle gamma
+/gate/source/F18LineSource2_8/gps/energytype Mono
+/gate/source/F18LineSource2_8/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_8/gps/type Volume
+/gate/source/F18LineSource2_8/gps/shape Cylinder
+/gate/source/F18LineSource2_8/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_8/gps/angtype iso
+/gate/source/F18LineSource2_8/gps/radius 0.8 mm
+/gate/source/F18LineSource2_8/gps/centre -14.730127018922193 -6.656921938165302 0.000000 mm
+
+/gate/source/addSource F18LineSource2_9
+/gate/source/F18LineSource2_9/setActivity 200000 Bq
+/gate/source/F18LineSource2_9/setType backtoback
+/gate/source/F18LineSource2_9/gps/particle gamma
+/gate/source/F18LineSource2_9/gps/energytype Mono
+/gate/source/F18LineSource2_9/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_9/gps/type Volume
+/gate/source/F18LineSource2_9/gps/shape Cylinder
+/gate/source/F18LineSource2_9/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_9/gps/angtype iso
+/gate/source/F18LineSource2_9/gps/radius 0.8 mm
+/gate/source/F18LineSource2_9/gps/centre -16.330127018922195 -3.885640646055098 0.000000 mm
+
+/gate/source/addSource F18LineSource2_10
+/gate/source/F18LineSource2_10/setActivity 200000 Bq
+/gate/source/F18LineSource2_10/setType backtoback
+/gate/source/F18LineSource2_10/gps/particle gamma
+/gate/source/F18LineSource2_10/gps/energytype Mono
+/gate/source/F18LineSource2_10/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_10/gps/type Volume
+/gate/source/F18LineSource2_10/gps/shape Cylinder
+/gate/source/F18LineSource2_10/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_10/gps/angtype iso
+/gate/source/F18LineSource2_10/gps/radius 0.8 mm
+/gate/source/F18LineSource2_10/gps/centre -13.130127018922195 -14.970765814495913 0.000000 mm
+
+/gate/source/addSource F18LineSource2_11
+/gate/source/F18LineSource2_11/setActivity 200000 Bq
+/gate/source/F18LineSource2_11/setType backtoback
+/gate/source/F18LineSource2_11/gps/particle gamma
+/gate/source/F18LineSource2_11/gps/energytype Mono
+/gate/source/F18LineSource2_11/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_11/gps/type Volume
+/gate/source/F18LineSource2_11/gps/shape Cylinder
+/gate/source/F18LineSource2_11/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_11/gps/angtype iso
+/gate/source/F18LineSource2_11/gps/radius 0.8 mm
+/gate/source/F18LineSource2_11/gps/centre -14.730127018922195 -12.19948452238571 0.000000 mm
+
+/gate/source/addSource F18LineSource2_12
+/gate/source/F18LineSource2_12/setActivity 200000 Bq
+/gate/source/F18LineSource2_12/setType backtoback
+/gate/source/F18LineSource2_12/gps/particle gamma
+/gate/source/F18LineSource2_12/gps/energytype Mono
+/gate/source/F18LineSource2_12/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_12/gps/type Volume
+/gate/source/F18LineSource2_12/gps/shape Cylinder
+/gate/source/F18LineSource2_12/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_12/gps/angtype iso
+/gate/source/F18LineSource2_12/gps/radius 0.8 mm
+/gate/source/F18LineSource2_12/gps/centre -16.330127018922195 -9.428203230275505 0.000000 mm
+
+/gate/source/addSource F18LineSource2_13
+/gate/source/F18LineSource2_13/setActivity 200000 Bq
+/gate/source/F18LineSource2_13/setType backtoback
+/gate/source/F18LineSource2_13/gps/particle gamma
+/gate/source/F18LineSource2_13/gps/energytype Mono
+/gate/source/F18LineSource2_13/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_13/gps/type Volume
+/gate/source/F18LineSource2_13/gps/shape Cylinder
+/gate/source/F18LineSource2_13/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_13/gps/angtype iso
+/gate/source/F18LineSource2_13/gps/radius 0.8 mm
+/gate/source/F18LineSource2_13/gps/centre -17.930127018922196 -6.656921938165301 0.000000 mm
+
+/gate/source/addSource F18LineSource2_14
+/gate/source/F18LineSource2_14/setActivity 200000 Bq
+/gate/source/F18LineSource2_14/setType backtoback
+/gate/source/F18LineSource2_14/gps/particle gamma
+/gate/source/F18LineSource2_14/gps/energytype Mono
+/gate/source/F18LineSource2_14/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_14/gps/type Volume
+/gate/source/F18LineSource2_14/gps/shape Cylinder
+/gate/source/F18LineSource2_14/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_14/gps/angtype iso
+/gate/source/F18LineSource2_14/gps/radius 0.8 mm
+/gate/source/F18LineSource2_14/gps/centre -19.530127018922194 -3.885640646055097 0.000000 mm
+
+/gate/source/addSource F18LineSource2_15
+/gate/source/F18LineSource2_15/setActivity 200000 Bq
+/gate/source/F18LineSource2_15/setType backtoback
+/gate/source/F18LineSource2_15/gps/particle gamma
+/gate/source/F18LineSource2_15/gps/energytype Mono
+/gate/source/F18LineSource2_15/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_15/gps/type Volume
+/gate/source/F18LineSource2_15/gps/shape Cylinder
+/gate/source/F18LineSource2_15/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_15/gps/angtype iso
+/gate/source/F18LineSource2_15/gps/radius 0.8 mm
+/gate/source/F18LineSource2_15/gps/centre -14.730127018922198 -17.74204710660612 0.000000 mm
+
+/gate/source/addSource F18LineSource2_16
+/gate/source/F18LineSource2_16/setActivity 200000 Bq
+/gate/source/F18LineSource2_16/setType backtoback
+/gate/source/F18LineSource2_16/gps/particle gamma
+/gate/source/F18LineSource2_16/gps/energytype Mono
+/gate/source/F18LineSource2_16/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_16/gps/type Volume
+/gate/source/F18LineSource2_16/gps/shape Cylinder
+/gate/source/F18LineSource2_16/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_16/gps/angtype iso
+/gate/source/F18LineSource2_16/gps/radius 0.8 mm
+/gate/source/F18LineSource2_16/gps/centre -16.330127018922198 -14.970765814495914 0.000000 mm
+
+/gate/source/addSource F18LineSource2_17
+/gate/source/F18LineSource2_17/setActivity 200000 Bq
+/gate/source/F18LineSource2_17/setType backtoback
+/gate/source/F18LineSource2_17/gps/particle gamma
+/gate/source/F18LineSource2_17/gps/energytype Mono
+/gate/source/F18LineSource2_17/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_17/gps/type Volume
+/gate/source/F18LineSource2_17/gps/shape Cylinder
+/gate/source/F18LineSource2_17/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_17/gps/angtype iso
+/gate/source/F18LineSource2_17/gps/radius 0.8 mm
+/gate/source/F18LineSource2_17/gps/centre -17.930127018922196 -12.19948452238571 0.000000 mm
+
+/gate/source/addSource F18LineSource2_18
+/gate/source/F18LineSource2_18/setActivity 200000 Bq
+/gate/source/F18LineSource2_18/setType backtoback
+/gate/source/F18LineSource2_18/gps/particle gamma
+/gate/source/F18LineSource2_18/gps/energytype Mono
+/gate/source/F18LineSource2_18/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_18/gps/type Volume
+/gate/source/F18LineSource2_18/gps/shape Cylinder
+/gate/source/F18LineSource2_18/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_18/gps/angtype iso
+/gate/source/F18LineSource2_18/gps/radius 0.8 mm
+/gate/source/F18LineSource2_18/gps/centre -19.530127018922197 -9.428203230275505 0.000000 mm
+
+/gate/source/addSource F18LineSource2_19
+/gate/source/F18LineSource2_19/setActivity 200000 Bq
+/gate/source/F18LineSource2_19/setType backtoback
+/gate/source/F18LineSource2_19/gps/particle gamma
+/gate/source/F18LineSource2_19/gps/energytype Mono
+/gate/source/F18LineSource2_19/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_19/gps/type Volume
+/gate/source/F18LineSource2_19/gps/shape Cylinder
+/gate/source/F18LineSource2_19/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_19/gps/angtype iso
+/gate/source/F18LineSource2_19/gps/radius 0.8 mm
+/gate/source/F18LineSource2_19/gps/centre -21.130127018922195 -6.656921938165302 0.000000 mm
+
+/gate/source/addSource F18LineSource2_20
+/gate/source/F18LineSource2_20/setActivity 200000 Bq
+/gate/source/F18LineSource2_20/setType backtoback
+/gate/source/F18LineSource2_20/gps/particle gamma
+/gate/source/F18LineSource2_20/gps/energytype Mono
+/gate/source/F18LineSource2_20/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource2_20/gps/type Volume
+/gate/source/F18LineSource2_20/gps/shape Cylinder
+/gate/source/F18LineSource2_20/gps/halfz 40.0 mm
+/gate/source/F18LineSource2_20/gps/angtype iso
+/gate/source/F18LineSource2_20/gps/radius 0.8 mm
+/gate/source/F18LineSource2_20/gps/centre -22.730127018922197 -3.8856406460550987 0.000000 mm
+
+########################## 1.8 mm #######################
+
+/gate/source/addSource F18LineSource3_0
+/gate/source/F18LineSource3_0/setActivity 200000 Bq
+/gate/source/F18LineSource3_0/setType backtoback
+/gate/source/F18LineSource3_0/gps/particle gamma
+/gate/source/F18LineSource3_0/gps/energytype Mono
+/gate/source/F18LineSource3_0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_0/gps/type Volume
+/gate/source/F18LineSource3_0/gps/shape Cylinder
+/gate/source/F18LineSource3_0/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_0/gps/angtype iso
+/gate/source/F18LineSource3_0/gps/radius 0.9 mm
+/gate/source/F18LineSource3_0/gps/centre -9.941304855146431e-16 -8.11769145362398 0.000000 mm
+
+/gate/source/addSource F18LineSource3_1
+/gate/source/F18LineSource3_1/setActivity 200000 Bq
+/gate/source/F18LineSource3_1/setType backtoback
+/gate/source/F18LineSource3_1/gps/particle gamma
+/gate/source/F18LineSource3_1/gps/energytype Mono
+/gate/source/F18LineSource3_1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_1/gps/type Volume
+/gate/source/F18LineSource3_1/gps/shape Cylinder
+/gate/source/F18LineSource3_1/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_1/gps/angtype iso
+/gate/source/F18LineSource3_1/gps/radius 0.9 mm
+/gate/source/F18LineSource3_1/gps/centre 1.7999999999999987 -11.235382907247958 0.000000 mm
+
+/gate/source/addSource F18LineSource3_2
+/gate/source/F18LineSource3_2/setActivity 200000 Bq
+/gate/source/F18LineSource3_2/setType backtoback
+/gate/source/F18LineSource3_2/gps/particle gamma
+/gate/source/F18LineSource3_2/gps/energytype Mono
+/gate/source/F18LineSource3_2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_2/gps/type Volume
+/gate/source/F18LineSource3_2/gps/shape Cylinder
+/gate/source/F18LineSource3_2/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_2/gps/angtype iso
+/gate/source/F18LineSource3_2/gps/radius 0.9 mm
+/gate/source/F18LineSource3_2/gps/centre -1.8000000000000014 -11.235382907247958 0.000000 mm
+
+/gate/source/addSource F18LineSource3_3
+/gate/source/F18LineSource3_3/setActivity 200000 Bq
+/gate/source/F18LineSource3_3/setType backtoback
+/gate/source/F18LineSource3_3/gps/particle gamma
+/gate/source/F18LineSource3_3/gps/energytype Mono
+/gate/source/F18LineSource3_3/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_3/gps/type Volume
+/gate/source/F18LineSource3_3/gps/shape Cylinder
+/gate/source/F18LineSource3_3/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_3/gps/angtype iso
+/gate/source/F18LineSource3_3/gps/radius 0.9 mm
+/gate/source/F18LineSource3_3/gps/centre 3.5999999999999983 -14.353074360871936 0.000000 mm
+
+/gate/source/addSource F18LineSource3_4
+/gate/source/F18LineSource3_4/setActivity 200000 Bq
+/gate/source/F18LineSource3_4/setType backtoback
+/gate/source/F18LineSource3_4/gps/particle gamma
+/gate/source/F18LineSource3_4/gps/energytype Mono
+/gate/source/F18LineSource3_4/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_4/gps/type Volume
+/gate/source/F18LineSource3_4/gps/shape Cylinder
+/gate/source/F18LineSource3_4/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_4/gps/angtype iso
+/gate/source/F18LineSource3_4/gps/radius 0.9 mm
+/gate/source/F18LineSource3_4/gps/centre -1.757744657396576e-15 -14.353074360871936 0.000000 mm
+
+/gate/source/addSource F18LineSource3_5
+/gate/source/F18LineSource3_5/setActivity 200000 Bq
+/gate/source/F18LineSource3_5/setType backtoback
+/gate/source/F18LineSource3_5/gps/particle gamma
+/gate/source/F18LineSource3_5/gps/energytype Mono
+/gate/source/F18LineSource3_5/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_5/gps/type Volume
+/gate/source/F18LineSource3_5/gps/shape Cylinder
+/gate/source/F18LineSource3_5/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_5/gps/angtype iso
+/gate/source/F18LineSource3_5/gps/radius 0.9 mm
+/gate/source/F18LineSource3_5/gps/centre -3.600000000000002 -14.353074360871936 0.000000 mm
+
+/gate/source/addSource F18LineSource3_6
+/gate/source/F18LineSource3_6/setActivity 200000 Bq
+/gate/source/F18LineSource3_6/setType backtoback
+/gate/source/F18LineSource3_6/gps/particle gamma
+/gate/source/F18LineSource3_6/gps/energytype Mono
+/gate/source/F18LineSource3_6/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_6/gps/type Volume
+/gate/source/F18LineSource3_6/gps/shape Cylinder
+/gate/source/F18LineSource3_6/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_6/gps/angtype iso
+/gate/source/F18LineSource3_6/gps/radius 0.9 mm
+/gate/source/F18LineSource3_6/gps/centre 5.399999999999999 -17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource3_7
+/gate/source/F18LineSource3_7/setActivity 200000 Bq
+/gate/source/F18LineSource3_7/setType backtoback
+/gate/source/F18LineSource3_7/gps/particle gamma
+/gate/source/F18LineSource3_7/gps/energytype Mono
+/gate/source/F18LineSource3_7/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_7/gps/type Volume
+/gate/source/F18LineSource3_7/gps/shape Cylinder
+/gate/source/F18LineSource3_7/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_7/gps/angtype iso
+/gate/source/F18LineSource3_7/gps/radius 0.9 mm
+/gate/source/F18LineSource3_7/gps/centre 1.799999999999998 -17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource3_8
+/gate/source/F18LineSource3_8/setActivity 200000 Bq
+/gate/source/F18LineSource3_8/setType backtoback
+/gate/source/F18LineSource3_8/gps/particle gamma
+/gate/source/F18LineSource3_8/gps/energytype Mono
+/gate/source/F18LineSource3_8/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_8/gps/type Volume
+/gate/source/F18LineSource3_8/gps/shape Cylinder
+/gate/source/F18LineSource3_8/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_8/gps/angtype iso
+/gate/source/F18LineSource3_8/gps/radius 0.9 mm
+/gate/source/F18LineSource3_8/gps/centre -1.800000000000002 -17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource3_9
+/gate/source/F18LineSource3_9/setActivity 200000 Bq
+/gate/source/F18LineSource3_9/setType backtoback
+/gate/source/F18LineSource3_9/gps/particle gamma
+/gate/source/F18LineSource3_9/gps/energytype Mono
+/gate/source/F18LineSource3_9/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_9/gps/type Volume
+/gate/source/F18LineSource3_9/gps/shape Cylinder
+/gate/source/F18LineSource3_9/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_9/gps/angtype iso
+/gate/source/F18LineSource3_9/gps/radius 0.9 mm
+/gate/source/F18LineSource3_9/gps/centre -5.400000000000002 -17.470765814495916 0.000000 mm
+
+/gate/source/addSource F18LineSource3_10
+/gate/source/F18LineSource3_10/setActivity 200000 Bq
+/gate/source/F18LineSource3_10/setType backtoback
+/gate/source/F18LineSource3_10/gps/particle gamma
+/gate/source/F18LineSource3_10/gps/energytype Mono
+/gate/source/F18LineSource3_10/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_10/gps/type Volume
+/gate/source/F18LineSource3_10/gps/shape Cylinder
+/gate/source/F18LineSource3_10/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_10/gps/angtype iso
+/gate/source/F18LineSource3_10/gps/radius 0.9 mm
+/gate/source/F18LineSource3_10/gps/centre 7.1999999999999975 -20.588457268119896 0.000000 mm
+
+/gate/source/addSource F18LineSource3_11
+/gate/source/F18LineSource3_11/setActivity 200000 Bq
+/gate/source/F18LineSource3_11/setType backtoback
+/gate/source/F18LineSource3_11/gps/particle gamma
+/gate/source/F18LineSource3_11/gps/energytype Mono
+/gate/source/F18LineSource3_11/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_11/gps/type Volume
+/gate/source/F18LineSource3_11/gps/shape Cylinder
+/gate/source/F18LineSource3_11/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_11/gps/angtype iso
+/gate/source/F18LineSource3_11/gps/radius 0.9 mm
+/gate/source/F18LineSource3_11/gps/centre 3.5999999999999974 -20.588457268119896 0.000000 mm
+
+/gate/source/addSource F18LineSource3_12
+/gate/source/F18LineSource3_12/setActivity 200000 Bq
+/gate/source/F18LineSource3_12/setType backtoback
+/gate/source/F18LineSource3_12/gps/particle gamma
+/gate/source/F18LineSource3_12/gps/energytype Mono
+/gate/source/F18LineSource3_12/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_12/gps/type Volume
+/gate/source/F18LineSource3_12/gps/shape Cylinder
+/gate/source/F18LineSource3_12/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_12/gps/angtype iso
+/gate/source/F18LineSource3_12/gps/radius 0.9 mm
+/gate/source/F18LineSource3_12/gps/centre -2.5213588292785092e-15 -20.588457268119896 0.000000 mm
+
+/gate/source/addSource F18LineSource3_13
+/gate/source/F18LineSource3_13/setActivity 200000 Bq
+/gate/source/F18LineSource3_13/setType backtoback
+/gate/source/F18LineSource3_13/gps/particle gamma
+/gate/source/F18LineSource3_13/gps/energytype Mono
+/gate/source/F18LineSource3_13/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_13/gps/type Volume
+/gate/source/F18LineSource3_13/gps/shape Cylinder
+/gate/source/F18LineSource3_13/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_13/gps/angtype iso
+/gate/source/F18LineSource3_13/gps/radius 0.9 mm
+/gate/source/F18LineSource3_13/gps/centre -3.600000000000003 -20.588457268119896 0.000000 mm
+
+/gate/source/addSource F18LineSource3_14
+/gate/source/F18LineSource3_14/setActivity 200000 Bq
+/gate/source/F18LineSource3_14/setType backtoback
+/gate/source/F18LineSource3_14/gps/particle gamma
+/gate/source/F18LineSource3_14/gps/energytype Mono
+/gate/source/F18LineSource3_14/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource3_14/gps/type Volume
+/gate/source/F18LineSource3_14/gps/shape Cylinder
+/gate/source/F18LineSource3_14/gps/halfz 40.0 mm
+/gate/source/F18LineSource3_14/gps/angtype iso
+/gate/source/F18LineSource3_14/gps/radius 0.9 mm
+/gate/source/F18LineSource3_14/gps/centre -7.200000000000003 -20.588457268119896 0.000000 mm
+
+########################## 2.0 mm #######################
+
+/gate/source/addSource F18LineSource4_0
+/gate/source/F18LineSource4_0/setActivity 200000 Bq
+/gate/source/F18LineSource4_0/setType backtoback
+/gate/source/F18LineSource4_0/gps/particle gamma
+/gate/source/F18LineSource4_0/gps/energytype Mono
+/gate/source/F18LineSource4_0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_0/gps/type Volume
+/gate/source/F18LineSource4_0/gps/shape Cylinder
+/gate/source/F18LineSource4_0/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_0/gps/angtype iso
+/gate/source/F18LineSource4_0/gps/radius 1.0 mm
+/gate/source/F18LineSource4_0/gps/centre 7.33012701892219 -4.23205080756888 0.000000 mm
+
+/gate/source/addSource F18LineSource4_1
+/gate/source/F18LineSource4_1/setActivity 200000 Bq
+/gate/source/F18LineSource4_1/setType backtoback
+/gate/source/F18LineSource4_1/gps/particle gamma
+/gate/source/F18LineSource4_1/gps/energytype Mono
+/gate/source/F18LineSource4_1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_1/gps/type Volume
+/gate/source/F18LineSource4_1/gps/shape Cylinder
+/gate/source/F18LineSource4_1/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_1/gps/angtype iso
+/gate/source/F18LineSource4_1/gps/radius 1.0 mm
+/gate/source/F18LineSource4_1/gps/centre 11.330127018922191 -4.232050807568883 0.000000 mm
+
+/gate/source/addSource F18LineSource4_2
+/gate/source/F18LineSource4_2/setActivity 200000 Bq
+/gate/source/F18LineSource4_2/setType backtoback
+/gate/source/F18LineSource4_2/gps/particle gamma
+/gate/source/F18LineSource4_2/gps/energytype Mono
+/gate/source/F18LineSource4_2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_2/gps/type Volume
+/gate/source/F18LineSource4_2/gps/shape Cylinder
+/gate/source/F18LineSource4_2/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_2/gps/angtype iso
+/gate/source/F18LineSource4_2/gps/radius 1.0 mm
+/gate/source/F18LineSource4_2/gps/centre 9.330127018922187 -7.6961524227066365 0.000000 mm
+
+/gate/source/addSource F18LineSource4_3
+/gate/source/F18LineSource4_3/setActivity 200000 Bq
+/gate/source/F18LineSource4_3/setType backtoback
+/gate/source/F18LineSource4_3/gps/particle gamma
+/gate/source/F18LineSource4_3/gps/energytype Mono
+/gate/source/F18LineSource4_3/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_3/gps/type Volume
+/gate/source/F18LineSource4_3/gps/shape Cylinder
+/gate/source/F18LineSource4_3/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_3/gps/angtype iso
+/gate/source/F18LineSource4_3/gps/radius 1.0 mm
+/gate/source/F18LineSource4_3/gps/centre 15.330127018922191 -4.232050807568886 0.000000 mm
+
+/gate/source/addSource F18LineSource4_4
+/gate/source/F18LineSource4_4/setActivity 200000 Bq
+/gate/source/F18LineSource4_4/setType backtoback
+/gate/source/F18LineSource4_4/gps/particle gamma
+/gate/source/F18LineSource4_4/gps/energytype Mono
+/gate/source/F18LineSource4_4/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_4/gps/type Volume
+/gate/source/F18LineSource4_4/gps/shape Cylinder
+/gate/source/F18LineSource4_4/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_4/gps/angtype iso
+/gate/source/F18LineSource4_4/gps/radius 1.0 mm
+/gate/source/F18LineSource4_4/gps/centre 13.33012701892219 -7.696152422706639 0.000000 mm
+
+/gate/source/addSource F18LineSource4_5
+/gate/source/F18LineSource4_5/setActivity 200000 Bq
+/gate/source/F18LineSource4_5/setType backtoback
+/gate/source/F18LineSource4_5/gps/particle gamma
+/gate/source/F18LineSource4_5/gps/energytype Mono
+/gate/source/F18LineSource4_5/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_5/gps/type Volume
+/gate/source/F18LineSource4_5/gps/shape Cylinder
+/gate/source/F18LineSource4_5/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_5/gps/angtype iso
+/gate/source/F18LineSource4_5/gps/radius 1.0 mm
+/gate/source/F18LineSource4_5/gps/centre 11.330127018922187 -11.160254037844393 0.000000 mm
+
+/gate/source/addSource F18LineSource4_6
+/gate/source/F18LineSource4_6/setActivity 200000 Bq
+/gate/source/F18LineSource4_6/setType backtoback
+/gate/source/F18LineSource4_6/gps/particle gamma
+/gate/source/F18LineSource4_6/gps/energytype Mono
+/gate/source/F18LineSource4_6/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_6/gps/type Volume
+/gate/source/F18LineSource4_6/gps/shape Cylinder
+/gate/source/F18LineSource4_6/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_6/gps/angtype iso
+/gate/source/F18LineSource4_6/gps/radius 1.0 mm
+/gate/source/F18LineSource4_6/gps/centre 19.33012701892219 -4.232050807568887 0.000000 mm
+
+/gate/source/addSource F18LineSource4_7
+/gate/source/F18LineSource4_7/setActivity 200000 Bq
+/gate/source/F18LineSource4_7/setType backtoback
+/gate/source/F18LineSource4_7/gps/particle gamma
+/gate/source/F18LineSource4_7/gps/energytype Mono
+/gate/source/F18LineSource4_7/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_7/gps/type Volume
+/gate/source/F18LineSource4_7/gps/shape Cylinder
+/gate/source/F18LineSource4_7/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_7/gps/angtype iso
+/gate/source/F18LineSource4_7/gps/radius 1.0 mm
+/gate/source/F18LineSource4_7/gps/centre 17.330127018922187 -7.696152422706641 0.000000 mm
+
+/gate/source/addSource F18LineSource4_8
+/gate/source/F18LineSource4_8/setActivity 200000 Bq
+/gate/source/F18LineSource4_8/setType backtoback
+/gate/source/F18LineSource4_8/gps/particle gamma
+/gate/source/F18LineSource4_8/gps/energytype Mono
+/gate/source/F18LineSource4_8/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_8/gps/type Volume
+/gate/source/F18LineSource4_8/gps/shape Cylinder
+/gate/source/F18LineSource4_8/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_8/gps/angtype iso
+/gate/source/F18LineSource4_8/gps/radius 1.0 mm
+/gate/source/F18LineSource4_8/gps/centre 15.330127018922187 -11.160254037844394 0.000000 mm
+
+/gate/source/addSource F18LineSource4_9
+/gate/source/F18LineSource4_9/setActivity 200000 Bq
+/gate/source/F18LineSource4_9/setType backtoback
+/gate/source/F18LineSource4_9/gps/particle gamma
+/gate/source/F18LineSource4_9/gps/energytype Mono
+/gate/source/F18LineSource4_9/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_9/gps/type Volume
+/gate/source/F18LineSource4_9/gps/shape Cylinder
+/gate/source/F18LineSource4_9/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_9/gps/angtype iso
+/gate/source/F18LineSource4_9/gps/radius 1.0 mm
+/gate/source/F18LineSource4_9/gps/centre 13.330127018922184 -14.624355652982148 0.000000 mm
+
+/gate/source/addSource F18LineSource4_10
+/gate/source/F18LineSource4_10/setActivity 200000 Bq
+/gate/source/F18LineSource4_10/setType backtoback
+/gate/source/F18LineSource4_10/gps/particle gamma
+/gate/source/F18LineSource4_10/gps/energytype Mono
+/gate/source/F18LineSource4_10/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_10/gps/type Volume
+/gate/source/F18LineSource4_10/gps/shape Cylinder
+/gate/source/F18LineSource4_10/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_10/gps/angtype iso
+/gate/source/F18LineSource4_10/gps/radius 1.0 mm
+/gate/source/F18LineSource4_10/gps/centre 23.330127018922187 -4.232050807568889 0.000000 mm
+
+/gate/source/addSource F18LineSource4_11
+/gate/source/F18LineSource4_11/setActivity 200000 Bq
+/gate/source/F18LineSource4_11/setType backtoback
+/gate/source/F18LineSource4_11/gps/particle gamma
+/gate/source/F18LineSource4_11/gps/energytype Mono
+/gate/source/F18LineSource4_11/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_11/gps/type Volume
+/gate/source/F18LineSource4_11/gps/shape Cylinder
+/gate/source/F18LineSource4_11/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_11/gps/angtype iso
+/gate/source/F18LineSource4_11/gps/radius 1.0 mm
+/gate/source/F18LineSource4_11/gps/centre 21.330127018922184 -7.696152422706643 0.000000 mm
+
+/gate/source/addSource F18LineSource4_12
+/gate/source/F18LineSource4_12/setActivity 200000 Bq
+/gate/source/F18LineSource4_12/setType backtoback
+/gate/source/F18LineSource4_12/gps/particle gamma
+/gate/source/F18LineSource4_12/gps/energytype Mono
+/gate/source/F18LineSource4_12/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_12/gps/type Volume
+/gate/source/F18LineSource4_12/gps/shape Cylinder
+/gate/source/F18LineSource4_12/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_12/gps/angtype iso
+/gate/source/F18LineSource4_12/gps/radius 1.0 mm
+/gate/source/F18LineSource4_12/gps/centre 19.330127018922184 -11.160254037844396 0.000000 mm
+
+/gate/source/addSource F18LineSource4_13
+/gate/source/F18LineSource4_13/setActivity 200000 Bq
+/gate/source/F18LineSource4_13/setType backtoback
+/gate/source/F18LineSource4_13/gps/particle gamma
+/gate/source/F18LineSource4_13/gps/energytype Mono
+/gate/source/F18LineSource4_13/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_13/gps/type Volume
+/gate/source/F18LineSource4_13/gps/shape Cylinder
+/gate/source/F18LineSource4_13/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_13/gps/angtype iso
+/gate/source/F18LineSource4_13/gps/radius 1.0 mm
+/gate/source/F18LineSource4_13/gps/centre 17.330127018922184 -14.62435565298215 0.000000 mm
+
+/gate/source/addSource F18LineSource4_14
+/gate/source/F18LineSource4_14/setActivity 200000 Bq
+/gate/source/F18LineSource4_14/setType backtoback
+/gate/source/F18LineSource4_14/gps/particle gamma
+/gate/source/F18LineSource4_14/gps/energytype Mono
+/gate/source/F18LineSource4_14/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource4_14/gps/type Volume
+/gate/source/F18LineSource4_14/gps/shape Cylinder
+/gate/source/F18LineSource4_14/gps/halfz 40.0 mm
+/gate/source/F18LineSource4_14/gps/angtype iso
+/gate/source/F18LineSource4_14/gps/radius 1.0 mm
+/gate/source/F18LineSource4_14/gps/centre 15.33012701892218 -18.088457268119903 0.000000 mm
+
+########################## 2.2 mm #######################
+
+/gate/source/addSource F18LineSource5_0
+/gate/source/F18LineSource5_0/setActivity 200000 Bq
+/gate/source/F18LineSource5_0/setType backtoback
+/gate/source/F18LineSource5_0/gps/particle gamma
+/gate/source/F18LineSource5_0/gps/energytype Mono
+/gate/source/F18LineSource5_0/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_0/gps/type Volume
+/gate/source/F18LineSource5_0/gps/shape Cylinder
+/gate/source/F18LineSource5_0/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_0/gps/angtype iso
+/gate/source/F18LineSource5_0/gps/radius 1.1 mm
+/gate/source/F18LineSource5_0/gps/centre 7.6301270189221935 4.405255888325766 0.000000 mm
+
+/gate/source/addSource F18LineSource5_1
+/gate/source/F18LineSource5_1/setActivity 200000 Bq
+/gate/source/F18LineSource5_1/setType backtoback
+/gate/source/F18LineSource5_1/gps/particle gamma
+/gate/source/F18LineSource5_1/gps/energytype Mono
+/gate/source/F18LineSource5_1/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_1/gps/type Volume
+/gate/source/F18LineSource5_1/gps/shape Cylinder
+/gate/source/F18LineSource5_1/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_1/gps/angtype iso
+/gate/source/F18LineSource5_1/gps/radius 1.1 mm
+/gate/source/F18LineSource5_1/gps/centre 9.830127018922195 8.215767664977298 0.000000 mm
+
+/gate/source/addSource F18LineSource5_2
+/gate/source/F18LineSource5_2/setActivity 200000 Bq
+/gate/source/F18LineSource5_2/setType backtoback
+/gate/source/F18LineSource5_2/gps/particle gamma
+/gate/source/F18LineSource5_2/gps/energytype Mono
+/gate/source/F18LineSource5_2/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_2/gps/type Volume
+/gate/source/F18LineSource5_2/gps/shape Cylinder
+/gate/source/F18LineSource5_2/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_2/gps/angtype iso
+/gate/source/F18LineSource5_2/gps/radius 1.1 mm
+/gate/source/F18LineSource5_2/gps/centre 12.030127018922194 4.405255888325767 0.000000 mm
+
+/gate/source/addSource F18LineSource5_3
+/gate/source/F18LineSource5_3/setActivity 200000 Bq
+/gate/source/F18LineSource5_3/setType backtoback
+/gate/source/F18LineSource5_3/gps/particle gamma
+/gate/source/F18LineSource5_3/gps/energytype Mono
+/gate/source/F18LineSource5_3/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_3/gps/type Volume
+/gate/source/F18LineSource5_3/gps/shape Cylinder
+/gate/source/F18LineSource5_3/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_3/gps/angtype iso
+/gate/source/F18LineSource5_3/gps/radius 1.1 mm
+/gate/source/F18LineSource5_3/gps/centre 12.030127018922192 12.026279441628828 0.000000 mm
+
+/gate/source/addSource F18LineSource5_4
+/gate/source/F18LineSource5_4/setActivity 200000 Bq
+/gate/source/F18LineSource5_4/setType backtoback
+/gate/source/F18LineSource5_4/gps/particle gamma
+/gate/source/F18LineSource5_4/gps/energytype Mono
+/gate/source/F18LineSource5_4/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_4/gps/type Volume
+/gate/source/F18LineSource5_4/gps/shape Cylinder
+/gate/source/F18LineSource5_4/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_4/gps/angtype iso
+/gate/source/F18LineSource5_4/gps/radius 1.1 mm
+/gate/source/F18LineSource5_4/gps/centre 14.230127018922193 8.215767664977298 0.000000 mm
+
+/gate/source/addSource F18LineSource5_5
+/gate/source/F18LineSource5_5/setActivity 200000 Bq
+/gate/source/F18LineSource5_5/setType backtoback
+/gate/source/F18LineSource5_5/gps/particle gamma
+/gate/source/F18LineSource5_5/gps/energytype Mono
+/gate/source/F18LineSource5_5/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_5/gps/type Volume
+/gate/source/F18LineSource5_5/gps/shape Cylinder
+/gate/source/F18LineSource5_5/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_5/gps/angtype iso
+/gate/source/F18LineSource5_5/gps/radius 1.1 mm
+/gate/source/F18LineSource5_5/gps/centre 16.430127018922192 4.405255888325767 0.000000 mm
+
+/gate/source/addSource F18LineSource5_6
+/gate/source/F18LineSource5_6/setActivity 200000 Bq
+/gate/source/F18LineSource5_6/setType backtoback
+/gate/source/F18LineSource5_6/gps/particle gamma
+/gate/source/F18LineSource5_6/gps/energytype Mono
+/gate/source/F18LineSource5_6/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_6/gps/type Volume
+/gate/source/F18LineSource5_6/gps/shape Cylinder
+/gate/source/F18LineSource5_6/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_6/gps/angtype iso
+/gate/source/F18LineSource5_6/gps/radius 1.1 mm
+/gate/source/F18LineSource5_6/gps/centre 14.230127018922193 15.836791218280357 0.000000 mm
+
+/gate/source/addSource F18LineSource5_7
+/gate/source/F18LineSource5_7/setActivity 200000 Bq
+/gate/source/F18LineSource5_7/setType backtoback
+/gate/source/F18LineSource5_7/gps/particle gamma
+/gate/source/F18LineSource5_7/gps/energytype Mono
+/gate/source/F18LineSource5_7/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_7/gps/type Volume
+/gate/source/F18LineSource5_7/gps/shape Cylinder
+/gate/source/F18LineSource5_7/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_7/gps/angtype iso
+/gate/source/F18LineSource5_7/gps/radius 1.1 mm
+/gate/source/F18LineSource5_7/gps/centre 16.430127018922192 12.026279441628828 0.000000 mm
+
+/gate/source/addSource F18LineSource5_8
+/gate/source/F18LineSource5_8/setActivity 200000 Bq
+/gate/source/F18LineSource5_8/setType backtoback
+/gate/source/F18LineSource5_8/gps/particle gamma
+/gate/source/F18LineSource5_8/gps/energytype Mono
+/gate/source/F18LineSource5_8/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_8/gps/type Volume
+/gate/source/F18LineSource5_8/gps/shape Cylinder
+/gate/source/F18LineSource5_8/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_8/gps/angtype iso
+/gate/source/F18LineSource5_8/gps/radius 1.1 mm
+/gate/source/F18LineSource5_8/gps/centre 18.630127018922195 8.215767664977298 0.000000 mm
+
+/gate/source/addSource F18LineSource5_9
+/gate/source/F18LineSource5_9/setActivity 200000 Bq
+/gate/source/F18LineSource5_9/setType backtoback
+/gate/source/F18LineSource5_9/gps/particle gamma
+/gate/source/F18LineSource5_9/gps/energytype Mono
+/gate/source/F18LineSource5_9/gps/monoenergy 0.511 MeV
+/gate/source/F18LineSource5_9/gps/type Volume
+/gate/source/F18LineSource5_9/gps/shape Cylinder
+/gate/source/F18LineSource5_9/gps/halfz 40.0 mm
+/gate/source/F18LineSource5_9/gps/angtype iso
+/gate/source/F18LineSource5_9/gps/radius 1.1 mm
+/gate/source/F18LineSource5_9/gps/centre 20.830127018922195 4.405255888325768 0.000000 mm
+

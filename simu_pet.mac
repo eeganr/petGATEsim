@@ -1,0 +1,93 @@
+# -----------------------------------------------
+# simu_pet.mac
+#
+# Main macro for creating a PET system endcaps for ID triple coincidences
+#
+# Need to set variables for:
+#   {camerafile}    Name of macro file specifying system geometry
+#   {sourcefile}    Name of macro file specifying source activity
+#   {filename}      Name of output root file
+#   {randomseed}    Random seed value
+#   {timeslice}     Amount of time per slice
+#   {timestart}     Start time of scan
+#   {timestop}      End time of scan
+# -----------------------------------------------
+#
+
+# VISUALISATION
+
+/vis/disable
+#/control/execute                        vis.mac
+
+/gate/geometry/setMaterialDatabase ./GateMaterials.db
+
+/gate/world/geometry/setXLength       400. cm
+/gate/world/geometry/setYLength       400. cm
+/gate/world/geometry/setZLength       400. cm
+
+
+/control/execute                         Geometry.mac
+#/control/execute                         VoxelizedPhantom.mac
+/control/execute                         physics.mac
+
+/gate/run/initialize
+/control/execute                         digitizer_new.mac
+
+/control/execute                         sources/reso_phantom.mac
+#/control/execute                         ./macros/Output.mac
+
+
+#	V E R B O S I T Y
+/gate/verbose Physic    0
+/gate/verbose Cuts      0
+/gate/verbose Actor     0
+/gate/verbose SD        0
+/gate/verbose Actions   0
+/gate/verbose Step      0
+/gate/verbose Error     0
+/gate/verbose Warning   0
+/gate/verbose Output    0
+/gate/verbose Core      0
+
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+#	O U T P U T  Root
+/gate/output/root/enable
+/gate/output/root/setFileName testoutput.mac
+/gate/output/root/setRootHitFlag 1
+/gate/output/root/setRootSinglesFlag 1
+/gate/output/root/setRootCoincidencesFlag 1
+/gate/output/root/setRootdelayFlag 1
+
+#       O U T P U T BIN
+# /gate/output/binary/enable
+# /gate/output/binary/setFileName testoutput.mac 
+# /gate/output/binary/setOutFileHitsFlag 1
+# /gate/output/binary/setOutFileSinglesFlag 0
+# /gate/output/binary/setOutFileCoincidencesFlag 1
+
+/gate/output/ascii/enable
+/gate/output/ascii/setFileName testoutput.mac
+/gate/output/ascii/setOutFileHitsFlag 1
+/gate/output/ascii/setOutFileSinglesFlag 0
+/gate/output/ascii/setOutFileCoincidencesFlag 0
+
+
+#   R A N D O M
+# JamesRandom MersenneTwister
+/gate/random/setEngineName MersenneTwister
+ /gate/random/setEngineSeed default
+# /gate/random/setEngineSeed auto
+/gate/random/setEngineSeed 42
+#/gate/random/resetEngineFrom fileName
+/gate/random/verbose 0
+
+#	S T A R T 
+/gate/application/setTimeSlice     0.01 s
+/gate/application/setTimeStart     0 s
+/gate/application/setTimeStop      0.1 s
+
+
+/gate/application/startDAQ

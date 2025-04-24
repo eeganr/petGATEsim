@@ -1,0 +1,16 @@
+######## Warm Phantom Source (F18) ########
+
+/gate/source/addSource SP_F18
+/gate/source/SP_F18/setActivity 27000000 Bq
+/gate/source/SP_F18/setType backtoback
+/gate/source/SP_F18/gps/particle gamma
+/gate/source/SP_F18/gps/energytype Mono
+/gate/source/SP_F18/gps/monoenergy 0.511 MeV
+/gate/source/SP_F18/gps/type Volume
+/gate/source/SP_F18/gps/shape Cylinder
+/gate/source/SP_F18/gps/radius0 27 mm
+/gate/source/SP_F18/gps/radius 28 mm
+/gate/source/SP_F18/gps/halfz 20 mm
+/gate/source/SP_F18/gps/centre 0. 0. 0. cm
+/gate/source/SP_F18/gps/angtype iso
+

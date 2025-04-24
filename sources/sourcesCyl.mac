@@ -1,0 +1,44 @@
+#################
+#               #
+#  S O U R C E  #
+#               #
+#################
+
+
+
+
+/gate/source/addSource G0001
+/gate/source/G0001/setActivity 27000000 Bq
+
+/gate/source/G0001/setType backtoback
+/gate/source/G0001/gps/particle gamma
+/gate/source/G0001/gps/energytype Mono
+/gate/source/G0001/gps/monoenergy 0.511 MeV
+#/gate/source/G0001/setForcedUnstableFlag true
+#/gate/source/G0001/setForcedHalfLife 10000 s
+
+/gate/source/G0001/gps/type Volume
+/gate/source/G0001/gps/shape Cylinder
+/gate/source/G0001/gps/radius 0.05 mm
+/gate/source/G0001/gps/halfz 110 mm
+/gate/source/G0001/gps/angtype iso
+/gate/source/G0001/gps/centre 0. 0. 0. cm
+
+#/gate/source/addSource G0002
+#/gate/source/G0002/setActivity 0.000202 Ci
+
+#/gate/source/G0002/setType backtoback
+#/gate/source/G0002/gps/particle gamma
+#/gate/source/G0002/gps/energytype Mono
+#/gate/source/G0002/gps/monoenergy 1.27 MeV
+#/gate/source/G0002/setForcedUnstableFlag true
+#/gate/source/G0002/setForcedHalfLife 10000 s
+
+#/gate/source/G0002/gps/type Volume
+#/gate/source/G0002/gps/shape Sphere
+#/gate/source/G0002/gps/radius 0.25 mm
+#/gate/source/G0002/gps/angtype iso
+#/gate/source/G0002/gps/centre 0. 0. 0. cm
+#/gate/source/list
+#/gate/source/G0001/visualize 1 green 1
+
