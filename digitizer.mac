@@ -2,8 +2,7 @@
 #/gate/digitizer/Singles/insert adderCompton
 /gate/digitizer/Singles/insert adder
 /gate/digitizer/Singles/insert readout
-/gate/digitizer/Singles/readout/setPolicy TakeEnergyCentroid
-/gate/digitizer/Singles/readout/setDepth 4
+/gate/digitizer/Singles/readout/setDepth 1
 
 #/gate/digitizer/Singles/insert crosstalk
 #/gate/digitizer/Singles/crosstalk/chooseCrosstalkVolume crystal
@@ -12,50 +11,31 @@
 
 # GEN 2 Specific energy resolution of 11.6%
 /gate/digitizer/Singles/insert blurring
-/gate/digitizer/Singles/blurring/setResolution 0.116
+/gate/digitizer/Singles/blurring/setResolution 0.1755
 /gate/digitizer/Singles/blurring/setEnergyOfReference 511. keV
 
-/gate/digitizer/Singles/insert thresholder
-/gate/digitizer/Singles/thresholder/setThreshold 450. keV
+
+
+#/gate/digitizer/Singles/insert thresholder
+#/gate/digitizer/Singles/thresholder/setThreshold 390. keV
 #/gate/digitizer/Singles/thresholder/setThreshold 10. keV
 #/gate/digitizer/Singles/thresholder/setThreshold 452. keV
 
-/gate/digitizer/Singles/insert upholder
+#/gate/digitizer/Singles/insert upholder
 #/gate/digitizer/Singles/upholder/setUphold 1200. keV
-/gate/digitizer/Singles/upholder/setUphold 600. keV
+#/gate/digitizer/Singles/upholder/setUphold 590. keV
 
 /gate/digitizer/Singles/insert timeResolution
 /gate/digitizer/Singles/timeResolution/setTimeResolution 250 ps
 
-#/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/insert pileup
-#/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/pileup/setDepth 4 # to set depth
-#/gate/digitizerMgr/crystal/SinglesDigitizer/Singles/pileup/setPileup 10 ns
-
-
-#/gate/distributions/name energy_distrib
-#/gate/distributions/insert Gaussian
-#/gate/distributions/energy_distrib/setMean 120 keV
-#/gate/distributions/energy_distrib/setSigma 30 keV
-
-#/gate/distributions/name dt_distrib
-#/gate/distributions/insert Gaussian
-#/gate/distributions/energy_distrib/setMean 0 ps
-#/gate/distributions/energy_distrib/setSigma 105 ps
-
-#/gate/digitizer/Singles/insert noise
-#/gate/digitizer/Singles/noise/setDeltaTDistribution dt_distrib
-#/gate/digitizer/Singles/noise/setEnergyDistribution energy_distrib
-
-
-
 #	C O I N C I    S O R T E R 
-/gate/digitizer/Coincidences/setWindow 4800 ps
+/gate/digitizer/Coincidences/setWindow 12000. ps
 /gate/digitizer/Coincidences/MultiplesPolicy  takeWinnerOfGoods
 /gate/digitizer/Coincidences/minSectorDifference 1
 
 /gate/digitizer/name delay
 /gate/digitizer/insert coincidenceSorter
-/gate/digitizer/delay/setWindow 4800. ps
+/gate/digitizer/delay/setWindow 12000. ps
 /gate/digitizer/delay/setOffset 100. ns
 #/gate/digitizer/delay/minSectorDifference 1
 #/gate/digitizer/delay/MultiplesPolicy  takeWinnerOfGoods

@@ -31,9 +31,9 @@
 /control/execute                         physics.mac
 
 /gate/run/initialize
-/control/execute                         digitizer_new.mac
+/control/execute                         digitizer.mac
 
-/control/execute                         sources/reso_phantom.mac
+/control/execute                         testcylinder.mac
 #/control/execute                         ./macros/Output.mac
 
 
@@ -53,9 +53,15 @@
 /event/verbose 0
 /tracking/verbose 0
 
+##################### EDIT ############################
+# to change the output data format, comment/uncomment the the OUTPUT sections below
+# can also change the flags in each section to 0 if don't need Hits, Singles, Coincidences, files
+# make sure the {filename} parameter stays how it is
+##################################################### 
+
 #	O U T P U T  Root
 /gate/output/root/enable
-/gate/output/root/setFileName testoutput.mac
+/gate/output/root/setFileName simoutput
 /gate/output/root/setRootHitFlag 1
 /gate/output/root/setRootSinglesFlag 1
 /gate/output/root/setRootCoincidencesFlag 1
@@ -63,16 +69,17 @@
 
 #       O U T P U T BIN
 # /gate/output/binary/enable
-# /gate/output/binary/setFileName testoutput.mac 
-# /gate/output/binary/setOutFileHitsFlag 1
-# /gate/output/binary/setOutFileSinglesFlag 0
-# /gate/output/binary/setOutFileCoincidencesFlag 1
+ #/gate/output/binary/setFileName simoutput 
+ #/gate/output/binary/setOutFileHitsFlag 1
+ #/gate/output/binary/setOutFileSinglesFlag 1
+ #/gate/output/binary/setOutFileCoincidencesFlag 1
 
-/gate/output/ascii/enable
-/gate/output/ascii/setFileName testoutput.mac
-/gate/output/ascii/setOutFileHitsFlag 1
-/gate/output/ascii/setOutFileSinglesFlag 0
-/gate/output/ascii/setOutFileCoincidencesFlag 0
+# 		O U T P U T ASCII
+#/gate/output/ascii/enable
+#/gate/output/ascii/setFileName simoutput
+#/gate/output/ascii/setOutFileHitsFlag 1
+#/gate/output/ascii/setOutFileSinglesFlag 1
+#/gate/output/ascii/setOutFileCoincidencesFlag 1
 
 
 #   R A N D O M
@@ -86,8 +93,8 @@
 
 #	S T A R T 
 /gate/application/setTimeSlice     0.01 s
-/gate/application/setTimeStart     0 s
-/gate/application/setTimeStop      0.1 s
+/gate/application/setTimeStart     0.0 s
+/gate/application/setTimeStop      1.0 s
 
 
 /gate/application/startDAQ

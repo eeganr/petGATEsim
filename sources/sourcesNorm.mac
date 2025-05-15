@@ -1,14 +1,13 @@
 /gate/source/addSource CylinderSource
-/gate/source/CylinderSource/setActivity 27000000 becquerel
+/gate/source/CylinderSource/setActivity 1809557.368468 becquerel
 /gate/source/CylinderSource/setType backtoback
 /gate/source/CylinderSource/gps/particle gamma
 /gate/source/CylinderSource/gps/energytype Mono
 /gate/source/CylinderSource/gps/monoenergy 0.511 MeV
 /gate/source/CylinderSource/gps/type Volume
 /gate/source/CylinderSource/gps/shape Cylinder
-/gate/source/CylinderSource/gps/radius 25.000000 mm
-/gate/source/CylinderSource/gps/radius0 24.000000 mm
-/gate/source/CylinderSource/gps/halfz 10.000000 mm
+/gate/source/CylinderSource/gps/radius 6.000000
+/gate/source/CylinderSource/gps/halfz 2.000000
 /gate/source/CylinderSource/gps/angtype iso
 /gate/source/CylinderSource/gps/centre 0. 0. 0. cm
 

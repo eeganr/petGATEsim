@@ -8,7 +8,7 @@
 
 
 /gate/source/addSource G0001
-/gate/source/G0001/setActivity 0.000250 Ci
+/gate/source/G0001/setActivity 0.000182 Ci
 #/gate/source/G0001/setActivity 200000 Bq
 
 /gate/source/G0001/gps/particle ion

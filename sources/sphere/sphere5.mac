@@ -1,0 +1,28 @@
+#################
+#               #
+#  S O U R C E  #
+#               #
+#################
+
+
+
+
+/gate/source/addSource G0001
+/gate/source/G0001/setActivity 200000 Bq
+
+/gate/source/G0001/setType backtoback
+/gate/source/G0001/gps/particle gamma
+/gate/source/G0001/gps/energytype Mono
+/gate/source/G0001/gps/monoenergy 0.511 MeV
+/gate/source/G0001/setForcedUnstableFlag true
+/gate/source/G0001/setForcedHalfLife 10000 s
+
+/gate/source/G0001/gps/type Volume
+/gate/source/G0001/gps/shape Sphere
+/gate/source/G0001/gps/radius 0.5 mm
+/gate/source/G0001/gps/angtype iso
+/gate/source/G0001/gps/centre 0. 0. 5. mm
+
+
+
+
