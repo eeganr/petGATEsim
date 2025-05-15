@@ -1,0 +1,31 @@
+#################
+#               #
+#  S O U R C E  #
+#               #
+#################
+
+
+
+
+/gate/source/addSource G0001
+/gate/source/G0001/setActivity 0.000182 Ci
+#/gate/source/G0001/setActivity 200000 Bq
+
+/gate/source/G0001/gps/particle ion
+/gate/source/G0001/gps/ion 11 22
+#/gate/source/G0001/gps/monoenergy 0.511 MeV
+#/gate/source/G0001/gps/monoenergy 1.275 MeV
+/gate/source/G0001/setForcedUnstableFlag true
+/gate/source/G0001/setForcedHalfLife 10000 s
+
+/gate/source/G0001/gps/type Point
+#/gate/source/G0001/gps/angtype iso
+#/gate/source/G0001/gps/mintheta 90. deg
+#/gate/source/G0001/gps/maxtheta 90. deg
+#/gate/source/G0001/gps/minphi 0. deg
+#/gate/source/G0001/gps/maxphi 0. deg
+
+/gate/source/G0001/gps/centre 0. 0. 0. mm
+
+
+

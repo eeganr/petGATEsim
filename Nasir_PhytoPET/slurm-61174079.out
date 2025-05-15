@@ -1,0 +1,8 @@
+runtrain index= 1
+Random seed =123460316
+WARM
+sources/PS10.mac
+/home/users/nasir909/finely/PhytoPET_Simulation/ps_PhytoPET_PS10.mac_Geometry.mac_r1
+Geometry.mac
+/home/users/nasir909/finely/Nasir_PhytoPET/runtrain1.sh: line 100: /scratch/users/fwdesai/PhytoPET/spatialres/train1_r1.out: Permission denied
+123460316

@@ -1,0 +1,43 @@
+#	D I G I T I Z E R 
+#/gate/digitizer/Singles/insert adderCompton
+/gate/digitizer/Singles/insert adder
+/gate/digitizer/Singles/insert readout
+/gate/digitizer/Singles/readout/setDepth 1
+
+#/gate/digitizer/Singles/insert crosstalk
+#/gate/digitizer/Singles/crosstalk/chooseCrosstalkVolume crystal
+#/gate/digitizer/Singles/crosstalk/setEdgesFraction 0.05
+#/gate/digitizer/Singles/crosstalk/setCornersFraction 0.05
+
+# GEN 2 Specific energy resolution of 11.6%
+/gate/digitizer/Singles/insert blurring
+/gate/digitizer/Singles/blurring/setResolution 0.1755
+/gate/digitizer/Singles/blurring/setEnergyOfReference 511. keV
+
+
+
+#/gate/digitizer/Singles/insert thresholder
+#/gate/digitizer/Singles/thresholder/setThreshold 390. keV
+#/gate/digitizer/Singles/thresholder/setThreshold 10. keV
+#/gate/digitizer/Singles/thresholder/setThreshold 452. keV
+
+#/gate/digitizer/Singles/insert upholder
+#/gate/digitizer/Singles/upholder/setUphold 1200. keV
+#/gate/digitizer/Singles/upholder/setUphold 590. keV
+
+/gate/digitizer/Singles/insert timeResolution
+/gate/digitizer/Singles/timeResolution/setTimeResolution 250 ps
+
+#	C O I N C I    S O R T E R 
+/gate/digitizer/Coincidences/setWindow 12000. ps
+/gate/digitizer/Coincidences/MultiplesPolicy  takeWinnerOfGoods
+/gate/digitizer/Coincidences/minSectorDifference 1
+
+/gate/digitizer/name delay
+/gate/digitizer/insert coincidenceSorter
+/gate/digitizer/delay/setWindow 12000. ps
+/gate/digitizer/delay/setOffset 100. ns
+#/gate/digitizer/delay/minSectorDifference 1
+#/gate/digitizer/delay/MultiplesPolicy  takeWinnerOfGoods
+
+#energy452-590
