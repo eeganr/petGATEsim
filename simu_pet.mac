@@ -55,7 +55,7 @@
 
 #	O U T P U T  Root
 /gate/output/root/enable
-/gate/output/root/setFileName {filename}
+/gate/output/root/setFileName simoutput
 /gate/output/root/setRootHitFlag 1
 /gate/output/root/setRootSinglesFlag 1
 /gate/output/root/setRootCoincidencesFlag 1
