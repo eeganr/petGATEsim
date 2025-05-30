@@ -97,7 +97,7 @@ then
   echo $SOURCE_FILE  
   echo $OUTPUT_FILE
   echo $CAMERA_FILE
-  $GATE -a [filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /home/users/eeganr/PhytoPET_Simulation/train1_r$i.out
+  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /home/users/eeganr/PhytoPET_Simulation/train1_r$i.out
   echo $RANDOM_SEED
   
 #  RANDOM_SEED=`expr $RANDOM_SEED + $INCR_SEED`
