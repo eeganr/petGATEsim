@@ -1,6 +1,4 @@
 import numpy as np
-import nibabel as nib
-import parallelproj
 import uproot
 import pandas as pd
 from scipy.optimize import root_scalar
