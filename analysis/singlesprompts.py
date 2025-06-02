@@ -16,6 +16,7 @@ num_subsets = 8
 
 total_time = 60.0 # total sim time (s)
 TAU = 1.2e-8 # coincidence window (s)
+DELAY = TAU # delay for DW estimate (s)
 num_detectors = 48 * 48
 
 image_shape = (200, 200, 700)  # (x, y, z) voxels # originally (310, 310, 310)
@@ -55,7 +56,7 @@ with uproot.open(INFILE) as file:
     })
     coincidences['true'] = coincidences['source1'] == coincidences['source2']
 
-# System-Wide Equation Constants
+# Define Whole-System Equation Constants for SP Method
 
 S = singles_tree.num_entries / total_time # Rate of singles measured by scanner as a whole
 P = 2 * coincidence_tree.num_entries / total_time # Twice the prompts rate
@@ -89,13 +90,27 @@ def randomsrate(i, j):
     j_term = S_j - np.exp((L + S)*TAU) * P_j
     return coeff * i_term * j_term
 
-total_rate = 0
+# Calculate singles-prompts estimate of total randoms rate
+sp_rate = 0
 detectors = singles['detector'].unique()
-print(len(detectors))
 for i in range(num_detectors):
     for j in range(i, num_detectors):
-        total_rate += randomsrate(i, j)
+        sp_rate += randomsrate(i, j)
+sp_estimate = sp_rate * total_time
 
-total_sp_estimate = total_rate * total_time
+# Calculate delayed-window estimate of total randoms rate
+dw_estimate = 0
+for t in singles['time']:
+    dw_estimate += np.searchsorted(singles['time'], t + DELAY + TAU) - np.searchsorted(singles['time'], t + TAU)
+print(dw_estimate)
+
+# Calculate singles-rate estimate of total randoms rate
+sr_rate = 0
+for i in range(num_detectors):
+    for j in range(i, num_detectors):
+        sr_rate += 2 * TAU * singles_counts.get(i, 0) / total_time * singles_counts.get(j, 0) / total_time
+sr_estimate = sr_rate * total_time
+
+# Find actual randoms in the data
 
 actual = coincidences[coincidences['true'] == False]

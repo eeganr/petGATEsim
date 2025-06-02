@@ -1,0 +1,24 @@
+/gate/source/addSource CYLINDER
+
+/gate/source/CYLINDER/setActivity 200000 Bq
+/gate/source/CYLINDER/setType backtoback
+/gate/source/CYLINDER/gps/particle gamma
+/gate/source/CYLINDER/gps/energytype Mono
+/gate/source/CYLINDER/gps/monoenergy 0.511 MeV
+
+
+/gate/source/CYLINDER/gps/angtype iso
+/gate/source/CYLINDER/gps/mintheta 0. deg
+/gate/source/CYLINDER/gps/maxtheta 180. deg
+/gate/source/CYLINDER/gps/minphi 0. deg
+/gate/source/CYLINDER/gps/maxphi 360. deg
+
+/gate/source/CYLINDER/gps/type Volume
+
+/gate/source/CYLINDER/gps/shape Cylinder
+/gate/source/CYLINDER/gps/radius 0.5 mm
+/gate/source/CYLINDER/gps/halfz 25 mm
+
+
+
+/gate/source/CYLINDER/gps/centre 0. 0. 0. cm
