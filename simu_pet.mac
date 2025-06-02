@@ -64,8 +64,8 @@
 #       O U T P U T BIN
 /gate/output/binary/enable
 /gate/output/binary/setFileName {filename} 
-/gate/output/binary/setOutFileHitsFlag 1
-/gate/output/binary/setOutFileSinglesFlag 0
+/gate/output/binary/setOutFileHitsFlag 0
+/gate/output/binary/setOutFileSinglesFlag 1
 /gate/output/binary/setOutFileCoincidencesFlag 1
 
 # /gate/output/ascii/enable
