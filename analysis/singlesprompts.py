@@ -101,17 +101,4 @@ def singles_rate(singles_count):
             sr_rate += 2 * TAU * singles_count.get(i, 0) / TIME * singles_count.get(j, 0) / TIME
     return sr_rate * TIME
 
-if __name__ == "__main__":
-    sp, dw, sr, actual = [], [], [], []
-    for i in FILE_RANGE:
-        infile = PATH_PREFIX + str(i) + PATH_SUFFIX
-        print(f"Reading file {infile}...")
-        singles, coincidences, singles_count, prompts_count = read_root_file(infile)
-        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences))
-        dw.append(delayed_window(singles))
-        sr.append(singles_rate(singles_count))
-        actual.append(len(coincidences[coincidences['true'] == False]))
-    
-    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
-    with open('estimations.csv', 'w') as f:
-        df.to_csv(f)
+infile = PATH_PREFIX + str(0) + PATH_SUFFIX
