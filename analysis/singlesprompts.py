@@ -69,7 +69,7 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences):
 
     S = len(singles) / TIME # Rate of singles measured by scanner as a whole
     P = 2 * len(coincidences) / TIME # Twice the prompts rate
-
+    
     # Roots of this function are the lambda (L) values.
     def lambda_eq(L):
         return 2 * TAU * L * L - L + S - P * np.exp((L + S)*TAU)
@@ -104,7 +104,7 @@ def singles_rate(singles_count):
 singles, coincidences, singles_count, prompts_count = read_root_file(INFILE)
 
 print("Calculating singles-prompts estimate of total randoms rate...")
-print(singles_prompts(singles_count, prompts_count))
+print(singles_prompts(singles_count, prompts_count, singles, coincidences))
 print("Calculating delayed-window estimate of total randoms rate...")
 print(delayed_window(singles))
 print("Calculating singles-rate estimate of total randoms rate...")
