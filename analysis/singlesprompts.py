@@ -6,23 +6,11 @@ import uproot
 
 # === CONFIG ===
 INFILE = "/scratch/users/eeganr/pastoutput/output1.root"
-NUM_VOLIDS = 6
-cont_magnitude = 1e-5
-num_TOF_bins = 9
-TOF_bin_width = 29
-sigma_TOF = 60
-num_iterations = 2
-num_subsets = 8
 
-total_time = 60.0 # total sim time (s)
+TIME = 60.0 # total sim time (s)
 TAU = 1.2e-8 # coincidence window (s)
 DELAY = TAU # delay for DW estimate (s)
 num_detectors = 48 * 48
-
-image_shape = (200, 200, 700)  # (x, y, z) voxels # originally (310, 310, 310)
-voxel_size = (0.1, 0.1, 0.1)  #mm #originally (1,1,1)
-radius_mm = 10 # orinally 130 (mm)
-use_tof = True # originally False
 
 
 # Read in data from ROOT files
@@ -56,16 +44,15 @@ with uproot.open(INFILE) as file:
     })
     coincidences['true'] = coincidences['source1'] == coincidences['source2']
 
-# Define Whole-System Equation Constants for SP Method
 
-S = singles_tree.num_entries / total_time # Rate of singles measured by scanner as a whole
-P = 2 * coincidence_tree.num_entries / total_time # Twice the prompts rate
+# Define Whole-System Equation Constants for SP Method
+S = singles_tree.num_entries / TIME # Rate of singles measured by scanner as a whole
+P = 2 * coincidence_tree.num_entries / TIME # Twice the prompts rate
 
 
 # Roots of this function are the lambda (L) values.
 def lambda_eq(L):
     return 2 * TAU * L * L - L + S - P * np.exp((L + S)*TAU)
-
 L = root_scalar(lambda_eq, x0=0)
 if not L.converged:
     raise RuntimeError("Failed to converge on lambda.")
@@ -73,44 +60,52 @@ L = L.root
 
 det1_counts = coincidences['detector1'].value_counts().to_dict() # det1 coincidences involved
 det2_counts = coincidences['detector2'].value_counts().to_dict() # det2 coincidences involved
-
 prompts = pd.DataFrame({'detector': list(range(num_detectors))})
 prompts['prompts'] = prompts['detector'].map(lambda x: det1_counts.get(x, 0) + det2_counts.get(x, 0))
-prompt_count = prompts.set_index('detector')['prompts'].to_dict()
-singles_counts = singles['detector'].value_counts().to_dict()
+prompts_count = prompts.set_index('detector')['prompts'].to_dict()
+singles_count = singles['detector'].value_counts().to_dict()
 
 # Returns the randoms rate from a pair of detectors with crystalIDs i and j
-def randomsrate(i, j):
-    P_i = prompt_count.get(i, 0) / total_time
-    P_j = prompt_count.get(j, 0) / total_time
-    S_i = singles_counts.get(i, 0) / total_time
-    S_j = singles_counts.get(j, 0) / total_time
+def randomsrate(i, j, singles_count, prompts_count):
+    P_i = prompts_count.get(i, 0) / TIME
+    P_j = prompts_count.get(j, 0) / TIME
+    S_i = singles_count.get(i, 0) / TIME
+    S_j = singles_count.get(j, 0) / TIME
     coeff = (2 * TAU * np.exp(-(L + S)*TAU))/((1 - 2 * L * TAU)**2)
     i_term = S_i - np.exp((L + S)*TAU) * P_i
     j_term = S_j - np.exp((L + S)*TAU) * P_j
     return coeff * i_term * j_term
 
 # Calculate singles-prompts estimate of total randoms rate
-sp_rate = 0
-detectors = singles['detector'].unique()
-for i in range(num_detectors):
-    for j in range(i, num_detectors):
-        sp_rate += randomsrate(i, j)
-sp_estimate = sp_rate * total_time
+def singles_prompts(singles_count, prompts_count):
+    sp_rate = 0
+    for i in range(num_detectors):
+        for j in range(i, num_detectors):
+            sp_rate += randomsrate(i, j, singles_count, prompts_count)
+    return sp_rate * TIME
 
 # Calculate delayed-window estimate of total randoms rate
-dw_estimate = 0
-for t in singles['time']:
-    dw_estimate += np.searchsorted(singles['time'], t + DELAY + TAU) - np.searchsorted(singles['time'], t + TAU)
-print(dw_estimate)
+def delayed_window(singles):
+    dw_estimate = 0
+    for t in singles['time']:
+        dw_estimate += np.searchsorted(singles['time'], t + DELAY + TAU) - np.searchsorted(singles['time'], t + TAU)
+    return dw_estimate
 
 # Calculate singles-rate estimate of total randoms rate
-sr_rate = 0
-for i in range(num_detectors):
-    for j in range(i, num_detectors):
-        sr_rate += 2 * TAU * singles_counts.get(i, 0) / total_time * singles_counts.get(j, 0) / total_time
-sr_estimate = sr_rate * total_time
+def singles_rate(singles_count):
+    sr_rate = 0
+    for i in range(num_detectors):
+        for j in range(i, num_detectors):
+            sr_rate += 2 * TAU * singles_count.get(i, 0) / TIME * singles_count.get(j, 0) / TIME
+    return sr_rate * TIME
 
 # Find actual randoms in the data
 
+print("Calculating singles-prompts estimate of total randoms rate...")
+print(singles_prompts(singles_count, prompts_count))
+print("Calculating delayed-window estimate of total randoms rate...")
+print(delayed_window(singles))
+print("Calculating singles-rate estimate of total randoms rate...")
+print(singles_rate(singles_count))
+print("Finding actual randoms in the data...")
 actual = coincidences[coincidences['true'] == False]
