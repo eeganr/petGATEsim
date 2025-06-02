@@ -5,12 +5,14 @@ from scipy.optimize import root_scalar
 import uproot
 
 # === CONFIG ===
-INFILE = "/scratch/users/eeganr/pastoutput/output1.root"
-
 TIME = 60.0 # total sim time (s)
 TAU = 1.2e-8 # coincidence window (s)
 DELAY = TAU # delay for DW estimate (s)
 DETECTORS = 48 * 48
+PATH_PREFIX = "/scratch/users/eeganr/pastoutput/output"
+PATH_SUFFIX = ".root"
+FILE_RANGE = range(1, 11)
+# === END CONFIG ===
 
 
 # Read in data from ROOT files
@@ -99,15 +101,17 @@ def singles_rate(singles_count):
             sr_rate += 2 * TAU * singles_count.get(i, 0) / TIME * singles_count.get(j, 0) / TIME
     return sr_rate * TIME
 
-# Find actual randoms in the data
-
-singles, coincidences, singles_count, prompts_count = read_root_file(INFILE)
-
-print("Calculating singles-prompts estimate of total randoms rate...")
-print(singles_prompts(singles_count, prompts_count))
-print("Calculating delayed-window estimate of total randoms rate...")
-print(delayed_window(singles))
-print("Calculating singles-rate estimate of total randoms rate...")
-print(singles_rate(singles_count))
-print("Finding actual randoms in the data...")
-actual = coincidences[coincidences['true'] == False]
+if __name__ == "__main__":
+    sp, dw, sr, actual = [1, 2, 3], [1, 2, 3], [1, 2.5, 3], [1, 2, 3]
+    for i in FILE_RANGE:
+        infile = PATH_PREFIX + str(i) + PATH_SUFFIX
+        print(f"Reading file {infile}...")
+        singles, coincidences, singles_count, prompts_count = read_root_file(infile)
+        sp.append(singles_prompts(singles_count, prompts_count))
+        dw.append(delayed_window(singles))
+        sr.append(singles_rate(singles_count))
+        actual.append(coincidences[coincidences['true'] == False])
+    
+    df = pd.DataFrame({'sp':sp, 'dw':dw, 'sr':sr, 'actual':actual})
+    with open('estimations.csv', 'w') as f:
+        df.to_csv(f)
