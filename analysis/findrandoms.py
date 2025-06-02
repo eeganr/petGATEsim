@@ -107,11 +107,11 @@ if __name__ == "__main__":
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
         print(f"Reading file {infile}...")
         singles, coincidences, singles_count, prompts_count = read_root_file(infile)
-        sp.append(singles_prompts(singles_count, prompts_count))
+        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences))
         dw.append(delayed_window(singles))
         sr.append(singles_rate(singles_count))
         actual.append(coincidences[coincidences['true'] == False])
     
-    df = pd.DataFrame({'sp':sp, 'dw':dw, 'sr':sr, 'actual':actual})
+    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
     with open('estimations.csv', 'w') as f:
         df.to_csv(f)
