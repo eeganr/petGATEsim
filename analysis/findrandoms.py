@@ -71,7 +71,7 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences):
 
     S = len(singles) / TIME # Rate of singles measured by scanner as a whole
     P = 2 * len(coincidences) / TIME # Twice the prompts rate
-
+    
     # Roots of this function are the lambda (L) values.
     def lambda_eq(L):
         return 2 * TAU * L * L - L + S - P * np.exp((L + S)*TAU)
