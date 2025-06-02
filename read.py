@@ -1,6 +1,6 @@
 # === User Configuration ===
-INFILE     = "gateCoincidences.dat"  # Path to your .dat file (hits, singles, or coincidences)
-FILE_TYPE  = "coinc"                  # Choose: "hits", "singles" or "coinc"
+INFILE     = "pastoutput/output1Coincidences.dat"  # Path to your .dat file (hits, singles, or coincidences)
+FILE_TYPE  = "singles"                  # Choose: "hits", "singles" or "coinc"
 NUM_VOLIDS = 6                         # Number of volume ID levels (e.g. 6 for cylindricalPET)
 # USER_MASK: None = include all specs; otherwise provide a 0/1 list
 #   length = 20 for hits, 18 for singles, 36 for coincidences
