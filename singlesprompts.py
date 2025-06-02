@@ -5,7 +5,7 @@ from scipy.optimize import root_scalar
 import uproot
 
 # === CONFIG ===
-INFILE = "pastoutput/output1.root"
+INFILE = "/scratch/users/eeganr/pastoutput/output1.root"
 NUM_VOLIDS = 6
 cont_magnitude = 1e-5
 num_TOF_bins = 9
@@ -14,7 +14,7 @@ sigma_TOF = 60
 num_iterations = 2
 num_subsets = 8
 
-total_time = 1 # total sim time (s)
+total_time = 60.0 # total sim time (s)
 TAU = 1.2e-8 # coincidence window (s)
 num_detectors = 48 * 48
 
@@ -80,26 +80,22 @@ singles_counts = singles['detector'].value_counts().to_dict()
 
 # Returns the randoms rate from a pair of detectors with crystalIDs i and j
 def randomsrate(i, j):
-    P_i = prompt_count.get(i, 0)
-    P_j = prompt_count.get(j, 0)
-    S_i = singles_counts.get(i, 0)
-    S_j = singles_counts.get(j, 0)
+    P_i = prompt_count.get(i, 0) / total_time
+    P_j = prompt_count.get(j, 0) / total_time
+    S_i = singles_counts.get(i, 0) / total_time
+    S_j = singles_counts.get(j, 0) / total_time
     coeff = (2 * TAU * np.exp(-(L + S)*TAU))/((1 - 2 * L * TAU)**2)
     i_term = S_i - np.exp((L + S)*TAU) * P_i
     j_term = S_j - np.exp((L + S)*TAU) * P_j
     return coeff * i_term * j_term
 
-total = 0
+total_rate = 0
 detectors = singles['detector'].unique()
 print(len(detectors))
 for i in range(num_detectors):
-    if (i + 1) % 200 == 0:
-        print(f"Processing detector {i + 1}/{len(detectors)}, total = " + str(total))
     for j in range(i, num_detectors):
-        total += randomsrate(i, j)
+        total_rate += randomsrate(i, j)
 
-print("Estimate: " + total)
+total_sp_estimate = total_rate * total_time
 
 actual = coincidences[coincidences['true'] == False]
-
-print("Actual: " + len(actual))
