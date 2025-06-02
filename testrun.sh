@@ -5,3 +5,5 @@ singularity exec -B /home/users/eeganr/petGATEsim:/home/users/eeganr/petGATEsim 
 rm /home/users/eeganr/petGATEsim/pastoutput/output$1Run.bin
 
 rm /home/users/eeganr/petGATEsim/pastoutput/output$1delay.dat
+
+rm -r /home/users/eeganr/petGATEsim/_trial_temp
