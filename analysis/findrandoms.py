@@ -144,7 +144,7 @@ if __name__ == "__main__":
         sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences))
         dw.append(delayed_window(singles))
         sr.append(singles_rate(singles_count))
-        actual.append(len(coincidences[not coincidences['true'] == True]))
+        actual.append(len(coincidences[~coincidences['true']]))
 
     df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
     with open('estimations.csv', 'w') as f:
