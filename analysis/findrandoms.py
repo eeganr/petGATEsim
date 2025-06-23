@@ -7,7 +7,7 @@ import uproot
 # === CONFIG ===
 TIME = 60.0  # total sim time (s)
 TAU = 1.2e-8  # coincidence window (s)
-DELAY = TAU  # delay for DW estimate (s)
+DELAY = 10 * TAU  # delay for DW estimate (s)
 DETECTORS = 48 * 48
 PATH_PREFIX = "/scratch/users/eeganr/pastoutput/output"
 PATH_SUFFIX = ".root"
