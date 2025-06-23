@@ -100,7 +100,7 @@ def delayed_window(singles):
     dw_estimate = 0
     for t in singles['time']:
         dw_estimate += (np.searchsorted(singles['time'], t + DELAY + TAU)
-                        - np.searchsorted(singles['time'], t + TAU))
+                        - np.searchsorted(singles['time'], t + DELAY))
     return dw_estimate
 
 

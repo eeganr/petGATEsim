@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy.optimize import root_scalar
+# from scipy.optimize import root_scalar
 # import struct
 import uproot
 
@@ -72,46 +72,6 @@ def read_root_file(infile):
     return singles, coincidences, singles_count, prompts_count
 
 
-# Returns the Singles-Prompts (SP) randoms rate estimate from a pair
-# of detectors with crystalIDs i and j per Oliver & Rafecas
-def randomsrate(i, j, singles_count, prompts_count, L, S):
-    # P_i and P_j are prompts rates for detectors i, j
-    P_i = prompts_count.get(i, 0) / TIME  # .get(i, 0) returns 0 if det i not in prompts_count
-    P_j = prompts_count.get(j, 0) / TIME
-    # S_i and S_j are singles rates for detectors i, j
-    S_i = singles_count.get(i, 0) / TIME
-    S_j = singles_count.get(j, 0) / TIME
-    # Coefficient for the randoms rate equation
-    coeff = (2 * TAU * np.exp(-(L + S)*TAU))/((1 - 2 * L * TAU)**2)
-    # Further terms in SP equation
-    i_term = S_i - np.exp((L + S)*TAU) * P_i
-    j_term = S_j - np.exp((L + S)*TAU) * P_j
-    return coeff * i_term * j_term
-
-
-# Calculate Singles-Prompts (SP) estimate of total randoms rate
-def singles_prompts(singles_count, prompts_count, singles, coincidences):
-
-    S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
-    P = 2 * len(coincidences) / TIME  # Twice the prompts rate
-
-    # Roots of this function are the lambda (L) values needed for the SP estimate.
-    def lambda_eq(L):
-        return 2 * TAU * L * L - L + S - P * np.exp((L + S)*TAU)
-    L = root_scalar(lambda_eq, x0=0)
-    if not L.converged:
-        raise RuntimeError("Failed to converge on lambda.")
-    L = L.root
-
-    # Calculate the Singles-Prompts rate estimate for the whole scanner
-    # summing over all pairs of detectors
-    sp_rate = 0
-    for i in range(DETECTORS):
-        for j in range(i, DETECTORS):
-            sp_rate += randomsrate(i, j, singles_count, prompts_count, L, S)
-    return sp_rate * TIME
-
-
 # Calculate delayed-window estimate of total randoms rate
 def delayed_window(coincidences, singles):
     dw_estimate = 0
@@ -123,13 +83,15 @@ def delayed_window(coincidences, singles):
     return dw_estimate
 
 
-# Calculate singles-rate estimate of total randoms rate
-def singles_rate(singles_count):
-    sr_rate = 0
-    for i in range(DETECTORS):
-        for j in range(i, DETECTORS):
-            sr_rate += 2 * TAU * singles_count.get(i, 0) / TIME * singles_count.get(j, 0) / TIME
-    return sr_rate * TIME
+# Calculate delayed-window estimate of total randoms rate (test 2)
+def delayed_window2(coincidences, singles):
+    dw_estimate = 0
+    for t in coincidences['time1']:
+        dw_estimate += (
+            np.searchsorted(coincidences['time1'], t + DELAY + TAU) -
+            np.searchsorted(coincidences['time1'], t + DELAY)
+        )  # Num of coincidences in delayed window
+    return dw_estimate
 
 
 # Main function to read files and calculate estimates for many files of form
@@ -137,16 +99,14 @@ def singles_rate(singles_count):
 # Range [1, N) defined in FILE_RANGE
 # Writes results to estimations.csv
 if __name__ == "__main__":
-    sp, dw, sr, actual = [], [], [], []
+    dw, dw2 = [], [], [], []
     for i in FILE_RANGE:
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
         print(f"Reading file {infile}...")
         singles, coincidences, singles_count, prompts_count = read_root_file(infile)
-        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences))
         dw.append(delayed_window(coincidences, singles))
-        sr.append(singles_rate(singles_count))
-        actual.append(len(coincidences[~coincidences['true']]))
+        dw2.append(delayed_window2(coincidences, singles))
 
-    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
-    with open('estimations.csv', 'w') as f:
+    df = pd.DataFrame({'dwa': dw, 'dwa2': dw2})
+    with open('estimations2.csv', 'w') as f:
         df.to_csv(f)
