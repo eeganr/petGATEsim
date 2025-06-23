@@ -9,4 +9,4 @@
 #SBATCH --mail-type=BEGIN,FAIL,END
 
 module load python/3.12
-python3 findrandoms.py
+python3 /home/users/eeganr/petGATEsim/analysis/findrandoms.py
