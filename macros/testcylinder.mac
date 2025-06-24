@@ -1,6 +1,6 @@
 /gate/source/addSource CYLINDER
 
-/gate/source/CYLINDER/setActivity 200000 Bq
+/gate/source/CYLINDER/setActivity 0.001 Ci
 /gate/source/CYLINDER/setType backtoback
 /gate/source/CYLINDER/gps/particle gamma
 /gate/source/CYLINDER/gps/energytype Mono

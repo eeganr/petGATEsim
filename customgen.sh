@@ -9,7 +9,7 @@
 #SBATCH --mail-type=BEGIN,FAIL,END
 
 
-for i in $(seq 1 10);
+for i in $(seq 81 100);
 do
-    singularity exec -B /home/users/eeganr/petGATEsim:/home/users/eeganr/petGATEsim /home/groups/cslevin/mhchin/gate/gate_latest.sif /home/users/eeganr/petGATEsim/runtrain1.sh $i /home/users/eeganr/petGATEsim/macros/testcylinder.mac 60.0 /home/users/eeganr/petGATEsim/macros/Geometry.mac
+    singularity exec -B /home/users/eeganr/petGATEsim:/home/users/eeganr/petGATEsim /home/groups/cslevin/mhchin/gate/gate_latest.sif /home/users/eeganr/petGATEsim/runtrain1.sh $i /home/users/eeganr/petGATEsim/macros/testcylinder.mac 5.0 /home/users/eeganr/petGATEsim/macros/Geometry.mac
 done

@@ -26,17 +26,17 @@
 #/gate/digitizer/Singles/upholder/setUphold 590. keV
 
 /gate/digitizer/Singles/insert timeResolution
-/gate/digitizer/Singles/timeResolution/setTimeResolution 250 ps
+/gate/digitizer/Singles/timeResolution/setTimeResolution 1.6 ns
 
 #	C O I N C I    S O R T E R 
-/gate/digitizer/Coincidences/setWindow 12000. ps
+/gate/digitizer/Coincidences/setWindow 4.8 ns
 /gate/digitizer/Coincidences/MultiplesPolicy  takeWinnerOfGoods
 /gate/digitizer/Coincidences/minSectorDifference 1
 
 /gate/digitizer/name delay
 /gate/digitizer/insert coincidenceSorter
-/gate/digitizer/delay/setWindow 12000. ps
-/gate/digitizer/delay/setOffset 100. ns
+/gate/digitizer/delay/setWindow 4.8 ns
+/gate/digitizer/delay/setOffset 16. ns
 #/gate/digitizer/delay/minSectorDifference 1
 #/gate/digitizer/delay/MultiplesPolicy  takeWinnerOfGoods
 

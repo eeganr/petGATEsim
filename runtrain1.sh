@@ -93,7 +93,7 @@ then
 # also change the path /scratch/users/fwdesai/PhytoPET/spatialres/train1_r$i.out to the same location you used for OUTPUT_FILE, 
 #	make sure this path ends with train1_r$i.out as seen below
 ####################################################
-  OUTPUT_FILE="/scratch/users/eeganr/pastoutput/output${i}"
+  OUTPUT_FILE="/scratch/users/eeganr/june23output/output${i}"
   echo $SOURCE_FILE  
   echo $OUTPUT_FILE
   echo $CAMERA_FILE

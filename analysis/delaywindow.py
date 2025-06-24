@@ -99,7 +99,7 @@ def delayed_window2(coincidences, singles):
 # Range [1, N) defined in FILE_RANGE
 # Writes results to estimations.csv
 if __name__ == "__main__":
-    dw, dw2 = [], [], [], []
+    dw, dw2 = [], []
     for i in FILE_RANGE:
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
         print(f"Reading file {infile}...")
