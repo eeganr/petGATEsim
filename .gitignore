@@ -2,3 +2,5 @@
 /pastoutput
 *.out
 *.ipynb_checkpoints
+*.pkl
+__pycache__
