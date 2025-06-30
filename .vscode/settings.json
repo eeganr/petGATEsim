@@ -1,3 +1,6 @@
 {
-    "jupyter.notebookFileRoot": "${fileDirname}"
+    "jupyter.notebookFileRoot": "${fileDirname}",
+    "files.associations": {
+        "xstring": "cpp"
+    }
 }
