@@ -3,6 +3,7 @@ import pandas as pd
 from scipy.optimize import root_scalar
 import uproot
 import argparse
+import randoms
 
 
 # === CONFIG ===
@@ -78,29 +79,14 @@ def bundle_coincidences(singles):
         where true is True if the two singles are from the same source, (true coincidence)
         False otherwise
     """
-    coins = []
-    window_start = 0
-    possible_coincidence = []
-    for i in range(0, len(singles['time']) - 1):
-        if singles['time'][i] - window_start >= TAU:
-            # process any previous coincidences
-            if len(possible_coincidence) >= 2:
-                # If there are at least 2 singles in the window, we have a possible coincidence
-                if len(possible_coincidence) > 2:
-                    energies = [singles['energy'][j] for j in possible_coincidence]
-                    energies = dict(zip(energies, possible_coincidence))
-                    true_coinc = (energies.pop(max(energies)), energies.pop(max(energies)))
-                    # Take just the two highest energies
-                    # takeWinnerOfGoods policy
-                else:
-                    true_coinc = tuple(possible_coincidence)
-                coins.append(true_coinc)
+    import time
+    t = time.time()
+    times = np.array(singles['time'])
+    energies = np.array(singles['energy'])
+    coin_indices = randoms.bundle_coincidences(times, energies, TAU)
+    coins = coin_indices.reshape(-1, 2)
+    
 
-            # Reset the window
-            possible_coincidence = [i]
-            window_start = singles['time'][i]
-        elif singles['time'][i] - window_start < TAU:
-            possible_coincidence.append(i)  # Add to coincidence list
     coinci = pd.DataFrame()
     coinci['time1'] = [singles['time'][i[0]] for i in coins]
     coinci['time2'] = [singles['time'][i[1]] for i in coins]
@@ -109,6 +95,7 @@ def bundle_coincidences(singles):
     coinci['source1'] = [singles['source'][i[0]] for i in coins]
     coinci['source2'] = [singles['source'][i[1]] for i in coins]
     coinci['true'] = coinci['source1'] == coinci['source2']
+    print("Time taken:", time.time() - t)
     return coinci
 
 
@@ -219,6 +206,7 @@ if __name__ == "__main__":
             singles = filter_singles(singles)  # Filter singles by energy
 
         coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
+        assert False
         singles_count, prompts_count = sp_counts(singles, coincidences)
 
         sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences))
