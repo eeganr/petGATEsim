@@ -28,6 +28,7 @@ class Singles:
         self.fine = self.GetFineTime(eventBytes)
         self.moduleid = self.GetModuleID(eventBytes,compact)
         self.index = np.linspace(0, self.size - 1, self.size, dtype = np.int64)
+        self.time = np.array(self.coarse) * 1.6e-9 + np.array(self.fine) * 50e-12
         if keephighestenergy:
             print(self.coarse[:20])
             print(self.energy[:20])

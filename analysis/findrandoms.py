@@ -4,13 +4,13 @@ from scipy.optimize import root_scalar
 import uproot
 import argparse
 import randoms
+import time
 
 
 # === CONFIG ===
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DELAY = 10 * CYCLE  # delay for DW estimate (s)
-DETECTORS = 48 * 48
 PATH_PRE_PREFIX = "/scratch/users/eeganr/"
 PATH_SUFFIX = ".root"
 FILE_RANGE = range(1, 100 + 1)
@@ -27,7 +27,7 @@ args = parser.parse_args()
 PATH_PREFIX = PATH_PRE_PREFIX + args.path
 FILTER_ENERGY = args.filter
 OUTPUT_FILE = args.output + ".csv"
-TIME = args.time
+TIME = float(args.time)
 if FILTER_ENERGY:
     print("Filtering singles by energy in range 0.450 to 0.750 MeV")
 print(f"Output will be written to {OUTPUT_FILE}")
@@ -58,7 +58,9 @@ def read_root_file(infile):
             "energy": singles_tree["energy"].array(library="np"),
         })
 
-    return singles
+    detectors = np.sort(np.unique(singles['detector']))
+
+    return singles, detectors
 
 
 def filter_singles(singles, energy_min=0.450, energy_max=0.750):
@@ -79,13 +81,16 @@ def bundle_coincidences(singles):
         where true is True if the two singles are from the same source, (true coincidence)
         False otherwise
     """
-    import time
     t = time.time()
+    print("Using cpp function")
     times = np.array(singles['time'])
     energies = np.array(singles['energy'])
     coin_indices = randoms.bundle_coincidences(times, energies, TAU)
+    print("finished cpp function")
+    print(len(coin_indices))
     coins = coin_indices.reshape(-1, 2)
-    
+    print("Reshaped")
+    print("Time taken:", time.time() - t)
 
     coinci = pd.DataFrame()
     coinci['time1'] = [singles['time'][i[0]] for i in coins]
@@ -95,11 +100,10 @@ def bundle_coincidences(singles):
     coinci['source1'] = [singles['source'][i[0]] for i in coins]
     coinci['source2'] = [singles['source'][i[1]] for i in coins]
     coinci['true'] = coinci['source1'] == coinci['source2']
-    print("Time taken:", time.time() - t)
     return coinci
 
 
-def sp_counts(singles, coincidences):
+def sp_counts(singles, coincidences, detectors):
     """
         Calculate Singles-Prompts (SP) counts for singles and coincidences
         Returns a tuple of two dicts: singles_count, prompts_count
@@ -113,8 +117,7 @@ def sp_counts(singles, coincidences):
 
     # Prompts are the sum of all coincidences involving a given detector,
     # regardless of first or second
-    # Every detector, regardless of presence, has a key
-    prompts = pd.DataFrame({'detector': list(range(DETECTORS))})
+    prompts = pd.DataFrame({'detector': detectors})
     prompts['prompts'] = prompts['detector'].map(
         lambda x: det1_counts.get(x, 0) +
         det2_counts.get(x, 0)
@@ -146,11 +149,12 @@ def randomsrate(i, j, singles_count, prompts_count, L, S):
     return coeff * i_term * j_term
 
 
-def singles_prompts(singles_count, prompts_count, singles, coincidences):
+def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors):
     """
         Calculate Singles-Prompts (SP) estimate of total randoms rate
     """
 
+    t = time.time()
     S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
     P = 2 * len(coincidences) / TIME  # Twice the prompts rate
 
@@ -165,9 +169,10 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences):
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
     sp_rate = 0
-    for i in range(DETECTORS):
-        for j in range(i, DETECTORS):
-            sp_rate += randomsrate(i, j, singles_count, prompts_count, L, S)
+    for i in range(len(detectors)):
+        for j in range(i, len(detectors)):
+            sp_rate += randomsrate(detectors[i], detectors[j], singles_count, prompts_count, L, S)
+    print("Finished SP process in: ", time.time()-t, "s")
     return sp_rate * TIME
 
 
@@ -183,11 +188,11 @@ def delayed_window(singles):
 
 
 # Calculate singles-rate estimate of total randoms rate
-def singles_rate(singles_count):
+def singles_rate(singles_count, detectors):
     sr_rate = 0
-    for i in range(DETECTORS):
-        for j in range(i, DETECTORS):
-            sr_rate += 2 * TAU * singles_count.get(i, 0) / TIME * singles_count.get(j, 0) / TIME
+    for i in range(len(detectors)):
+        for j in range(i, len(detectors)):
+            sr_rate += 2 * TAU * singles_count.get(detectors[i], 0) / TIME * singles_count.get(detectors[j], 0) / TIME
     return sr_rate * TIME
 
 
@@ -200,18 +205,17 @@ if __name__ == "__main__":
     for i in FILE_RANGE:
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
         print(f"Reading file {infile}...")
-        singles = read_root_file(infile)
+        singles, detectors = read_root_file(infile)
 
         if FILTER_ENERGY:
             singles = filter_singles(singles)  # Filter singles by energy
 
         coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
-        assert False
-        singles_count, prompts_count = sp_counts(singles, coincidences)
+        singles_count, prompts_count = sp_counts(singles, coincidences, detectors)
 
-        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences))
+        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors))
         dw.append(delayed_window(singles))
-        sr.append(singles_rate(singles_count))
+        sr.append(singles_rate(singles_count, detectors))
         actual.append(len(coincidences[~coincidences['true']]))
         print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
 
