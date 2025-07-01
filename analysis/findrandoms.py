@@ -166,32 +166,30 @@ def singles_rate(singles_count, detectors):
 if __name__ == "__main__":
     sp, dw, sr, actual = [], [], [], []
     for i in FILE_RANGE:
+        # Step 1: Read file
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
         print(f"Reading file {infile}...")
         singles, detectors = read_root_file(infile)
 
+        # Step 1.5: Filter hits by energy if needed
         if FILTER_ENERGY:
             singles = filter_singles(singles)  # Filter singles by energy
 
+        # Step 2: Bundle coincidences
         t = time.time()
         coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
         print("bundling complete: ", time.time() - t)
-        t = time.time()
+
+        # Step 3: Tally stats by detector
         singles_count = randoms.singles_counts(singles['detector'], detectors[-1])
         prompts_count = randoms.prompts_counts(coincidences['detector1'], coincidences['detector2'], detectors[-1])
-        print("counting complete: ", time.time() - t)
-        t = time.time()
+
+        # Step 4: Calculate estimation methods
         sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors))
-        print("Finished SP: ", time.time() - t)
-
-        t = time.time()
         dw.append(randoms.delayed_window(np.array(singles['time']), TAU, DELAY))
-        print("Finished DW: ", time.time() - t)
-
-        t = time.time()
         sr.append(singles_rate(singles_count, detectors))
-        print("Finished SR: ", time.time() - t)
         
+        # Step 5: Return results
         actual.append(len(coincidences[~coincidences['true']]))
         print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
 

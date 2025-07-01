@@ -244,7 +244,7 @@ int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
     double *ptr = (double*) buf.ptr;
 
     int dw_estimate = 0;
-    int window_start = - 2 * TAU;
+    double window_start = - 2 * TAU;
 
     for (int i = 0; i < buf.size; i++) {
 
