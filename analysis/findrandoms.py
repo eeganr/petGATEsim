@@ -64,23 +64,40 @@ def read_root_file(infile):
 
 
 def filter_singles(singles, energy_min=0.450, energy_max=0.750):
+    """  Filter singles by energy.
+        Args:
+            singles: DataFrame with columns:
+                time, detector, source, energy
+            energy_min: minimum energy in MeV (default 0.450)
+            energy_max: maximum energy in MeV (default 0.750)
+        Returns:
+            DataFrame with filtered singles, same columns as input
+        Notes:
+            Energy-filter singles, parameters are in MeV, defaults 0.450 to 0.750 MeV
+            This is the energy range of the 511 keV gamma photons from positron annihilation
+            This is the range used in Oliver & Rafecas
     """
-        Energy-filter singles, parameters are in MeV, defaults 0.450 to 0.750 MeV
-        This is the energy range of the 511 keV gamma photons from positron annihilation
-        This is the range used in Oliver & Rafecas
-    """
+    
     singles = singles[singles['energy'] > energy_min].reset_index()
     singles = singles[singles['energy'] < energy_max].reset_index()
     return singles
 
 
 def bundle_coincidences(singles):
+    """ Bundle singles into coincidences, 
+        Args:
+            singles: DataFrame with columns:
+                time, detector, source, energy
+            where time is in seconds, detector is the detector ID,
+            source is a tuple of (x, y, z) coordinates of the source,
+            and energy is the energy of the single event in MeV.
+        Returns: 
+            DataFrame with columns:
+            time1, time2, detector1, detector2, source1, source2, true
+            where true is True if the two singles are from the same source (true coincidence)
+            False otherwise
     """
-        Bundle singles into coincidences, returns a DataFrame with columns:
-        time1, time2, detector1, detector2, source1, source2, true
-        where true is True if the two singles are from the same source, (true coincidence)
-        False otherwise
-    """
+
     times = np.array(singles['time'])
     energies = np.array(singles['energy'])
     coin_indices = randoms.bundle_coincidences(times, energies, TAU)
@@ -98,8 +115,17 @@ def bundle_coincidences(singles):
 
 
 def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors):
-    """
-        Calculate Singles-Prompts (SP) estimate of total randoms rate
+    """ Calculate the Singles-Prompts rate estimate for the whole scanner
+        Args:
+            singles_count: array of singles counts per detector
+            prompts_count: array of prompts counts per detector pair
+            singles: DataFrame with columns:
+                time, detector, source, energy
+            coincidences: DataFrame with columns:
+                time1, time2, detector1, detector2, source1, source2, true
+            detectors: array of detector IDs
+        Returns:
+            Singles-Prompts rate estimate for the whole scanner
     """
 
     S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
@@ -121,6 +147,14 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
 
 
 def singles_rate(singles_count, detectors):
+    """ Calculate the Singles Rate estimate for the whole scanner
+        Args:
+            singles_count: array of singles counts per detector
+            detectors: array of detector IDs
+        Returns:
+            Singles Rate estimate for the whole scanner
+    """
+
     sr_rates = randoms.sr_rates(singles_count, detectors[-1], TAU, TIME)
     return np.sum(sr_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
 

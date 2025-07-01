@@ -28,6 +28,14 @@ struct Single {
     }
 };
 
+
+/* Struct for a time window used for delayed window estimation.
+    Constructor Args:
+        t1 - start of the window
+        t2 - end of the window
+    Notes:
+        time1 != time2 indicates a non-garbage window.
+*/
 struct Window {
     double time1; // Garbage window default
     double time2;
@@ -43,6 +51,7 @@ struct Window {
     }
 };
 
+
 /* Bundles list of singles into coincidences.
     Args:
         times - NumPy array of arrival times
@@ -53,6 +62,8 @@ struct Window {
     Notes:
         times and energies must be of same length. 
         Requires < int bit limit length singles list since indices are stored.
+        Currently the multi-coincidence resolution policy is to take the two highest energies
+        from the singles in the coincidence window.
 */
 py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<double> energies, double TAU) {
     // Request buffer from input NumPy array
@@ -107,6 +118,65 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
     return result;
 }
 
+
+/* Calculates singles counts per detector.
+    Args:
+        detector_occurances - NumPy array of detector indices
+        max_detector_index - maximum index of the detector
+    Returns:
+        numpy array of singles counts per detector
+    Notes:
+        The output is a 1D NumPy array where the index corresponds to the detector index.
+*/
+py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_detector_index) {
+    auto buf = detector_occurances.request();
+    int *ptr = (int*) buf.ptr;
+    
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
+    auto result_buf = result.request();
+    int *result_ptr = (int*) result_buf.ptr;
+
+    for (int i = 0; i < buf.size; i++) {
+        result_ptr[ptr[i]]++;
+    }
+
+    return result;
+}
+
+
+/* Calculates prompts counts per detector.
+    Args:
+        det1_hits - NumPy array of hits for detector 1
+        det2_hits - NumPy array of hits for detector 2
+        max_detector_index - maximum index of the detectors
+    Returns:
+        numpy array of prompts counts per detector
+    Notes:
+        The output is a 1D NumPy array where the index corresponds to the detector index.
+        This function assumes that det1_hits and det2_hits are of the same length since they come from coincidences.
+        It counts how many times each detector was involved in a prompt coincidence.
+*/
+py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int max_detector_index) {
+    auto buf1 = det1_hits.request();
+    int *ptr1 = (int*) buf1.ptr;
+    auto buf2 = det2_hits.request();
+    int *ptr2 = (int*) buf2.ptr;
+    
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
+    auto result_buf = result.request();
+    int *result_ptr = (int*) result_buf.ptr;
+
+    for (int i = 0; i < buf1.size; i++) {
+        result_ptr[ptr1[i]]++;
+        result_ptr[ptr2[i]]++;
+    }
+
+    return result;
+}
+
+
 /* Calculates singles-prompts rate estimate for each LOR.
     Args:
         np.array singles_count - [detector index]:[number of singles]
@@ -154,41 +224,20 @@ py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> pr
     return rates;
 }
 
-py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_detector_index) {
-    auto buf = detector_occurances.request();
-    int *ptr = (int*) buf.ptr;
-    
-    py::object np = py::module_::import("numpy");
-    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
-    auto result_buf = result.request();
-    int *result_ptr = (int*) result_buf.ptr;
 
-    for (int i = 0; i < buf.size; i++) {
-        result_ptr[ptr[i]]++;
-    }
-
-    return result;
-}
-
-py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int max_detector_index) {
-    auto buf1 = det1_hits.request();
-    int *ptr1 = (int*) buf1.ptr;
-    auto buf2 = det2_hits.request();
-    int *ptr2 = (int*) buf2.ptr;
-    
-    py::object np = py::module_::import("numpy");
-    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
-    auto result_buf = result.request();
-    int *result_ptr = (int*) result_buf.ptr;
-
-    for (int i = 0; i < buf1.size; i++) {
-        result_ptr[ptr1[i]]++;
-        result_ptr[ptr2[i]]++;
-    }
-
-    return result;
-}
-
+/* Calculates delayed window estimate.
+    Args:
+        times - NumPy array of arrival times
+        TAU - time coincidence window
+        DELAY - delay for the delayed window
+    Returns:
+        int - number of delayed windows detected
+    Notes:
+        This function uses a queue to manage the delayed windows and counts 
+        how many times the current time falls within a delayed window. Currently
+        the multi-coincidence policy is to count each delayed window with a hit only once
+        regardless of the number of hits.
+*/
 int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
     queue<Window> delays; 
     auto buf = times.request();
@@ -226,6 +275,19 @@ int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
     return dw_estimate;
 }
 
+
+/* Calculates singles-rates estimate for each LOR.
+    Args:
+        np.array singles_count - [detector index]:[number of singles]
+        int max_detector_index - maximum index of the detectors
+        double TAU - time coincidence window
+        double TIME - total data gathering time
+    
+    Returns:
+        2d numpy array providing the SR rate for each LOR
+    Notes:
+        The output is a 2D NumPy array where the indices correspond to the detector indices.
+*/
 py::array_t<double> sr_rates(py::array_t<int> singles_count, int max_detector_index, double TAU, double TIME) {
     auto singles_buf = singles_count.request();
     int *singles_ptr = (int*) singles_buf.ptr;
@@ -248,6 +310,7 @@ py::array_t<double> sr_rates(py::array_t<int> singles_count, int max_detector_in
 
     return result;
 }
+
 
 PYBIND11_MODULE(randoms, m) {
     m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences",
