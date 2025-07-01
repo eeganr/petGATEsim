@@ -26,7 +26,7 @@ args = parser.parse_args()
 
 PATH_PREFIX = PATH_PRE_PREFIX + args.path
 FILTER_ENERGY = args.filter
-OUTPUT_FILE = args.output + ".csv"
+OUTPUT_FILE = args.output
 TIME = float(args.time)
 if FILTER_ENERGY:
     print("Filtering singles by energy in range 0.450 to 0.750 MeV")
@@ -81,16 +81,10 @@ def bundle_coincidences(singles):
         where true is True if the two singles are from the same source, (true coincidence)
         False otherwise
     """
-    t = time.time()
-    print("Using cpp function")
     times = np.array(singles['time'])
     energies = np.array(singles['energy'])
     coin_indices = randoms.bundle_coincidences(times, energies, TAU)
-    print("finished cpp function")
-    print(len(coin_indices))
     coins = coin_indices.reshape(-1, 2)
-    print("Reshaped")
-    print("Time taken:", time.time() - t)
 
     coinci = pd.DataFrame()
     coinci['time1'] = [singles['time'][i[0]] for i in coins]
@@ -103,58 +97,11 @@ def bundle_coincidences(singles):
     return coinci
 
 
-def sp_counts(singles, coincidences, detectors):
-    """
-        Calculate Singles-Prompts (SP) counts for singles and coincidences
-        Returns a tuple of two dicts: singles_count, prompts_count
-        singles_count is a dict of form {detectorID: count} for singles
-        prompts_count is a dict of form {detectorID: count} for prompts
-        where prompts are the sum of all coincidences involving a given detector
-    """
-    # Calculate singles/prompts counts
-    det1_counts = coincidences['detector1'].value_counts().to_dict()  # det1 coincidences involved
-    det2_counts = coincidences['detector2'].value_counts().to_dict()  # det2 coincidences involved
-
-    # Prompts are the sum of all coincidences involving a given detector,
-    # regardless of first or second
-    prompts = pd.DataFrame({'detector': detectors})
-    prompts['prompts'] = prompts['detector'].map(
-        lambda x: det1_counts.get(x, 0) +
-        det2_counts.get(x, 0)
-    )
-
-    # dicts of form {detectorID: count}
-    prompts_count = prompts.set_index('detector')['prompts'].to_dict()
-    singles_count = singles['detector'].value_counts().to_dict()
-
-    return singles_count, prompts_count
-
-
-def randomsrate(i, j, singles_count, prompts_count, L, S):
-    """
-        Returns the Singles-Prompts (SP) randoms rate estimate from a pair
-        of detectors with crystalIDs i and j per Oliver & Rafecas
-    """
-    # P_i and P_j are prompts rates for detectors i, j
-    P_i = prompts_count.get(i, 0) / TIME  # .get(i, 0) returns 0 if det i not in prompts_count
-    P_j = prompts_count.get(j, 0) / TIME
-    # S_i and S_j are singles rates for detectors i, j
-    S_i = singles_count.get(i, 0) / TIME
-    S_j = singles_count.get(j, 0) / TIME
-    # Coefficient for the randoms rate equation
-    coeff = (2 * TAU * np.exp(-(L + S)*TAU))/((1 - 2 * L * TAU)**2)
-    # Further terms in SP equation
-    i_term = S_i - np.exp((L + S)*TAU) * P_i
-    j_term = S_j - np.exp((L + S)*TAU) * P_j
-    return coeff * i_term * j_term
-
-
 def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors):
     """
         Calculate Singles-Prompts (SP) estimate of total randoms rate
     """
 
-    t = time.time()
     S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
     P = 2 * len(coincidences) / TIME  # Twice the prompts rate
 
@@ -165,35 +112,17 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
     if not L.converged:
         raise RuntimeError("Failed to converge on lambda.")
     L = L.root
-
+    
+    sp_rates = randoms.sp_rates(singles_count, prompts_count, detectors[-1], L, S, TAU, TIME)
+    
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
-    sp_rate = 0
-    for i in range(len(detectors)):
-        for j in range(i, len(detectors)):
-            sp_rate += randomsrate(detectors[i], detectors[j], singles_count, prompts_count, L, S)
-    print("Finished SP process in: ", time.time()-t, "s")
-    return sp_rate * TIME
+    return np.sum(sp_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
 
 
-# Calculate delayed-window estimate of total randoms rate
-def delayed_window(singles):
-    dw_estimate = 0
-    for t in singles['time']:
-        dw_estimate += (
-            np.searchsorted(singles['time'], t + DELAY + TAU) -
-            np.searchsorted(singles['time'], t + DELAY)
-        )  # Num of singles in delayed window
-    return dw_estimate
-
-
-# Calculate singles-rate estimate of total randoms rate
 def singles_rate(singles_count, detectors):
-    sr_rate = 0
-    for i in range(len(detectors)):
-        for j in range(i, len(detectors)):
-            sr_rate += 2 * TAU * singles_count.get(detectors[i], 0) / TIME * singles_count.get(detectors[j], 0) / TIME
-    return sr_rate * TIME
+    sr_rates = randoms.sr_rates(singles_count, detectors[-1], TAU, TIME)
+    return np.sum(sr_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
 
 
 # Main function to read files and calculate estimates for many files of form
@@ -210,12 +139,25 @@ if __name__ == "__main__":
         if FILTER_ENERGY:
             singles = filter_singles(singles)  # Filter singles by energy
 
+        t = time.time()
         coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
-        singles_count, prompts_count = sp_counts(singles, coincidences, detectors)
-
+        print("bundling complete: ", time.time() - t)
+        t = time.time()
+        singles_count = randoms.singles_counts(singles['detector'], detectors[-1])
+        prompts_count = randoms.prompts_counts(coincidences['detector1'], coincidences['detector2'], detectors[-1])
+        print("counting complete: ", time.time() - t)
+        t = time.time()
         sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors))
-        dw.append(delayed_window(singles))
+        print("Finished SP: ", time.time() - t)
+
+        t = time.time()
+        dw.append(randoms.delayed_window(np.array(singles['time']), TAU, DELAY))
+        print("Finished DW: ", time.time() - t)
+
+        t = time.time()
         sr.append(singles_rate(singles_count, detectors))
+        print("Finished SR: ", time.time() - t)
+        
         actual.append(len(coincidences[~coincidences['true']]))
         print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
 
