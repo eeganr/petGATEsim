@@ -106,9 +106,16 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
     Returns:
         2d numpy array providing the SP rate for each LOR
 */
-py::array_t<double> sp_rates(py::dict singles_count, py::dict prompts_count, py::array_t<int> detectors, double L, double S, double TAU, double TIME) {
+py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> prompts_count, py::array_t<int> detectors, double L, double S, double TAU, double TIME) {
     auto buf = detectors.request();
-    double *det = (double*) buf.ptr;
+    int *det = (int*) buf.ptr;
+
+    auto singles_buf = singles_count.request();
+    int *singles_ptr = (int*) singles_buf.ptr;
+
+    auto prompts_buf = prompts_count.request();
+    int *prompts_ptr = (int*) prompts_buf.ptr;
+
     int DETS = buf.size; // Number of detectors
     
     py::array_t<double> rates = py::array_t<double>(buf.size * buf.size);
@@ -119,10 +126,10 @@ py::array_t<double> sp_rates(py::dict singles_count, py::dict prompts_count, py:
 
     for (int i = 0; i < DETS; i++) {
         for (int j = i; j < DETS; j++) {
-            double P_i = py::cast<double>(prompts_count.attr("get")(det[i], 0));
-            double P_j = py::cast<double>(prompts_count.attr("get")(det[j], 0));
-            double S_i = py::cast<double>(singles_count.attr("get")(det[i], 0));
-            double S_j = py::cast<double>(singles_count.attr("get")(det[j], 0));
+            double P_i = prompts_ptr[det[i]] / TIME;
+            double P_j = prompts_ptr[det[j]] / TIME;
+            double S_i = singles_ptr[det[i]] / TIME;
+            double S_j = singles_ptr[det[j]] / TIME;
 
             double i_term = S_i - exp((L + S)*TAU) * P_i;
             double j_term = S_j - exp((L + S)*TAU) * P_j;
@@ -136,19 +143,85 @@ py::array_t<double> sp_rates(py::dict singles_count, py::dict prompts_count, py:
     return rates;
 }
 
+py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_detector_index) {
+    auto buf = detector_occurances.request();
+    int *ptr = (int*) buf.ptr;
+    
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
+    auto result_buf = result.request();
+    int *result_ptr = (int*) result_buf.ptr;
+
+    for (int i = 0; i < buf.size; i++) {
+        result_ptr[ptr[i]]++;
+    }
+
+    return result;
+}
+
+py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int max_detector_index) {
+    auto buf1 = det1_hits.request();
+    int *ptr1 = (int*) buf1.ptr;
+    auto buf2 = det2_hits.request();
+    int *ptr2 = (int*) buf2.ptr;
+    
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
+    auto result_buf = result.request();
+    int *result_ptr = (int*) result_buf.ptr;
+
+    for (int i = 0; i < buf1.size; i++) {
+        result_ptr[ptr1[i]]++;
+        result_ptr[ptr2[i]]++;
+    }
+
+    return result;
+}
+
+int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
+    auto buf = times.request();
+    double *ptr = (double*) buf.ptr;
+
+    int dw_estimate = 0;
+
+    py::object np = py::module_::import("numpy");
+
+    for (int i = 0; i < buf.size; i++) {
+        dw_estimate += (
+            np.attr("searchsorted")(times, ptr[i] + DELAY + TAU) -
+            np.attr("searchsorted")(times, ptr[i] + DELAY)
+        ).cast<int>();  // Num of singles in delayed window
+    }
+    return dw_estimate;
+}
+
 PYBIND11_MODULE(randoms, m) {
     m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences",
-          pybind11::arg("times"),
-          pybind11::arg("energies"),
-          pybind11::arg("TAU"));
-
+        pybind11::arg("times"),
+        pybind11::arg("energies"),
+        pybind11::arg("TAU")
+    );
     m.def("sp_rates", &sp_rates, "Calculates sp rates",
-          pybind11::arg("singles_count"),
-          pybind11::arg("prompts_count"),
-          pybind11::arg("detectors"),
-          pybind11::arg("L"),
-          pybind11::arg("S"),
-          pybind11::arg("TAU"),
-          pybind11::arg("TIME")
-          );
+        pybind11::arg("singles_count"),
+        pybind11::arg("prompts_count"),
+        pybind11::arg("detectors"),
+        pybind11::arg("L"),
+        pybind11::arg("S"),
+        pybind11::arg("TAU"),
+        pybind11::arg("TIME")
+    );
+    m.def("singles_counts", &singles_counts, "calculates singles counts per detector",
+        pybind11::arg("detector_occurances"),
+        pybind11::arg("max_detector_index")
+    );
+    m.def("prompts_counts", &prompts_counts, "calculates prompts counts per detector",
+        pybind11::arg("det1_hits"),
+        pybind11::arg("det2_hits"),
+        pybind11::arg("max_detector_index")
+    );
+    m.def("delayed_window", &delayed_window, "calculates dw estimate", 
+        pybind11::arg("times"),
+        pybind11::arg("TAU"),
+        pybind11::arg("DELAY")
+    );
 }
