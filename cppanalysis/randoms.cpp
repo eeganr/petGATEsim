@@ -28,6 +28,20 @@ struct Single {
     }
 };
 
+struct Window {
+    double time1; // Garbage window default
+    double time2;
+    
+    Window(double t1, double t2) {
+        time1 = t1;
+        time2 = t2;
+    }
+
+    Window() { // Garbage constructor
+        time1 = -1;
+        time2 = -1;
+    }
+};
 
 /* Bundles list of singles into coincidences.
     Args:
@@ -49,7 +63,7 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
     double *ptr_eng = (double*) buf_eng.ptr; // used for indexing energy
     
     vector<int> coin_indices;
-    double window_start = 0;
+    double window_start = -2 * TAU;
     vector<int> possibles;
 
     for (int i = 0; i < buf.size - 1; i++) {
@@ -95,8 +109,8 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
 
 /* Calculates singles-prompts rate estimate for each LOR.
     Args:
-        dict singles_count - [detector index]:[number of singles]
-        dict prompts_count - [detector index]:[number of prompts]
+        np.array singles_count - [detector index]:[number of singles]
+        np.array prompts_count - [detector index]:[number of prompts]
         np.array detectors - NumPy array of detectors present
         double L - result of root finding
         double S - overall singles rate for machine
@@ -179,18 +193,38 @@ py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det
 }
 
 int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
+    queue<Window> delays; 
     auto buf = times.request();
     double *ptr = (double*) buf.ptr;
 
     int dw_estimate = 0;
-
-    py::object np = py::module_::import("numpy");
+    int window_start = - 2 * TAU;
 
     for (int i = 0; i < buf.size; i++) {
-        dw_estimate += (
-            np.attr("searchsorted")(times, ptr[i] + DELAY + TAU) -
-            np.attr("searchsorted")(times, ptr[i] + DELAY)
-        ).cast<int>();  // Num of singles in delayed window
+
+        // Part 1: Handling of future delay windows
+        // queue future delay window only if we're not already in a coincidence window
+        if (ptr[i] - window_start >= TAU) {
+            delays.push(Window(ptr[i] + DELAY, ptr[i] + DELAY + TAU));
+            window_start = ptr[i]; // reset current coincidence window
+        }
+
+        // Part 2: Handling current time relative to past delay window(s)
+        Window w;
+        while (!delays.empty()) { // past these window(s) already
+            w = delays.front();
+            if (w.time2 < ptr[i]) {
+                delays.pop();
+            }   
+            else {
+                break; // within or before soonest window
+            }
+        }
+        // time1 != time2 indicates non-garbage window
+        if ((w.time1 != w.time2) && (w.time1 < ptr[i])) { // within a delay window
+            dw_estimate++;
+            delays.pop();
+        }
     }
     return dw_estimate;
 }
