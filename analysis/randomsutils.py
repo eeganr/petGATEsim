@@ -36,42 +36,41 @@ def bundle_coincidences(singles):
     """ Bundle singles into coincidences, 
         Args:
             singles: DataFrame with columns:
-                time, detector, source, energy
+                time, detector, energy
             where time is in seconds, detector is the detector ID,
-            source is a tuple of (x, y, z) coordinates of the source,
             and energy is the energy of the single event in MeV.
         Returns: 
             DataFrame with columns:
-            time1, time2, detector1, detector2, source1, source2, true
+            time1, time2, detector1, detector2, true
             where true is True if the two singles are from the same source (true coincidence)
             False otherwise
     """
+    t = time.time()
 
     times = np.array(singles['time'])
+    detectors = np.array(singles['detector'])
     energies = np.array(singles['energy'])
     coin_indices = randoms.bundle_coincidences(times, energies, TAU)
     coins = coin_indices.reshape(-1, 2)
 
     coinci = pd.DataFrame()
-    coinci['time1'] = [singles['time'][i[0]] for i in coins]
-    coinci['time2'] = [singles['time'][i[1]] for i in coins]
-    coinci['detector1'] = [singles['detector'][i[0]] for i in coins]
-    coinci['detector2'] = [singles['detector'][i[1]] for i in coins]
-    coinci['source1'] = [singles['source'][i[0]] for i in coins]
-    coinci['source2'] = [singles['source'][i[1]] for i in coins]
-    coinci['true'] = coinci['source1'] == coinci['source2']
+    # np array casting required to avoid index conflicts /w pandas series
+    coinci['time1'] = np.array(singles['time'].iloc[coins[:, 0]])
+    coinci['time2'] = np.array(singles['time'].iloc[coins[:, 1]])
+    coinci['detector1'] = np.array(singles['detector'].iloc[coins[:, 0]])
+    coinci['detector2'] = np.array(singles['detector'].iloc[coins[:, 1]])
     return coinci
 
 
-def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors):
+def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME):
     """ Calculate the Singles-Prompts rate estimate for the whole scanner
         Args:
             singles_count: array of singles counts per detector
             prompts_count: array of prompts counts per detector pair
             singles: DataFrame with columns:
-                time, detector, source, energy
+                time, detector, energy
             coincidences: DataFrame with columns:
-                time1, time2, detector1, detector2, source1, source2, true
+                time1, time2, detector1, detector2
             detectors: array of detector IDs
         Returns:
             Singles-Prompts rate estimate for the whole scanner
@@ -95,8 +94,11 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
     return np.sum(sp_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
 
 
+def delayed_window(singles):
+    return randoms.delayed_window(np.array(singles['time']), TAU, DELAY)
 
-def singles_rate(singles_count, detectors):
+
+def singles_rate(singles_count, detectors, TIME):
     """ Calculate the Singles Rate estimate for the whole scanner
         Args:
             singles_count: array of singles counts per detector

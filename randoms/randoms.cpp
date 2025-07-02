@@ -59,14 +59,14 @@ struct Window {
         np.array<double> energies - energies in MeV/single
         TAU - time coincidence window in s
     Return: 
-        numpy array of indices of input times involved in coincidences
+        int numpy array of indices of input times involved in coincidences
     Notes:
         times and energies must be of same length. 
         Requires < int bit limit length singles list since indices are stored.
         Currently the multi-coincidence resolution policy is to take the two highest energies
         from the singles in the coincidence window.
 */
-py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<double> energies, double TAU) {
+py::array_t<int> bundle_coincidences(py::array_t<double> times, py::array_t<double> energies, double TAU) {
     // Request buffer from input NumPy array
     auto buf = times.request();
     auto buf_eng = energies.request();
@@ -90,9 +90,13 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
                     goods.push(Single(i, ptr_eng[i]));
                 }
 
-                coin_indices.push_back(goods.top().index);
+                // Ensure they're stored in the correct chronological order
+                int i1 = goods.top().index;
                 goods.pop();
-                coin_indices.push_back(goods.top().index);
+                int i2 = goods.top().index;
+
+                coin_indices.push_back(min(i1, i2));
+                coin_indices.push_back(max(i1, i2));
             }
             else if (possibles.size() == 2) {
                 coin_indices.push_back(possibles[0]);
