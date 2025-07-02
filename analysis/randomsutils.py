@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 from scipy.optimize import root_scalar
-import uproot
-import argparse
 import randoms
 import time
 
@@ -11,56 +9,7 @@ import time
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DELAY = 10 * CYCLE  # delay for DW estimate (s)
-PATH_PRE_PREFIX = "/scratch/users/eeganr/"
-PATH_SUFFIX = ".root"
-FILE_RANGE = range(1, 100 + 1)
 # === END CONFIG ===
-
-# Parse command line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--filter", action="store_true", help="whether to filter energy")
-parser.add_argument("-p", "--path", type=str, default="june23output/output", help="path prefix for input files")
-parser.add_argument("-o", "--output", type=str, default="estimations.csv", help="output file name")
-parser.add_argument("-t", "--time", type=float, default=60.0, help="total simulation time in seconds")
-args = parser.parse_args()
-
-PATH_PREFIX = PATH_PRE_PREFIX + args.path
-FILTER_ENERGY = args.filter
-OUTPUT_FILE = args.output
-TIME = float(args.time)
-if FILTER_ENERGY:
-    print("Filtering singles by energy in range 0.450 to 0.750 MeV")
-print(f"Output will be written to {OUTPUT_FILE}")
-
-
-def read_root_file(infile):
-    """
-        Read in data from singles ROOT file, returns a DataFrame with columns:
-        time, detector ID, source
-    """    
-
-    # Reads appropriate data field for a given file name
-    # (e.g. file name in form Singles;16 for first 16k events)
-    def get_all_vals(file, name):
-        num = max([int(i.split(';')[1]) for i in file.keys() if i.split(';')[0] == name])
-        return file[f'{name};{num}']
-
-    with uproot.open(infile) as file:
-        singles_tree = get_all_vals(file, 'Singles')
-
-        singles = pd.DataFrame({
-            "time": singles_tree["time"].array(library="np"),
-            "detector": singles_tree["crystalID"].array(library="np"),
-            "source": list(map(tuple, np.stack((
-                singles_tree["sourcePosX"].array(library="np"),
-                singles_tree["sourcePosY"].array(library="np"),
-                singles_tree["sourcePosZ"].array(library="np")), axis=-1))),
-            "energy": singles_tree["energy"].array(library="np"),
-        })
-
-    detectors = np.sort(np.unique(singles['detector']))
-
-    return singles, detectors
 
 
 def filter_singles(singles, energy_min=0.450, energy_max=0.750):
@@ -144,6 +93,7 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
     return np.sum(sp_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
+
 
 
 def singles_rate(singles_count, detectors):

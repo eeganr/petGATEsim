@@ -4,6 +4,7 @@
 #include <queue>
 #include <iostream>
 #include <cmath>
+#include <cassert>
 
 using namespace std;
 
@@ -54,9 +55,9 @@ struct Window {
 
 /* Bundles list of singles into coincidences.
     Args:
-        times - NumPy array of arrival times
-        energies - NumPy array of energies/single
-        TAU - time coincidence window
+        np.array<double> times - arrival times of singles
+        np.array<double> energies - energies in MeV/single
+        TAU - time coincidence window in s
     Return: 
         numpy array of indices of input times involved in coincidences
     Notes:
@@ -111,7 +112,7 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
     auto result_buf = result.request();
     int *result_ptr = (int*) result_buf.ptr;
 
-    for (int i = 0; i < coin_indices.size(); i++) {
+    for (int i = 0; i < (int) coin_indices.size(); i++) {
         result_ptr[i] = coin_indices[i];
     }
 
@@ -121,8 +122,8 @@ py::array_t<double> bundle_coincidences(py::array_t<double> times, py::array_t<d
 
 /* Calculates singles counts per detector.
     Args:
-        detector_occurances - NumPy array of detector indices
-        max_detector_index - maximum index of the detector
+        np.array<int> detector_occurances - at inumber of singles that hit detector of given index
+        int max_detector_index - maximum index of the detectors
     Returns:
         numpy array of singles counts per detector
     Notes:
@@ -147,9 +148,9 @@ py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_de
 
 /* Calculates prompts counts per detector.
     Args:
-        det1_hits - NumPy array of hits for detector 1
-        det2_hits - NumPy array of hits for detector 2
-        max_detector_index - maximum index of the detectors
+        np.array<int> det1_hits - hits for detector 1
+        np.array<int> det2_hits - hits for detector 2
+        int max_detector_index - maximum index of the detectors
     Returns:
         numpy array of prompts counts per detector
     Notes:
@@ -179,9 +180,9 @@ py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det
 
 /* Calculates singles-prompts rate estimate for each LOR.
     Args:
-        np.array singles_count - [detector index]:[number of singles]
-        np.array prompts_count - [detector index]:[number of prompts]
-        np.array detectors - NumPy array of detectors present
+        np.array<int> singles_count - [detector index]:[number of singles]
+        np.array<int> prompts_count - [detector index]:[number of prompts]
+        int max_detector_index - the highest numerical detector index
         double L - result of root finding
         double S - overall singles rate for machine
         double TAU - time coincidence window
@@ -227,9 +228,9 @@ py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> pr
 
 /* Calculates delayed window estimate.
     Args:
-        times - NumPy array of arrival times
-        TAU - time coincidence window
-        DELAY - delay for the delayed window
+        np.array<double> times - NumPy array of arrival times
+        double TAU - time coincidence window
+        double DELAY - delay for the delayed window
     Returns:
         int - number of delayed windows detected
     Notes:
@@ -278,7 +279,7 @@ int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
 
 /* Calculates singles-rates estimate for each LOR.
     Args:
-        np.array singles_count - [detector index]:[number of singles]
+        np.array<int> singles_count - [detector index]:[number of singles]
         int max_detector_index - maximum index of the detectors
         double TAU - time coincidence window
         double TIME - total data gathering time
@@ -307,6 +308,54 @@ py::array_t<double> sr_rates(py::array_t<int> singles_count, int max_detector_in
     }
 
     result.resize({DETS, DETS});
+
+    return result;
+}
+
+
+/* Calculates actual times from coarse/raw times
+    Args:
+        np.array<int> coarse - coarse
+
+*/
+py::array_t<double> get_times(py::array_t<int> coarse, py::array_t<int> fine, double coarse_t, double fine_t) {
+    auto coarse_buf = coarse.request();
+    int *coarse_ptr = (int*) coarse_buf.ptr;
+    auto fine_buf = fine.request();
+    int *fine_ptr = (int*) fine_buf.ptr;
+
+    auto result = py::array_t<double>(coarse_buf.size);
+    auto result_buf = result.request();
+    double *result_ptr = (double*) result_buf.ptr;
+
+    int last_reset = 0; // coarse times wrap around to 0 after 2^15
+
+    const int COARSE_RESET = pow(2, 15);
+
+    result_ptr[0] = coarse_ptr[0] * coarse_t + fine_ptr[0] * fine_t;
+
+    try {
+        for (int i = 1; i < coarse_buf.size; i++) {
+            if (coarse_ptr[i] < coarse_ptr[i-1]) {
+                last_reset++;
+            }
+            result_ptr[i] = 
+                (coarse_ptr[i] * coarse_t)
+                + (COARSE_RESET * coarse_t * last_reset)
+                + fine_ptr[i] * fine_t;
+                
+            if (result_ptr[i] < 0) {
+                cout << last_reset << " and " << COARSE_RESET << " and " << coarse_ptr[i] << " and " << fine_ptr[i] << endl;
+                cout << result_ptr[i] << endl;
+                cout << coarse_t << " and " << fine_t << endl;
+                throw overflow_error(" integer overflow! ");
+                break;
+            }
+        }
+    }
+    catch(const overflow_error& e) {
+        cout << "integer overflow, file likely too long" << endl;
+    }
 
     return result;
 }
@@ -346,5 +395,11 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("max_detector_index"),
         py::arg("TAU"),
         py::arg("TIME")
+    );
+    m.def("get_times", &get_times, "gives raw time from coarse and fine",
+        py::arg("coarse"),
+        py::arg("fine"),
+        py::arg("coarse_t"),
+        py::arg("fine_t")
     );
 }
