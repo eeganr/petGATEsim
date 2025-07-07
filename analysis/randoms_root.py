@@ -58,6 +58,7 @@ def read_root_file(infile):
                 singles_tree["sourcePosZ"].array(library="np")), axis=-1))),
             "energy": singles_tree["energy"].array(library="np"),
         })
+        singles = singles.sort_values(by=['time'])
 
     detectors = np.sort(np.unique(singles['detector']))
 

@@ -36,9 +36,17 @@ singles = pd.DataFrame()
 singles['time'] = times
 singles['detector'] = data.crystalID
 singles['energy'] = data.energy
-TIME = singles['time'].iloc[-1]
 
 print("Done creating df:", time.time() - t)
+
+t = time.time()
+singles = singles.sort_values(by=['time'])
+
+print('Sorted', time.time() - t)
+
+TIME = singles['time'].iloc[-1]
+
+
 
 t = time.time()
 
