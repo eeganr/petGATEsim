@@ -36,8 +36,8 @@ def bundle_coincidences(singles):
     """ Bundle singles into coincidences, 
         Args:
             singles: DataFrame with columns:
-                time, detector, energy
-            where time is in seconds, detector is the detector ID,
+                time, detector, energy, (optional: source)
+            where time is in seconds, dete ctor is the detector ID,
             and energy is the energy of the single event in MeV.
         Returns: 
             DataFrame with columns:
@@ -59,6 +59,12 @@ def bundle_coincidences(singles):
     coinci['time2'] = np.array(singles['time'].iloc[coins[:, 1]])
     coinci['detector1'] = np.array(singles['detector'].iloc[coins[:, 0]])
     coinci['detector2'] = np.array(singles['detector'].iloc[coins[:, 1]])
+
+    if 'source' in singles.columns:
+        coinci['source1'] = np.array(singles['source'].iloc[coins[:, 0]])
+        coinci['source2'] = np.array(singles['source'].iloc[coins[:, 1]])
+        coinci['true'] = coinci['source1'] == coinci['source2']
+    
     return coinci
 
 

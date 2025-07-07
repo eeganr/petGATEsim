@@ -22,7 +22,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--filter", action="store_true", help="whether to filter energy")
 parser.add_argument("-p", "--path", type=str, default="june23output/output", help="path prefix for input files")
 parser.add_argument("-o", "--output", type=str, default="estimations.csv", help="output file name")
-parser.add_argument("-t", "--time", type=float, default=60.0, help="total simulation time in seconds")
+parser.add_argument("-t", "--time", type=float, default=1.0, help="total simulation time in seconds")
 args = parser.parse_args()
 
 PATH_PREFIX = PATH_PRE_PREFIX + args.path
@@ -79,6 +79,7 @@ if __name__ == "__main__":
         # Step 1.5: Filter hits by energy if needed
         if FILTER_ENERGY:
             singles = filter_singles(singles)  # Filter singles by energy
+            print('Filtered energy')
 
         # Step 2: Bundle coincidences
         coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
@@ -91,10 +92,11 @@ if __name__ == "__main__":
         sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME))
         dw.append(delayed_window(singles, detectors))
         sr.append(singles_rate(singles_count, detectors, TIME))
+        actual.append(len(coincidences[~coincidences['true']]))
         
         # Step 5: Return results
         # actual.append(len(coincidences[~coincidences['true']]))
-        print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {'actual[-1]'}")
+        print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
 
     df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
     with open(OUTPUT_FILE, 'w') as f:

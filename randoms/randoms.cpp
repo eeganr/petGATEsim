@@ -84,7 +84,7 @@ py::array_t<int> bundle_coincidences(py::array_t<double> times, double TAU) {
         if (ptr[i] - window_start >= TAU) {
             // process any previously identified coincidences first
             // If there are at least 2 singles in the window, we have a possible coincidence
-            if (possibles.size() >= 2) {
+            if (possibles.size() > 2) {
                 // Do nothing
 
                 /* takeWinnerOfGoods policy, takes just the two highest energies
