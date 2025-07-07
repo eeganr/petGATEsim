@@ -39,7 +39,10 @@ singles['energy'] = data.energy
 
 print("Done creating df:", time.time() - t)
 
-# singles = singles.sort_values(by=['time'])
+t = time.time()
+singles = singles.sort_values(by=['time'])
+
+print('Sorted singles', time.time() - t)
 
 TIME = singles['time'].iloc[-1]
 
