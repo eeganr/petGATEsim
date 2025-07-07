@@ -31,7 +31,6 @@ print("Finished initial processing.")
 t = time.time()
 
 times = randoms.get_times(data.coarse, data.fine, COARSE_TIME, FINE_TIME)
-times = np.sort(times) # TODO: check if this is right?
 
 singles = pd.DataFrame()
 singles['time'] = times
@@ -59,8 +58,10 @@ t = time.time()
 sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME))
 print("Finished sp:", time.time() - t)
 t = time.time()
-dw.append(delayed_window(singles))
+dw.append(delayed_window(singles, detectors))
 print("Finished dw:", time.time() - t)
 t = time.time()
 sr.append(singles_rate(singles_count, detectors, TIME))
 print("Finished sr:", time.time() - t)
+
+print(sp, dw, sr)

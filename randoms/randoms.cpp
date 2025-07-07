@@ -40,10 +40,12 @@ struct Single {
 struct Window {
     double time1; // Garbage window default
     double time2;
+    vector<int> events;
     
-    Window(double t1, double t2) {
+    Window(double t1, double t2, int trigger_index) {
         time1 = t1;
         time2 = t2;
+        events = {trigger_index};
     }
 
     Window() { // Garbage constructor
@@ -66,13 +68,13 @@ struct Window {
         Currently the multi-coincidence resolution policy is to take the two highest energies
         from the singles in the coincidence window.
 */
-py::array_t<int> bundle_coincidences(py::array_t<double> times, py::array_t<double> energies, double TAU) {
+py::array_t<int> bundle_coincidences(py::array_t<double> times, double TAU) {
     // Request buffer from input NumPy array
     auto buf = times.request();
-    auto buf_eng = energies.request();
+    // auto buf_eng = energies.request();
 
     double *ptr = (double*) buf.ptr; // used for indexing times
-    double *ptr_eng = (double*) buf_eng.ptr; // used for indexing energy
+    // double *ptr_eng = (double*) buf_eng.ptr; // used for indexing energy
     
     vector<int> coin_indices;
     double window_start = -2 * TAU;
@@ -83,8 +85,9 @@ py::array_t<int> bundle_coincidences(py::array_t<double> times, py::array_t<doub
             // process any previously identified coincidences first
             // If there are at least 2 singles in the window, we have a possible coincidence
             if (possibles.size() >= 2) {
-                // Take just the two highest energies
-                // takeWinnerOfGoods policy
+                // Do nothing
+
+                /* takeWinnerOfGoods policy, takes just the two highest energies
                 priority_queue<Single> goods; // Pops in decreasing energy order
                 for (int i : possibles) {
                     goods.push(Single(i, ptr_eng[i]));
@@ -97,6 +100,7 @@ py::array_t<int> bundle_coincidences(py::array_t<double> times, py::array_t<doub
 
                 coin_indices.push_back(min(i1, i2));
                 coin_indices.push_back(max(i1, i2));
+                */
             }
             else if (possibles.size() == 2) {
                 coin_indices.push_back(possibles[0]);
@@ -204,7 +208,8 @@ py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> pr
 
     int DETS = max_detector_index + 1; // Number of detectors
     
-    py::array_t<double> rates = py::array_t<double>(DETS * DETS);
+    py::object np = py::module_::import("numpy");
+    py::array_t<double> rates = np.attr("zeros")(DETS * DETS);
     auto rates_buf = rates.request();
     double *rates_ptr = (double*) rates_buf.ptr;
 
@@ -243,41 +248,57 @@ py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> pr
         the multi-coincidence policy is to count each delayed window with a hit only once
         regardless of the number of hits.
 */
-int delayed_window(py::array_t<double> times, double TAU, double DELAY) {
+py::array_t<int> dw_rates(py::array_t<double> times, py::array_t<int> detectors, int max_detector_index, double TAU, double DELAY) {
     queue<Window> delays; 
     auto buf = times.request();
     double *ptr = (double*) buf.ptr;
+    
+    auto det_buf = detectors.request();
+    int *det_ptr = (int*) det_buf.ptr;
 
-    int dw_estimate = 0;
-    double window_start = - 2 * TAU;
+    double window_start = - 2 * TAU; // Set below intentionally
+
+    // Setup results array
+    int DETS = max_detector_index + 1; // Number of detectors
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> rates = np.attr("zeros")(DETS * DETS);
+    auto rates_buf = rates.request();
+    int *rates_ptr = (int*) rates_buf.ptr;
 
     for (int i = 0; i < buf.size; i++) {
 
         // Part 1: Handling of future delay windows
         // queue future delay window only if we're not already in a coincidence window
         if (ptr[i] - window_start >= TAU) {
-            delays.push(Window(ptr[i] + DELAY, ptr[i] + DELAY + TAU));
+            delays.push(Window(ptr[i] + DELAY, ptr[i] + DELAY + TAU, i));
             window_start = ptr[i]; // reset current coincidence window
         }
 
         // Part 2: Handling current time relative to past delay window(s)
         Window w;
-        while (!delays.empty()) { // past these window(s) already
+        while (!delays.empty()) { 
             w = delays.front();
-            if (w.time2 < ptr[i]) {
+            if (w.time2 < ptr[i]) { // past these window(s) already
+                // Process the windows
+                if (w.events.size() == 2) {
+                    int i = det_ptr[w.events[0]];
+                    int j = det_ptr[w.events[1]];
+                    rates_ptr[i * DETS + j] ++;
+                    rates_ptr[j * DETS + i] ++;
+                }
                 delays.pop();
             }   
             else {
                 break; // within or before soonest window
             }
         }
-        // time1 != time2 indicates non-garbage window
-        if ((w.time1 != w.time2) && (w.time1 < ptr[i])) { // within a delay window
-            dw_estimate++;
-            delays.pop();
+        // empty events indicates garbage window
+        if ((!w.events.empty()) && (w.time1 < ptr[i])) { // within a delay window
+            delays.front().events.push_back(i);
         }
     }
-    return dw_estimate;
+    rates.resize({DETS, DETS});
+    return rates;
 }
 
 
@@ -368,7 +389,6 @@ py::array_t<double> get_times(py::array_t<int> coarse, py::array_t<int> fine, do
 PYBIND11_MODULE(randoms, m) {
     m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences",
         py::arg("times"),
-        py::arg("energies"),
         py::arg("TAU")
     );
     m.def("singles_counts", &singles_counts, "calculates singles counts per detector",
@@ -389,8 +409,10 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("TAU"),
         py::arg("TIME")
     );
-    m.def("delayed_window", &delayed_window, "calculates dw estimate", 
+    m.def("dw_rates", &dw_rates, "calculates dw estimate", 
         py::arg("times"),
+        py::arg("detectors"),
+        py::arg("max_detector_index"),
         py::arg("TAU"),
         py::arg("DELAY")
     );

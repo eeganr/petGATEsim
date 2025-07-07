@@ -50,7 +50,7 @@ def bundle_coincidences(singles):
     times = np.array(singles['time'])
     detectors = np.array(singles['detector'])
     energies = np.array(singles['energy'])
-    coin_indices = randoms.bundle_coincidences(times, energies, TAU)
+    coin_indices = randoms.bundle_coincidences(times, TAU)
     coins = coin_indices.reshape(-1, 2)
 
     coinci = pd.DataFrame()
@@ -94,8 +94,8 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
     return np.sum(sp_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
 
 
-def delayed_window(singles):
-    return randoms.delayed_window(np.array(singles['time']), TAU, DELAY)
+def delayed_window(singles, detectors):
+    return np.sum(randoms.dw_rates(np.array(singles['time']), np.array(singles['detector']), detectors[-1], TAU, DELAY)) / 2.0
 
 
 def singles_rate(singles_count, detectors, TIME):

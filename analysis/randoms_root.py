@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
         # Step 4: Calculate estimation methods
         sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME))
-        dw.append(randoms.delayed_window(np.array(singles['time']), TAU, DELAY))
+        dw.append(delayed_window(singles, detectors))
         sr.append(singles_rate(singles_count, detectors, TIME))
         
         # Step 5: Return results
