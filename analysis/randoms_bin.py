@@ -50,7 +50,7 @@ TIME = singles['time'].iloc[-1]
 
 t = time.time()
 
-coincidences = bundle_coincidences(singles)
+coincidences, multi_coins = bundle_coincidences(singles)
 
 detectors = np.sort(np.unique(singles['detector']))
 

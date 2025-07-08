@@ -4,7 +4,6 @@
 #include <queue>
 #include <iostream>
 #include <cmath>
-#include <cassert>
 
 using namespace std;
 
@@ -61,14 +60,18 @@ struct Window {
         np.array<double> energies - energies in MeV/single
         TAU - time coincidence window in s
     Return: 
-        int numpy array of indices of input times involved in coincidences
+        Tuple 
+        (
+            int numpy array of indices of input times involved in coincidences,
+            int numpy array of multiple coincidences (number of hits involved in each
+        )
     Notes:
         times and energies must be of same length. 
         Requires < int bit limit length singles list since indices are stored.
         Currently the multi-coincidence resolution policy is to take the two highest energies
         from the singles in the coincidence window.
 */
-py::array_t<int> bundle_coincidences(py::array_t<double> times, double TAU) {
+py::tuple bundle_coincidences(py::array_t<double> times, double TAU) {
     // Request buffer from input NumPy array
     auto buf = times.request();
     // auto buf_eng = energies.request();
@@ -79,13 +82,15 @@ py::array_t<int> bundle_coincidences(py::array_t<double> times, double TAU) {
     vector<int> coin_indices;
     double window_start = -2 * TAU;
     vector<int> possibles;
+    vector<int> multi_coincidences;
 
     for (int i = 0; i < buf.size - 1; i++) {
         if (ptr[i] - window_start >= TAU) {
             // process any previously identified coincidences first
             // If there are at least 2 singles in the window, we have a possible coincidence
             if (possibles.size() > 2) {
-                // Do nothing
+
+                multi_coincidences.push_back(possibles.size());
 
                 /* takeWinnerOfGoods policy, takes just the two highest energies
                 priority_queue<Single> goods; // Pops in decreasing energy order
@@ -120,11 +125,18 @@ py::array_t<int> bundle_coincidences(py::array_t<double> times, double TAU) {
     auto result_buf = result.request();
     int *result_ptr = (int*) result_buf.ptr;
 
+    auto multis = py::array_t<int>(multi_coincidences.size());
+    auto multi_buf = multis.request();
+    int *multi_ptr = (int*) multi_buf.ptr;
+
     for (int i = 0; i < (int) coin_indices.size(); i++) {
         result_ptr[i] = coin_indices[i];
     }
+    for (int i = 0; i < (int) multi_coincidences.size(); i++) {
+        multi_ptr[i] = multi_coincidences[i];
+    }
 
-    return result;
+    return make_tuple(result, multis);
 }
 
 

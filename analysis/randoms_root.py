@@ -70,7 +70,7 @@ def read_root_file(infile):
 # Range [1, N) defined in FILE_RANGE
 # Writes results to estimations.csv
 if __name__ == "__main__":
-    sp, dw, sr, actual = [], [], [], []
+    sp, dw, sr, actual, multis = [], [], [], [], []
     for i in FILE_RANGE:
         # Step 1: Read file
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
@@ -83,7 +83,7 @@ if __name__ == "__main__":
             print('Filtered energy')
 
         # Step 2: Bundle coincidences
-        coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
+        coincidences, multi_coins = bundle_coincidences(singles)  # Bundle singles into coincidences
 
         # Step 3: Tally stats by detector
         singles_count = randoms.singles_counts(singles['detector'], detectors[-1])
@@ -94,11 +94,13 @@ if __name__ == "__main__":
         dw.append(delayed_window(singles, detectors))
         sr.append(singles_rate(singles_count, detectors, TIME))
         actual.append(len(coincidences[~coincidences['true']]))
+        multis.append(len(multi_coins))
+
         
         # Step 5: Return results
         # actual.append(len(coincidences[~coincidences['true']]))
         print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
 
-    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
+    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual, 'multis': multis})
     with open(OUTPUT_FILE, 'w') as f:
         df.to_csv(f)

@@ -41,16 +41,16 @@ def bundle_coincidences(singles):
             and energy is the energy of the single event in MeV.
         Returns: 
             DataFrame with columns:
-            time1, time2, detector1, detector2, true
-            where true is True if the two singles are from the same source (true coincidence)
-            False otherwise
+                time1, time2, detector1, detector2, (source1), (source2), (true)
+            np array: list of multiple coincidences by number of hits involved
     """
     t = time.time()
 
     times = np.array(singles['time'])
     detectors = np.array(singles['detector'])
     energies = np.array(singles['energy'])
-    coin_indices = randoms.bundle_coincidences(times, TAU)
+
+    coin_indices, multis = randoms.bundle_coincidences(times, TAU)
     coins = coin_indices.reshape(-1, 2)
 
     coinci = pd.DataFrame()
@@ -65,7 +65,7 @@ def bundle_coincidences(singles):
         coinci['source2'] = np.array(singles['source'].iloc[coins[:, 1]])
         coinci['true'] = coinci['source1'] == coinci['source2']
     
-    return coinci
+    return coinci, multis
 
 
 def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME):
