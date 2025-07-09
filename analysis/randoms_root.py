@@ -70,7 +70,7 @@ def read_root_file(infile):
 # Range [1, N) defined in FILE_RANGE
 # Writes results to estimations.csv
 if __name__ == "__main__":
-    sp, dw, sr, actual, multis = [], [], [], [], []
+    sp, dw, sr, actual, multis, total = [], [], [], [], [], []
     for i in FILE_RANGE:
         # Step 1: Read file
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
@@ -95,12 +95,13 @@ if __name__ == "__main__":
         sr.append(singles_rate(singles_count, detectors, TIME))
         actual.append(len(coincidences[~coincidences['true']]))
         multis.append(len(multi_coins))
+        total.append(len(coincidences))
 
         
         # Step 5: Return results
         # actual.append(len(coincidences[~coincidences['true']]))
-        print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
+        print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}, Multis: {multis[-1]}, Total: {total[-1]}")
 
-    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual, 'multis': multis})
+    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual, 'multis': multis, 'total': total})
     with open(OUTPUT_FILE, 'w') as f:
         df.to_csv(f)
