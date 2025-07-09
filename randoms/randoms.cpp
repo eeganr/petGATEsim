@@ -54,6 +54,75 @@ struct Window {
 };
 
 
+py::tuple bundle_coincidences(py::array_t<double> times, double TAU, py::array_t<double> skew_matrix) {
+    // Request buffer from input NumPy array
+    auto buf = times.request();
+    // auto buf_eng = energies.request();
+
+    double *ptr = (double*) buf.ptr; // used for indexing times
+    // double *ptr_eng = (double*) buf_eng.ptr; // used for indexing energy
+    
+    vector<int> coin_indices;
+    double window_start = -2 * TAU;
+    vector<int> possibles;
+    vector<int> multi_coincidences;
+
+    for (int i = 0; i < buf.size - 1; i++) {
+        if (ptr[i] - window_start >= TAU) {
+            // process any previously identified coincidences first
+            // If there are at least 2 singles in the window, we have a possible coincidence
+            if (possibles.size() > 2) {
+
+                multi_coincidences.push_back(possibles.size());
+
+                /* takeWinnerOfGoods policy, takes just the two highest energies
+                priority_queue<Single> goods; // Pops in decreasing energy order
+                for (int i : possibles) {
+                    goods.push(Single(i, ptr_eng[i]));
+                }
+
+                // Ensure they're stored in the correct chronological order
+                int i1 = goods.top().index;
+                goods.pop();
+                int i2 = goods.top().index;
+
+                coin_indices.push_back(min(i1, i2));
+                coin_indices.push_back(max(i1, i2));
+                */
+            }
+            else if (possibles.size() == 2) {
+                coin_indices.push_back(possibles[0]);
+                coin_indices.push_back(possibles[1]);
+            }
+            // Reset the window
+            possibles.clear();
+            possibles.push_back(i);
+            window_start = ptr[i];
+        }
+        else if (ptr[i] - window_start < TAU) {
+            possibles.push_back(i);  // Add to coincidence list
+        }
+    }
+
+    auto result = py::array_t<int>(coin_indices.size());
+    auto result_buf = result.request();
+    int *result_ptr = (int*) result_buf.ptr;
+
+    auto multis = py::array_t<int>(multi_coincidences.size());
+    auto multi_buf = multis.request();
+    int *multi_ptr = (int*) multi_buf.ptr;
+
+    for (int i = 0; i < (int) coin_indices.size(); i++) {
+        result_ptr[i] = coin_indices[i];
+    }
+    for (int i = 0; i < (int) multi_coincidences.size(); i++) {
+        multi_ptr[i] = multi_coincidences[i];
+    }
+
+    return make_tuple(result, multis);
+}
+
+
 /* Bundles list of singles into coincidences.
     Args:
         np.array<double> times - arrival times of singles
@@ -399,6 +468,11 @@ py::array_t<double> get_times(py::array_t<int> coarse, py::array_t<int> fine, do
 
 
 PYBIND11_MODULE(randoms, m) {
+    m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences with skew correction",
+        py::arg("times"),
+        py::arg("TAU"),
+        py::arg("skew_matrix")
+    );
     m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences",
         py::arg("times"),
         py::arg("TAU")

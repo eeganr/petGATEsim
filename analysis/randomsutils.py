@@ -32,6 +32,26 @@ def filter_singles(singles, energy_min=0.450, energy_max=0.750):
     return singles
 
 
+def bundle_coincidences(singles, skew_matrix):
+    """ Bundle singles into coincidences with skew correction
+        Args:
+            singles: DataFrame with columns:
+                time, detector, energy
+                where time is in seconds, dete ctor is the detector ID,
+                and energy is the energy of the single event in MeV.
+            skew_matrix: 2d np array of skew times from detX to detY
+        Returns: 
+            DataFrame with columns:
+                time1, time2, detector1, detector2, (source1), (source2), (true)
+            np array: list of multiple coincidences by number of hits involved
+    """
+
+    # If matrix is only upper triangular
+    if (np.all(np.tril(skewlut) == np.zeros(skewlut.shape))):
+        skewlut -= skewlut.T # reflects with sign change
+
+    
+
 def bundle_coincidences(singles):
     """ Bundle singles into coincidences, 
         Args:
