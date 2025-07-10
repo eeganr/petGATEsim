@@ -2,9 +2,10 @@ import numpy as np
 import nibabel as nib
 import parallelproj
 import uproot
+import os
 
 # === CONFIG ===
-input_root_file = "simoutput.root"
+input_root_file = os.getenv("SCRATCH") + "/june23output/output1.root"
 cont_magnitude = 1e-5
 num_TOF_bins = 9
 TOF_bin_width = 29
@@ -17,9 +18,14 @@ radius_mm = 10 # orinally 130 (mm)
 use_tof = True # originally False
 
 # === FORMAT ROOT FILE ===
+
+def get_all_vals(file, name):
+        num = max([int(i.split(';')[1]) for i in file.keys() if i.split(';')[0] == name])
+        return file[f'{name};{num}']
+
 print("Loading and processing ROOT file...")
 file = uproot.open(input_root_file)
-tree = file["Coincidences;1"]
+tree = get_all_vals(file, 'Coincidences')
 branches = [
     "globalPosX1", "globalPosY1", "globalPosZ1",
     "globalPosX2", "globalPosY2", "globalPosZ2",
@@ -112,10 +118,13 @@ contamination_list = np.full(
     dtype=np.float32,
 )
 
+print(contamination_list)
+
 for iter in range(num_iterations):
     print(f"Iteration {iter+1}/{num_iterations}")
     for k, (proj_k, sl) in enumerate(zip(subset_ops, subset_slices)):
         print(f"  Processing subset {k+1}/{num_subsets}")
+        print(sl)
 
         img = lm_em_update(
             img,
