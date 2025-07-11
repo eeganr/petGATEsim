@@ -3,6 +3,14 @@ import nibabel as nib
 import parallelproj
 import uproot
 import os
+import pandas as pd
+from randomsutils import *
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("randoms", type=str, default="none", help="randoms estimation (sp, dw, sr)")
+args = parser.parse_args()
+ESTIMATE = args.randoms
 
 # === CONFIG ===
 input_root_file = os.getenv("SCRATCH") + "/june23output/output1.root"
@@ -16,6 +24,7 @@ image_shape = (200, 200, 700)  # (x, y, z) voxels # originally (310, 310, 310)
 voxel_size = (0.1, 0.1, 0.1)  #mm #originally (1,1,1)
 radius_mm = 10 # orinally 130 (mm)
 use_tof = True # originally False
+LIST_DIRECTORY = f"{os.getenv("SCRATCH")}/contamination/"
 
 # === FORMAT ROOT FILE ===
 
@@ -25,15 +34,27 @@ def get_all_vals(file, name):
 
 print("Loading and processing ROOT file...")
 file = uproot.open(input_root_file)
-tree = get_all_vals(file, 'Coincidences')
+singles_tree = get_all_vals(file, 'Singles')
+singles = pd.DataFrame({
+    "time": singles_tree["time"].array(library="np"),
+    "detector": singles_tree["crystalID"].array(library="np"),
+    "globalPosX": singles_tree["globalPosX"].array(library="np"),
+    "globalPosY": singles_tree["globalPosY"].array(library="np"),
+    "globalPosZ": singles_tree["globalPosZ"].array(library="np"),
+    "energy": singles_tree["energy"].array(library="np"),
+})
+singles = singles.sort_values(by=['time'])
+
+coincidences, multi_coins = bundle_coincidences(singles)
+
 branches = [
     "globalPosX1", "globalPosY1", "globalPosZ1",
     "globalPosX2", "globalPosY2", "globalPosZ2",
     "energy1", "energy2",
     "time1", "time2"
 ]
-data = tree.arrays(branches, library="np")
-array = np.column_stack([data[branch].astype(np.float32) for branch in branches])
+
+array = np.column_stack([coincidences[branch].astype(np.float32) for branch in branches])
 
 delta_time = array[:, 9] - array[:, 8] # deltaT
 c_mm_per_ps = 0.299792  # mm/ps
@@ -111,20 +132,23 @@ for i, sl in enumerate(subset_slices):
     subset_ops.append(parallelproj.CompositeLinearOperator((subset_lm_proj, res_model)))
 
 subset_ops = parallelproj.LinearOperatorSequence(subset_ops)
-contamination_list = np.full(
-    start_coord.shape[0],
-    float(cont_magnitude),
-#    device=dev,
-    dtype=np.float32,
-)
 
-print(contamination_list)
+cont_df = pd.read_csv(LIST_DIRECTORY + 'list1.csv')
+
+if ESTIMATE != "none":
+    contamination_list = np.array(cont_df[ESTIMATE])
+else:
+    contamination_list = np.full(
+        start_coord.shape[0],
+        float(cont_magnitude),
+    #    device=dev,
+        dtype=np.float32,
+    )
 
 for iter in range(num_iterations):
     print(f"Iteration {iter+1}/{num_iterations}")
     for k, (proj_k, sl) in enumerate(zip(subset_ops, subset_slices)):
         print(f"  Processing subset {k+1}/{num_subsets}")
-        print(sl)
 
         img = lm_em_update(
             img,
@@ -139,4 +163,4 @@ img_np = np.asarray(img)
 # img_np = np.flip(img_np, axis=0)  # Flip along the x-axis, xflip is this commented out
 img_np = np.flip(img_np, axis=1)  # Flip along the y-axis
 img_np = np.flip(img_np, axis=2)  # Flip along the z-axis
-nib.save(nib.Nifti1Image(img_np, affine=np.eye(4)), "new3testcylinder3_norm_test.nii.gz")
+nib.save(nib.Nifti1Image(img_np, affine=np.eye(4)), f"cylinder_{ESTIMATE}.nii.gz")

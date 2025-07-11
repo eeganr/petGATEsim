@@ -7,3 +7,5 @@ __pycache__
 build
 *-info
 pet
+*.nii.gz
+*.nii

@@ -79,11 +79,20 @@ def bundle_coincidences(singles):
     coinci['time2'] = np.array(singles['time'].iloc[coins[:, 1]])
     coinci['detector1'] = np.array(singles['detector'].iloc[coins[:, 0]])
     coinci['detector2'] = np.array(singles['detector'].iloc[coins[:, 1]])
+    coinci['energy1'] = np.array(singles['energy'].iloc[coins[:, 0]])
+    coinci['energy2'] = np.array(singles['energy'].iloc[coins[:, 1]])
 
     if 'source' in singles.columns:
         coinci['source1'] = np.array(singles['source'].iloc[coins[:, 0]])
         coinci['source2'] = np.array(singles['source'].iloc[coins[:, 1]])
         coinci['true'] = coinci['source1'] == coinci['source2']
+    if 'globalPosX' in singles.columns:
+        coinci['globalPosX1'] = np.array(singles['globalPosX'].iloc[coins[:, 0]])
+        coinci['globalPosX2'] = np.array(singles['globalPosX'].iloc[coins[:, 1]])
+        coinci['globalPosY1'] = np.array(singles['globalPosY'].iloc[coins[:, 0]])
+        coinci['globalPosY2'] = np.array(singles['globalPosY'].iloc[coins[:, 1]])
+        coinci['globalPosZ1'] = np.array(singles['globalPosZ'].iloc[coins[:, 0]])
+        coinci['globalPosZ2'] = np.array(singles['globalPosZ'].iloc[coins[:, 1]])
     
     return coinci, multis
 
@@ -99,7 +108,7 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
                 time1, time2, detector1, detector2
             detectors: array of detector IDs
         Returns:
-            Singles-Prompts rate estimate for the whole scanner
+            Singles-Prompts randoms estimates for each LOR
     """
 
     S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
@@ -117,11 +126,22 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
     
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
-    return np.sum(sp_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
+    return sp_rates * TIME
 
 
 def delayed_window(singles, detectors):
-    return np.sum(randoms.dw_rates(np.array(singles['time']), np.array(singles['detector']), detectors[-1], TAU, DELAY)) / 2.0
+    """ Calculates the Delayed Window estimate for the whole scanner
+    Args:
+        singles: DataFrame with columns:
+                time, detector, energy, (optional: source)
+            where time is in seconds, dete ctor is the detector ID,
+            and energy is the energy of the single event in MeV.
+        detectors: array of detector IDs
+    Returns:
+        Delayed Window randoms estimates for each LOR
+    """
+
+    return randoms.dw_rates(np.array(singles['time']), np.array(singles['detector']), detectors[-1], TAU, DELAY)
 
 
 def singles_rate(singles_count, detectors, TIME):
@@ -130,11 +150,11 @@ def singles_rate(singles_count, detectors, TIME):
             singles_count: array of singles counts per detector
             detectors: array of detector IDs
         Returns:
-            Singles Rate estimate for the whole scanner
+            Singles-Rate randoms estimates for each LOR
     """
 
     sr_rates = randoms.sr_rates(singles_count, detectors[-1], TAU, TIME)
-    return np.sum(sr_rates) * TIME / 2.0 # 2.0 because summing over the array double counts
+    return sr_rates * TIME
 
 
 # Main function to read files and calculate estimates for many files of form

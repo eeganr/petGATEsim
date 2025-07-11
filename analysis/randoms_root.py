@@ -15,6 +15,7 @@ DELAY = 10 * CYCLE  # delay for DW estimate (s)
 PATH_PRE_PREFIX = "/scratch/users/eeganr/"
 PATH_SUFFIX = ".root"
 FILE_RANGE = range(1, 100 + 1)
+LIST_DIRECTORY = "/scratch/users/eeganr/contamination/"
 # === END CONFIG ===
 
 # Parse command line arguments
@@ -23,15 +24,21 @@ parser.add_argument("-f", "--filter", action="store_true", help="whether to filt
 parser.add_argument("-p", "--path", type=str, default="june23output/output", help="path prefix for input files")
 parser.add_argument("-o", "--output", type=str, default="estimations.csv", help="output file name")
 parser.add_argument("-t", "--time", type=float, default=1.0, help="total simulation time in seconds")
+parser.add_argument("-l", "--list", action="store_true", help="store contamination list")
 args = parser.parse_args()
 
 PATH_PREFIX = PATH_PRE_PREFIX + args.path
 FILTER_ENERGY = args.filter
 OUTPUT_FILE = args.output
+CONT_LIST = args.list
 TIME = float(args.time)
 if FILTER_ENERGY:
     print("Filtering singles by energy in range 0.450 to 0.750 MeV")
-print(f"Output will be written to {OUTPUT_FILE}")
+
+if CONT_LIST:
+    print(f"Output will be written to {OUTPUT_FILE}")
+else:
+    print(f"Outputs will be written to {LIST_DIRECTORY}")
 
 
 def read_root_file(infile):
@@ -90,18 +97,38 @@ if __name__ == "__main__":
         prompts_count = randoms.prompts_counts(coincidences['detector1'], coincidences['detector2'], detectors[-1])
 
         # Step 4: Calculate estimation methods
-        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME))
-        dw.append(delayed_window(singles, detectors))
-        sr.append(singles_rate(singles_count, detectors, TIME))
+
+        sp_nums = singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME)
+        dw_nums = delayed_window(singles, detectors)
+        sr_nums = singles_rate(singles_count, detectors, TIME)
+
+        sp.append(np.sum(sp_nums) / 2.0)
+        dw.append(np.sum(dw_nums) / 2.0)
+        sr.append(np.sum(sr_nums) / 2.0)
         actual.append(len(coincidences[~coincidences['true']]))
         multis.append(len(multi_coins))
         total.append(len(coincidences))
 
+        if CONT_LIST:
+            coin_per_lor = randoms.coincidences_per_lor(coincidences['detector1'], coincidences['detector2'], detectors[-1])
+            coincidences['lor_coins'] = coincidences.apply(lambda x: coin_per_lor[x['detector1']][x['detector2']], axis=1)
+            coincidences['sp_cont'] = coincidences.apply(lambda x: sp_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
+            coincidences['dw_cont'] = coincidences.apply(lambda x: dw_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
+            coincidences['sr_cont'] = coincidences.apply(lambda x: sr_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
+            df = pd.DataFrame({'sp': coincidences['sp_cont'], 'dw': coincidences['dw_cont'], 'sr': coincidences['sr_cont']})
+            print(np.sum(coincidences['dw_cont']))
+            assert False
+            print("Writing list")
+            with open(f'{LIST_DIRECTORY}list{i}.csv', 'w') as f:
+                df.to_csv(f)
         
         # Step 5: Return results
         # actual.append(len(coincidences[~coincidences['true']]))
         print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}, Multis: {multis[-1]}, Total: {total[-1]}")
 
-    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual, 'multis': multis, 'total': total})
-    with open(OUTPUT_FILE, 'w') as f:
-        df.to_csv(f)
+    if not CONT_LIST:
+        # store the collected data
+        df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual, 'multis': multis, 'total': total})
+        with open(OUTPUT_FILE, 'w') as f:
+            df.to_csv(f)
+    
