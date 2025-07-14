@@ -1,0 +1,15 @@
+[flake8]
+exclude = 
+    .git,
+    __pycache__,
+    build,
+    *.egg_info,
+    hedgehogENV,
+    __init__.py,
+
+max-line-length = 99
+
+# H101 Use TODO(name)
+# H301 one import per line
+extend-ignore = 
+    H301 
