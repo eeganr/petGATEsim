@@ -1,0 +1,21 @@
+/gate/run/initialize
+
+/control/execute flangeless.mac
+
+/vis/open OGL
+
+/vis/scene/create
+
+/vis/sceneHandler/attach scene-0
+
+/gate/source/LidA/visualize 5000 red 2
+
+/gate/source/LidB/visualize 5000 red 2
+
+/gate/source/LidC/visualize 5000 red 2
+
+/gate/source/LidD/visualize 5000 red 2
+
+/gate/source/LidE/visualize 5000 red 2
+
+/gate/source/LidF/visualize 5000 red 2
