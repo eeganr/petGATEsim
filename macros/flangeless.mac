@@ -1,0 +1,99 @@
+/gate/source/addSource LidA
+
+/gate/source/LidA/setActivity 1.313 uCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 4. mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/NAME/gps/centre -17.062 56.774 -19.05 mm
+
+
+
+/gate/source/addSource LidB
+
+/gate/source/LidA/setActivity 2.955 uCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 6. mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/NAME/gps/centre 9.855 57.803 -19.05 mm
+
+
+
+/gate/source/addSource LidC
+
+/gate/source/LidA/setActivity 5.254 uCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 8. mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/NAME/gps/centre 38.241 40.301 -19.05 mm
+
+
+
+/gate/source/addSource LidD
+
+/gate/source/LidA/setActivity 12.826 uCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 12.5 mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/NAME/gps/centre 52.067 -7.648 -19.05 mm
+
+
+
+/gate/source/addSource LidE
+
+/gate/source/LidA/setActivity 12.826 uCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 12.5 mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/NAME/gps/centre -34.417 -45.301 -19.05 mm
+
+
+
+/gate/source/addSource LidF
+
+/gate/source/LidA/setActivity 12.826 uCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 12.5 mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/NAME/gps/centre -60.304 3.824 -19.05 mm
