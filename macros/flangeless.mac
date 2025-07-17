@@ -97,3 +97,31 @@
 /gate/source/LidF/gps/halfz 19.05 mm
 
 /gate/source/LidF/gps/centre -60.304 3.824 -19.05 mm
+
+
+
+/gate/source/addSource Background
+
+/gate/source/Background/setActivity 12.826 mCi
+/gate/source/Background/setType backtoback
+/gate/source/Background/gps/particle gamma
+/gate/source/Background/gps/energytype Mono
+/gate/source/Background/gps/monoenergy 0.511 MeV
+
+/gate/source/Background/gps/type Volume
+/gate/source/Background/gps/shape Cylinder
+/gate/source/Background/gps/radius 104.5 mm
+/gate/source/Background/gps/halfz 93. mm
+
+/gate/source/Background/gps/centre 0 -93. 0 mm
+
+
+
+/gate/world/daughters/name cylA
+/gate/world/daughters/insert cylinder
+/gate/cold_area/vis/forceWireframe
+/gate/cold_area/vis/setColor green
+/gate/cold_area/geometry/setRmax 4. mm
+/gate/cold_area/geometry/setHeight 38.1 cm
+/gate/Phantom/placement/setTranslation  -17.062 56.774 -19.05 mm
+/gate/source/number1/gps/Forbid cylA
