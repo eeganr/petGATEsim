@@ -49,7 +49,6 @@ def bundle_coincidences(singles, skew_matrix):
     # If matrix is only upper triangular
     if (np.all(np.tril(skewlut) == np.zeros(skewlut.shape))):
         skewlut -= skewlut.T # reflects with sign change
-
     
 
 def bundle_coincidences(singles):
@@ -97,6 +96,21 @@ def bundle_coincidences(singles):
     return coinci, multis
 
 
+def bundle_coincidences_multi(singles):
+    """ Bundle singles into coincidences, including multiple coincidences
+        Args:
+            singles: DataFrame with columns:
+                time, detector, energy, (optional: source)
+            where time is in seconds, dete ctor is the detector ID,
+            and energy is the energy of the single event in MeV.
+        Returns: 
+            DataFrame with columns:
+                time1, time2, detector1, detector2, (source1), (source2), (true)
+            np array: list of multiple coincidences by number of hits involved
+    """
+
+
+
 def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME):
     """ Calculate the Singles-Prompts rate estimate for the whole scanner
         Args:
@@ -129,6 +143,42 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
     return sp_rates * TIME
 
 
+def singles_prompts_multi(singles_count, prompts_count, singles, coincidences, detectors, TIME):
+    """ Calculate the Singles-Prompts rate estimate for the whole scanner
+        Args:
+            singles_count: array of singles counts per detector
+            prompts_count: array of prompts counts per detector pair
+            singles: DataFrame with columns:
+                time, detector, energy
+            coincidences: DataFrame with columns:
+                time1, time2, detector1, detector2
+            detectors: array of detector IDs
+        Returns:
+            Singles-Prompts randoms estimates for each LOR
+    """
+
+    S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
+    P = 2 * len(coincidences) / TIME  # Twice the prompts rate
+
+    # Roots of this function are the lambda (L) values needed for the SP estimate.
+    def lambda_eq(L):
+        return 2 * TAU * L * L - L + S - P * np.exp((L + S)*TAU)
+    L = root_scalar(lambda_eq, x0=0)
+    if not L.converged:
+        raise RuntimeError("Failed to converge on lambda.")
+    L = L.root
+    
+    sp_rates = randoms.sp_rates(singles_count, prompts_count, detectors[-1], L, S, TAU, TIME)
+
+    exp_prod = np.prod(np.exp(-(singles_count * (TAU**2) / TIME / TIME)))
+
+    corrections = randoms.sp_correction(singles_count / TIME, detectors[-1], exp_prod, TAU, TIME)
+    
+    # Calculate the Singles-Prompts rate estimate for the whole scanner
+    # summing over all pairs of detectors
+    return np.multiply(sp_rates, corrections) * TIME
+
+
 def delayed_window(singles, detectors):
     """ Calculates the Delayed Window estimate for the whole scanner
     Args:
@@ -156,41 +206,3 @@ def singles_rate(singles_count, detectors, TIME):
     sr_rates = randoms.sr_rates(singles_count, detectors[-1], TAU, TIME)
     return sr_rates * TIME
 
-
-# Main function to read files and calculate estimates for many files of form
-# output1.root, output2.root, ..., outputN.root
-# Range [1, N) defined in FILE_RANGE
-# Writes results to estimations.csv
-if __name__ == "__main__":
-    sp, dw, sr, actual = [], [], [], []
-    for i in FILE_RANGE:
-        # Step 1: Read file
-        infile = PATH_PREFIX + str(i) + PATH_SUFFIX
-        print(f"Reading file {infile}...")
-        singles, detectors = read_root_file(infile)
-
-        # Step 1.5: Filter hits by energy if needed
-        if FILTER_ENERGY:
-            singles = filter_singles(singles)  # Filter singles by energy
-
-        # Step 2: Bundle coincidences
-        t = time.time()
-        coincidences = bundle_coincidences(singles)  # Bundle singles into coincidences
-        print("bundling complete: ", time.time() - t)
-
-        # Step 3: Tally stats by detector
-        singles_count = randoms.singles_counts(singles['detector'], detectors[-1])
-        prompts_count = randoms.prompts_counts(coincidences['detector1'], coincidences['detector2'], detectors[-1])
-
-        # Step 4: Calculate estimation methods
-        sp.append(singles_prompts(singles_count, prompts_count, singles, coincidences, detectors))
-        dw.append(randoms.delayed_window(np.array(singles['time']), TAU, DELAY))
-        sr.append(singles_rate(singles_count, detectors))
-        
-        # Step 5: Return results
-        actual.append(len(coincidences[~coincidences['true']]))
-        print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}")
-
-    df = pd.DataFrame({'sp': sp, 'dw': dw, 'sr': sr, 'actual': actual})
-    with open(OUTPUT_FILE, 'w') as f:
-        df.to_csv(f)

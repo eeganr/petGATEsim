@@ -57,7 +57,6 @@ struct Window {
 /* Bundles list of singles into coincidences.
     Args:
         np.array<double> times - arrival times of singles
-        np.array<double> energies - energies in MeV/single
         TAU - time coincidence window in s
     Return: 
         Tuple 
@@ -279,6 +278,34 @@ py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> pr
 }
 
 
+py::array_t<double> sp_correction(py::array_t<int> singles_count, int max_detector_index, double exp_prod, double TAU, double TIME) {
+    auto singles_buf = singles_count.request();
+    int *singles_ptr = (int*) singles_buf.ptr;
+
+    int DETS = max_detector_index + 1; // Number of detectors
+    
+    py::object np = py::module_::import("numpy");
+    py::array_t<double> result = np.attr("full")(DETS * DETS, exp_prod);
+    auto result_buf = result.request();
+    double *result_ptr = (double*) result_buf.ptr;
+
+    for (int i = 0; i < DETS; i++) {
+        for (int j = i + 1; j < DETS; j++) {
+            double S_i = singles_ptr[i] / TIME;
+            double S_j = singles_ptr[j] / TIME;
+
+            double factor = exp(-S_i * TAU * TAU / TIME) * exp(-S_j * TAU * TAU / TIME);
+
+            result_ptr[i * DETS + j] /= factor;
+            result_ptr[j * DETS + i] /= factor;
+        }
+    }
+
+    result.resize({DETS, DETS});
+    return result;
+}
+
+
 /* Calculates delayed window estimate.
     Args:
         np.array<double> times - NumPy array of arrival times
@@ -455,6 +482,13 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("max_detector_index"),
         py::arg("L"),
         py::arg("S"),
+        py::arg("TAU"),
+        py::arg("TIME")
+    );
+    m.def("sp_correction", &sp_correction, "Calculates sp multi-correction terms",
+        py::arg("singles_count"),
+        py::arg("max_detector_index"),
+        py::arg("exp_prod"),
         py::arg("TAU"),
         py::arg("TIME")
     );

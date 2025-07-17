@@ -77,7 +77,7 @@ def read_root_file(infile):
 # Range [1, N) defined in FILE_RANGE
 # Writes results to estimations.csv
 if __name__ == "__main__":
-    sp, dw, sr, actual, multis, total = [], [], [], [], [], []
+    sp, sp_corr, dw, sr, actual, multis, total = [], [], [], [], [], [], []
     for i in FILE_RANGE:
         # Step 1: Read file
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
@@ -99,13 +99,18 @@ if __name__ == "__main__":
         # Step 4: Calculate estimation methods
 
         sp_nums = singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME)
+        sp_corrected = singles_prompts_multi(singles_count, prompts_count, singles, coincidences, detectors, TIME)
         dw_nums = delayed_window(singles, detectors)
         sr_nums = singles_rate(singles_count, detectors, TIME)
 
+        actuals = coincidences[~coincidences['true']].reset_index()
+        actual_nums = randoms.coincidences_per_lor(actuals['detector1'], actuals['detector2'], detectors[-1])
+
         sp.append(np.sum(sp_nums) / 2.0)
+        sp_corr.append(np.sum(sp_corrected) / 2.0)
         dw.append(np.sum(dw_nums) / 2.0)
         sr.append(np.sum(sr_nums) / 2.0)
-        actual.append(len(coincidences[~coincidences['true']]))
+        actual.append(len(actuals))
         multis.append(len(multi_coins))
         total.append(len(coincidences))
 
@@ -124,7 +129,7 @@ if __name__ == "__main__":
         
         # Step 5: Return results
         # actual.append(len(coincidences[~coincidences['true']]))
-        print(f"File {str(i)} processed. SP: {sp[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}, Multis: {multis[-1]}, Total: {total[-1]}")
+        print(f"File {str(i)} processed. SP: {sp[-1]}, SP_CORR: {sp_corr[-1]}, DW: {dw[-1]}, SR: {sr[-1]}, Actual: {actual[-1]}, Multis: {multis[-1]}, Total: {total[-1]}")
 
     if not CONT_LIST:
         # store the collected data
