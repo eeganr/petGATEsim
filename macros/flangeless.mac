@@ -113,15 +113,15 @@
 /gate/source/Background/gps/radius 104.5 mm
 /gate/source/Background/gps/halfz 93. mm
 
-/gate/source/Background/gps/centre 0 -93. 0 mm
+/gate/source/Background/gps/centre 0 0 -92. mm
 
 
 
 /gate/world/daughters/name cylA
 /gate/world/daughters/insert cylinder
-/gate/cold_area/vis/forceWireframe
-/gate/cold_area/vis/setColor green
-/gate/cold_area/geometry/setRmax 4. mm
-/gate/cold_area/geometry/setHeight 38.1 cm
-/gate/Phantom/placement/setTranslation  -17.062 56.774 -19.05 mm
-/gate/source/number1/gps/Forbid cylA
+/gate/cylA/vis/forceWireframe
+/gate/cylA/vis/setColor green
+/gate/cylA/geometry/setRmax 4. mm
+/gate/cylA/geometry/setHeight 38.1 cm
+/gate/cylA/placement/setTranslation  -17.062 56.774 -19.05 mm
+/gate/source/Background/gps/Forbid cylA
