@@ -11,7 +11,8 @@
 /gate/source/LidA/gps/radius 4. mm
 /gate/source/LidA/gps/halfz 19.05 mm
 
-/gate/source/LidA/gps/centre -17.062 56.774 -19.05 mm
+# Z-coord for these is -19.05 mm + 76.5 mm = 57.45
+/gate/source/LidA/gps/centre -17.062 56.774 57.45 mm
 
 
 
@@ -28,7 +29,7 @@
 /gate/source/LidB/gps/radius 6. mm
 /gate/source/LidB/gps/halfz 19.05 mm
 
-/gate/source/LidB/gps/centre 9.855 57.803 -19.05 mm
+/gate/source/LidB/gps/centre 9.855 57.803 57.45 mm
 
 
 
@@ -45,7 +46,7 @@
 /gate/source/LidC/gps/radius 8. mm
 /gate/source/LidC/gps/halfz 19.05 mm
 
-/gate/source/LidC/gps/centre 38.241 40.301 -19.05 mm
+/gate/source/LidC/gps/centre 38.241 40.301 57.45 mm
 
 
 
@@ -62,7 +63,7 @@
 /gate/source/LidD/gps/radius 12.5 mm
 /gate/source/LidD/gps/halfz 19.05 mm
 
-/gate/source/LidD/gps/centre 52.067 -7.648 -19.05 mm
+/gate/source/LidD/gps/centre 52.067 -7.648 57.45 mm
 
 
 
@@ -79,7 +80,7 @@
 /gate/source/LidE/gps/radius 12.5 mm
 /gate/source/LidE/gps/halfz 19.05 mm
 
-/gate/source/LidE/gps/centre -34.417 -45.301 -19.05 mm
+/gate/source/LidE/gps/centre -34.417 -45.301 57.45 mm
 
 
 
@@ -96,7 +97,7 @@
 /gate/source/LidF/gps/radius 12.5 mm
 /gate/source/LidF/gps/halfz 19.05 mm
 
-/gate/source/LidF/gps/centre -60.304 3.824 -19.05 mm
+/gate/source/LidF/gps/centre -60.304 3.824 57.45 mm
 
 
 
@@ -112,7 +113,8 @@
 /gate/source/Background/gps/shape Cylinder
 /gate/source/Background/gps/radius 104.5 mm
 /gate/source/Background/gps/halfz 93. mm
-/gate/source/Background/gps/centre 0 0 -93. mm
+# z coord is -93 mm + 76.5 mm = -16.5 mm
+/gate/source/Background/gps/centre 0 0 -16.5 mm
 /gate/source/Background/gps/monoenergy 0.511 MeV
 /gate/source/Background/gps/angtype iso
 
@@ -123,7 +125,7 @@
 /gate/cold_area1/geometry/setRmax 4. mm
 /gate/cold_area1/geometry/setHeight 38.1 mm
 /gate/cold_area1/setMaterial Water
-/gate/cold_area1/placement/setTranslation  -17.062 56.774 -19.05 mm
+/gate/cold_area1/placement/setTranslation  -17.062 56.774 57.45 mm
 /gate/cold_area1/vis/forceSolid
 
 /gate/world/daughters/name cold_area2
@@ -132,7 +134,7 @@
 /gate/cold_area2/geometry/setRmax 6. mm
 /gate/cold_area2/geometry/setHeight 38.1 mm
 /gate/cold_area2/setMaterial Water
-/gate/cold_area2/placement/setTranslation  9.855 57.803 -19.05 mm
+/gate/cold_area2/placement/setTranslation  9.855 57.803 57.45 mm
 /gate/cold_area2/vis/forceSolid
 
 /gate/world/daughters/name cold_area3
@@ -141,7 +143,7 @@
 /gate/cold_area3/geometry/setRmax 8. mm
 /gate/cold_area3/geometry/setHeight 38.1 mm
 /gate/cold_area3/setMaterial Water
-/gate/cold_area3/placement/setTranslation  38.241 40.301 -19.05 mm
+/gate/cold_area3/placement/setTranslation  38.241 40.301 57.45 mm
 /gate/cold_area3/vis/forceSolid
 
 /gate/world/daughters/name cold_area4
@@ -150,7 +152,7 @@
 /gate/cold_area4/geometry/setRmax 12.5 mm
 /gate/cold_area4/geometry/setHeight 38.1 mm
 /gate/cold_area4/setMaterial Water
-/gate/cold_area4/placement/setTranslation  52.067 -7.648 -19.05 mm
+/gate/cold_area4/placement/setTranslation  52.067 -7.648 57.45 mm
 /gate/cold_area4/vis/forceSolid
 
 /gate/world/daughters/name cold_area5
@@ -159,7 +161,7 @@
 /gate/cold_area5/geometry/setRmax 12.5 mm
 /gate/cold_area5/geometry/setHeight 38.1 mm
 /gate/cold_area5/setMaterial Water
-/gate/cold_area5/placement/setTranslation  -34.417 -45.301 -19.05 mm
+/gate/cold_area5/placement/setTranslation  -34.417 -45.301 57.45 mm
 /gate/cold_area5/vis/forceSolid
 
 /gate/world/daughters/name cold_area6
@@ -168,7 +170,7 @@
 /gate/cold_area6/geometry/setRmax 12.5 mm
 /gate/cold_area6/geometry/setHeight 38.1 mm
 /gate/cold_area6/setMaterial Water
-/gate/cold_area6/placement/setTranslation  -60.304 3.824 -19.05 mm
+/gate/cold_area6/placement/setTranslation  -60.304 3.824 57.45 mm
 /gate/cold_area6/vis/forceSolid
 
 # Reinitialize to allow use of new volumes
