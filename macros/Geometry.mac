@@ -2,31 +2,75 @@
 /gate/world/daughters/name cylindricalPET
 /gate/world/daughters/insert cylinder
 /gate/cylindricalPET/placement/setTranslation 0.0 0.0 0.0 cm
-/gate/cylindricalPET/geometry/setRmax 90.0 mm
-/gate/cylindricalPET/geometry/setRmin 80.0 mm
-/gate/cylindricalPET/geometry/setHeight 100 mm
+/gate/cylindricalPET/geometry/setRmax 220.0 mm
+/gate/cylindricalPET/geometry/setRmin 140.0 mm
+/gate/cylindricalPET/geometry/setHeight 220 mm
 /gate/cylindricalPET/setMaterial Air
 /gate/cylindricalPET/vis/forceWireframe
 /gate/cylindricalPET/vis/setColor white
 
+#water cyl for norm
+/gate/world/daughters/name cold_area
+/gate/world/daughters/insert cylinder
+/gate/cold_area/placement/setTranslation 0.0 0.0 0.0 cm
+/gate/cold_area/geometry/setRmax 28 mm
+/gate/cold_area/geometry/setRmin 27 mm
+/gate/cold_area/geometry/setHeight 40 mm
+/gate/cold_area/setMaterial Water
+
+# water cyl 
+#/gate/world/daughters/name cold_area
+#/gate/world/daughters/insert cylinder
+#/gate/cold_area/placement/setTranslation 0.0 0.0 0.0 cm
+#/gate/cold_area/geometry/setRmax 25 mm
+#/gate/cold_area/geometry/setRmin 0 cm
+#/gate/cold_area/geometry/setHeight 20. mm
+#/gate/cold_area/setMaterial Water
+
+
+
 #	RSECTOR (detector modules)
 /gate/cylindricalPET/daughters/name rsector
 /gate/cylindricalPET/daughters/insert box
-/gate/rsector/placement/setTranslation 85.0 0.0 0.0 mm
-/gate/rsector/geometry/setXLength 10 mm
-/gate/rsector/geometry/setYLength 50 mm
-/gate/rsector/geometry/setZLength 50 mm
+/gate/rsector/placement/setTranslation 172.6 0.0 0.0 mm
+/gate/rsector/geometry/setXLength 80 mm
+/gate/rsector/geometry/setYLength 80 mm
+/gate/rsector/geometry/setZLength 220 mm
 /gate/rsector/setMaterial Air
+/gate/rsector/vis/forceWireframe
 /gate/rsector/vis/setColor yellow
 
 
-#	C R Y S T A L
-/gate/rsector/daughters/name crystal
+
+#	detector (detector modules)
+/gate/rsector/daughters/name module
 /gate/rsector/daughters/insert box
+/gate/module/placement/setTranslation 0 0.0 0.0 mm
+/gate/module/geometry/setXLength 58.5 mm
+/gate/module/geometry/setYLength 58 mm
+/gate/module/geometry/setZLength 201.2 mm
+/gate/module/setMaterial Air
+/gate/module/vis/forceWireframe
+/gate/module/vis/setColor yellow
+
+#	submodule (SiPM array + crystal)
+/gate/module/daughters/name submodule
+/gate/module/daughters/insert box
+/gate/submodule/placement/setTranslation 0.00 0.00 0.00 mm
+/gate/submodule/geometry/setXLength 21 mm
+/gate/submodule/geometry/setYLength 53.2 mm
+/gate/submodule/geometry/setZLength 26.2 mm
+/gate/submodule/setMaterial Air
+/gate/submodule/vis/forceWireframe
+/gate/submodule/vis/setColor red
+
+#	C R Y S T A L
+/gate/submodule/daughters/name crystal
+/gate/submodule/daughters/insert box
 /gate/crystal/placement/setTranslation 0 0 0.0 mm
-/gate/crystal/geometry/setXLength 10 mm
-/gate/crystal/geometry/setYLength 1.0 mm
-/gate/crystal/geometry/setZLength 1.0 mm
+/gate/crystal/geometry/setXLength 20 mm
+/gate/crystal/geometry/setYLength 3.19 mm
+/gate/crystal/geometry/setZLength 3.19 mm
 /gate/crystal/setMaterial Air
 /gate/crystal/vis/setColor blue
 
@@ -34,15 +78,27 @@
 /gate/crystal/daughters/name LYSO
 /gate/crystal/daughters/insert box
 /gate/LYSO/placement/setTranslation 0 0 0.0 mm
-/gate/LYSO/geometry/setXLength 10 mm
-/gate/LYSO/geometry/setYLength 1.0 mm
-/gate/LYSO/geometry/setZLength 1.0 mm
+/gate/LYSO/geometry/setXLength 20 mm
+/gate/LYSO/geometry/setYLength 3.19 mm
+/gate/LYSO/geometry/setZLength 3.19 mm
 /gate/LYSO/setMaterial LYSO
 /gate/LYSO/vis/forceSolid
 /gate/LYSO/vis/setColor blue
 
+#  SIPM
+#/gate/crystal/daughters/name                pixel
+#/gate/crystal/daughters/insert              box
+#/gate/pixel/geometry/setXLength           	1  mm
+#/gate/pixel/geometry/setYLength           	3.16 mm
+#/gate/pixel/geometry/setZLength           	3.16 mm
+#/gate/pixel/setMaterial                  	G4_SILICON_DIOXIDE                 
+#/gate/pixel/placement/setTranslation      	10.5 0 0 mm
+#/gate/pixel/vis/setColor                  	green
+
 # A T T A C H S Y S T E M
 /gate/systems/cylindricalPET/rsector/attach rsector 
+/gate/systems/cylindricalPET/module/attach module 
+/gate/systems/cylindricalPET/submodule/attach submodule 
 /gate/systems/cylindricalPET/crystal/attach crystal 
 /gate/systems/cylindricalPET/layer0/attach LYSO 
 
@@ -50,17 +106,23 @@
 #	R E P E A T    CRYSTAL
 /gate/crystal/repeaters/insert cubicArray
 /gate/crystal/cubicArray/setRepeatNumberX 1
-/gate/crystal/cubicArray/setRepeatNumberY 48
-/gate/crystal/cubicArray/setRepeatNumberZ 48
-/gate/crystal/cubicArray/setRepeatVector 0.0 1.04 1.04 mm
+/gate/crystal/cubicArray/setRepeatNumberY 16
+/gate/crystal/cubicArray/setRepeatNumberZ 8
+/gate/crystal/cubicArray/setRepeatVector 0.0 3.26 3.26 mm
+
+
+#	R E P E A T    SUBMODULE
+/gate/submodule/repeaters/insert cubicArray
+/gate/submodule/cubicArray/setRepeatNumberX 1
+/gate/submodule/cubicArray/setRepeatNumberY 1
+/gate/submodule/cubicArray/setRepeatNumberZ 6
+/gate/submodule/cubicArray/setRepeatVector 0.0 0.0 26.7 mm
 
 
 #	R E P E A T    RSECTOR
 /gate/rsector/repeaters/insert ring
-#/gate/rsector/ring/setFirstAngle 11.25 deg
-#/gate/rsector/ring/setFirstAngle 22.5 deg
-#/gate/rsector/ring/setFirstAngle 33.75 deg
-/gate/rsector/ring/setRepeatNumber 8
+#/gate/rsector/ring/setFirstAngle 0.56 deg
+/gate/rsector/ring/setRepeatNumber 16
 
 
 # A T T A C H L A Y E R SD 
