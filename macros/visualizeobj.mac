@@ -16,19 +16,22 @@
 
 /vis/sceneHandler/attach scene-0
 
-/vis/viewer/zoom 10
-/vis/viewer/set/viewpointThetaPhi 90 10
+/control/execute Geometry.mac
 
-#/gate/source/LidA/visualize 1000 red 2
+/gate/run/initialize
 
-#/gate/source/LidB/visualize 5000 red 2
+/vis/drawVolume
 
-#/gate/source/LidC/visualize 5000 red 2
+/gate/source/LidA/visualize 5000 red 2
 
-#/gate/source/LidD/visualize 5000 red 2
+/gate/source/LidB/visualize 5000 red 2
 
-#/gate/source/LidE/visualize 5000 red 2
+/gate/source/LidC/visualize 5000 red 2
 
-#/gate/source/LidF/visualize 1000 red 2
+/gate/source/LidD/visualize 5000 red 2
+
+/gate/source/LidE/visualize 5000 red 2
+
+/gate/source/LidF/visualize 5000 red 2
 
 /gate/source/Background/visualize 5000 yellow 2
