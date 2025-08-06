@@ -54,19 +54,20 @@
 /tracking/verbose 0
 
 #	O U T P U T  Root
-/gate/output/root/enable
-/gate/output/root/setFileName {filename}
-/gate/output/root/setRootHitFlag 1
-/gate/output/root/setRootSinglesFlag 1
-/gate/output/root/setRootCoincidencesFlag 1
-/gate/output/root/setRootdelayFlag 1
+# /gate/output/root/enable
+# /gate/output/root/setFileName {filename}
+# /gate/output/root/setRootHitFlag 1
+# /gate/output/root/setRootSinglesFlag 1
+# /gate/output/root/setRootCoincidencesFlag 1
+# /gate/output/root/setRootdelayFlag 1
 
 #       O U T P U T BIN
-# /gate/output/binary/enable
-# /gate/output/binary/setFileName {filename} 
-# /gate/output/binary/setOutFileHitsFlag 0
-# /gate/output/binary/setOutFileSinglesFlag 1
-# /gate/output/binary/setOutFileCoincidencesFlag 1
+/gate/output/binary/enable
+/gate/output/binary/setFileName {filename} 
+/gate/output/binary/setOutFileHitsFlag 1
+/gate/output/binary/setOutFileSinglesFlag 1
+/gate/output/binary/setOutFileCoincidencesFlag 1
+/gate/output/binary/setOutFileSizeLimit 20000000000
 
 # /gate/output/ascii/enable
 # /gate/output/ascii/setFileName {filename}

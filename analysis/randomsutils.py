@@ -111,7 +111,7 @@ def bundle_coincidences_multi(singles):
 
 
 
-def singles_prompts(singles_count, prompts_count, singles, coincidences, detectors, TIME):
+def singles_prompts(singles_count, prompts_count, TIME, NUM_DETS):
     """ Calculate the Singles-Prompts rate estimate for the whole scanner
         Args:
             singles_count: array of singles counts per detector
@@ -125,8 +125,8 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
             Singles-Prompts randoms estimates for each LOR
     """
 
-    S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
-    P = 2 * len(coincidences) / TIME  # Twice the prompts rate
+    S = np.sum(singles_count) / TIME  # Rate of singles measured by scanner as a whole
+    P = np.sum(prompts_count) / TIME  # Twice the prompts rate
 
     # Roots of this function are the lambda (L) values needed for the SP estimate.
     def lambda_eq(L):
@@ -136,14 +136,14 @@ def singles_prompts(singles_count, prompts_count, singles, coincidences, detecto
         raise RuntimeError("Failed to converge on lambda.")
     L = L.root
     
-    sp_rates = randoms.sp_rates(singles_count, prompts_count, detectors[-1], L, S, TAU, TIME)
+    sp_rates = randoms.sp_rates(singles_count, prompts_count, NUM_DETS, L, S, TAU, TIME)
     
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
     return sp_rates * TIME
 
 
-def singles_prompts_multi(singles_count, prompts_count, singles, coincidences, detectors, TIME):
+def singles_prompts_multi(singles_count, prompts_count, TIME, NUM_DETS):
     """ Calculate the Singles-Prompts rate estimate for the whole scanner
         Args:
             singles_count: array of singles counts per detector
@@ -157,8 +157,8 @@ def singles_prompts_multi(singles_count, prompts_count, singles, coincidences, d
             Singles-Prompts randoms estimates for each LOR
     """
 
-    S = len(singles) / TIME  # Rate of singles measured by scanner as a whole
-    P = 2 * len(coincidences) / TIME  # Twice the prompts rate
+    S = np.sum(singles_count) / TIME  # Rate of singles measured by scanner as a whole
+    P = np.sum(prompts_count) / TIME  # Twice the prompts rate
 
     # Roots of this function are the lambda (L) values needed for the SP estimate.
     def lambda_eq(L):
@@ -168,11 +168,11 @@ def singles_prompts_multi(singles_count, prompts_count, singles, coincidences, d
         raise RuntimeError("Failed to converge on lambda.")
     L = L.root
     
-    sp_rates = randoms.sp_rates(singles_count, prompts_count, detectors[-1], L, S, TAU, TIME)
+    sp_rates = randoms.sp_rates(singles_count, prompts_count, NUM_DETS, L, S, TAU, TIME)
 
     exp_prod = np.prod(np.exp(-(singles_count * (TAU**2) / TIME / TIME)))
 
-    corrections = randoms.sp_correction(singles_count / TIME, detectors[-1], exp_prod, TAU, TIME)
+    corrections = randoms.sp_correction(singles_count / TIME, NUM_DETS, exp_prod, TAU, TIME)
     
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
@@ -191,10 +191,10 @@ def delayed_window(singles, detectors):
         Delayed Window randoms estimates for each LOR
     """
 
-    return randoms.dw_rates(np.array(singles['time']), np.array(singles['detector']), detectors[-1], TAU, DELAY)
+    return randoms.dw_rates(np.array(singles['time']), np.array(singles['detector']), DETECTORS_SIM, TAU, DELAY)
 
 
-def singles_rate(singles_count, detectors, TIME):
+def singles_rate(singles_count, TIME, NUM_DETS):
     """ Calculate the Singles Rate estimate for the whole scanner
         Args:
             singles_count: array of singles counts per detector
@@ -203,6 +203,6 @@ def singles_rate(singles_count, detectors, TIME):
             Singles-Rate randoms estimates for each LOR
     """
 
-    sr_rates = randoms.sr_rates(singles_count, detectors[-1], TAU, TIME)
+    sr_rates = randoms.sr_rates(singles_count, NUM_DETS, TAU, TIME)
     return sr_rates * TIME
 

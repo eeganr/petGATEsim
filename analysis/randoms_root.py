@@ -15,7 +15,7 @@ DELAY = 10 * CYCLE  # delay for DW estimate (s)
 PATH_PRE_PREFIX = "/scratch/users/eeganr/"
 PATH_SUFFIX = ".root"
 FILE_RANGE = range(1, 100 + 1)
-LIST_DIRECTORY = "/scratch/users/eeganr/contamination/"
+LIST_DIRECTORY = "/scratch/users/eeganr/contamination/july17flange/"
 # === END CONFIG ===
 
 # Parse command line arguments
@@ -83,6 +83,7 @@ if __name__ == "__main__":
         infile = PATH_PREFIX + str(i) + PATH_SUFFIX
         print(f"Reading file {infile}...")
         singles, detectors = read_root_file(infile)
+        print(detectors[-1])
 
         # Step 1.5: Filter hits by energy if needed
         if FILTER_ENERGY:
@@ -93,8 +94,8 @@ if __name__ == "__main__":
         coincidences, multi_coins = bundle_coincidences(singles)  # Bundle singles into coincidences
 
         # Step 3: Tally stats by detector
-        singles_count = randoms.singles_counts(singles['detector'], detectors[-1])
-        prompts_count = randoms.prompts_counts(coincidences['detector1'], coincidences['detector2'], detectors[-1])
+        singles_count = randoms.singles_counts(singles['detector'], detectors[-1] + 1)
+        prompts_count = randoms.prompts_counts(coincidences['detector1'], coincidences['detector2'], detectors[-1] + 1)
 
         # Step 4: Calculate estimation methods
 
@@ -104,7 +105,7 @@ if __name__ == "__main__":
         sr_nums = singles_rate(singles_count, detectors, TIME)
 
         actuals = coincidences[~coincidences['true']].reset_index()
-        actual_nums = randoms.coincidences_per_lor(actuals['detector1'], actuals['detector2'], detectors[-1])
+        actual_nums = randoms.coincidences_per_lor(actuals['detector1'], actuals['detector2'], detectors[-1] + 1)
 
         sp.append(np.sum(sp_nums) / 2.0)
         sp_corr.append(np.sum(sp_corrected) / 2.0)
@@ -120,9 +121,8 @@ if __name__ == "__main__":
             coincidences['sp_cont'] = coincidences.apply(lambda x: sp_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
             coincidences['dw_cont'] = coincidences.apply(lambda x: dw_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
             coincidences['sr_cont'] = coincidences.apply(lambda x: sr_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
-            df = pd.DataFrame({'sp': coincidences['sp_cont'], 'dw': coincidences['dw_cont'], 'sr': coincidences['sr_cont']})
-            print(np.sum(coincidences['dw_cont']))
-            assert False
+            coincidences['actual_cont'] = coincidences.apply(lambda x: actual_nums[x['detector1']][x['detector2']], axis=1) / coincidences['lor_coins']
+            df = pd.DataFrame({'sp': coincidences['sp_cont'], 'dw': coincidences['dw_cont'], 'sr': coincidences['sr_cont'], 'actual': coincidences['actual_cont']})
             print("Writing list")
             with open(f'{LIST_DIRECTORY}list{i}.csv', 'w') as f:
                 df.to_csv(f)

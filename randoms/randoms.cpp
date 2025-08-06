@@ -4,11 +4,17 @@
 #include <queue>
 #include <iostream>
 #include <cmath>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <cstdint>
 
 using namespace std;
 
 namespace py = pybind11;
 
+constexpr int NUM_VOL_IDS = 6;
+constexpr int SPD_OF_LIGHT = 299792458000;
 
 /* Struct for a single used for multi-coincidence processing.
     Constructor Args:
@@ -51,6 +57,27 @@ struct Window {
         time1 = -1;
         time2 = -1;
     }
+};
+
+
+struct Record {
+    int32_t run;
+    int32_t event;
+    int32_t srcID;
+
+    double srcX, srcY, srcZ;
+
+    int32_t volIDs[NUM_VOL_IDS];
+
+    double time;
+    double Edep;
+    double detX, detY, detZ;
+
+    int32_t nComPh, nComDet;
+    int32_t nRayPh, nRayDet;
+
+    char phantomCom[8];
+    char phantomRay[8];
 };
 
 
@@ -141,19 +168,19 @@ py::tuple bundle_coincidences(py::array_t<double> times, double TAU) {
 
 /* Calculates singles counts per detector.
     Args:
-        np.array<int> detector_occurances - at inumber of singles that hit detector of given index
-        int max_detector_index - maximum index of the detectors
+        np.array<int> detector_occurances - number of singles that hit detector of given index
+        int num_detectors - maximum index of the detectors
     Returns:
         numpy array of singles counts per detector
     Notes:
         The output is a 1D NumPy array where the index corresponds to the detector index.
 */
-py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_detector_index) {
+py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int num_detectors) {
     auto buf = detector_occurances.request();
     int *ptr = (int*) buf.ptr;
     
     py::object np = py::module_::import("numpy");
-    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
+    py::array_t<int> result = np.attr("zeros")(num_detectors);
     auto result_buf = result.request();
     int *result_ptr = (int*) result_buf.ptr;
 
@@ -169,7 +196,7 @@ py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_de
     Args:
         np.array<int> det1_hits - hits for detector 1
         np.array<int> det2_hits - hits for detector 2
-        int max_detector_index - maximum index of the detectors
+        int num_detectors - maximum index of the detectors
     Returns:
         numpy array of prompts counts per detector
     Notes:
@@ -177,14 +204,14 @@ py::array_t<int> singles_counts(py::array_t<int> detector_occurances, int max_de
         This function assumes that det1_hits and det2_hits are of the same length since they come from coincidences.
         It counts how many times each detector was involved in a prompt coincidence.
 */
-py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int max_detector_index) {
+py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int num_detectors) {
     auto buf1 = det1_hits.request();
     int *ptr1 = (int*) buf1.ptr;
     auto buf2 = det2_hits.request();
     int *ptr2 = (int*) buf2.ptr;
     
     py::object np = py::module_::import("numpy");
-    py::array_t<int> result = np.attr("zeros")(max_detector_index + 1);
+    py::array_t<int> result = np.attr("zeros")(num_detectors);
     auto result_buf = result.request();
     int *result_ptr = (int*) result_buf.ptr;
 
@@ -201,17 +228,17 @@ py::array_t<int> prompts_counts(py::array_t<int> det1_hits, py::array_t<int> det
     Args:
         np.array det1_hits - first detector involved in coincidences
         np.array det2_hits - second detector involved in coincidences, same length as det1_hits
-        int max_detector_index - maximum index of the detectors
+        int num_detectors - maximum index of the detectors
     Returns:
         2d numpy array for coincidences for each LOR, indexed by crystals at end of LOR
 */
-py::array_t<int> coincidences_per_lor(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int max_detector_index) {
+py::array_t<int> coincidences_per_lor(py::array_t<int> det1_hits, py::array_t<int> det2_hits, int num_detectors) {
     auto buf1 = det1_hits.request();
     int *ptr1 = (int*) buf1.ptr;
     auto buf2 = det2_hits.request();
     int *ptr2 = (int*) buf2.ptr;
 
-    int DETS = max_detector_index + 1;
+    int DETS = num_detectors;
 
     py::object np = py::module_::import("numpy");
     py::array_t<int> result = np.attr("zeros")(DETS * DETS);
@@ -233,7 +260,7 @@ py::array_t<int> coincidences_per_lor(py::array_t<int> det1_hits, py::array_t<in
     Args:
         np.array<int> singles_count - [detector index]:[number of singles]
         np.array<int> prompts_count - [detector index]:[number of prompts]
-        int max_detector_index - the highest numerical detector index
+        int num_detectors - the highest numerical detector index
         double L - result of root finding
         double S - overall singles rate for machine
         double TAU - time coincidence window
@@ -242,14 +269,14 @@ py::array_t<int> coincidences_per_lor(py::array_t<int> det1_hits, py::array_t<in
     Returns:
         2d numpy array providing the SP rate for each LOR
 */
-py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> prompts_count, int max_detector_index, double L, double S, double TAU, double TIME) {
+py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> prompts_count, int num_detectors, double L, double S, double TAU, double TIME) {
     auto singles_buf = singles_count.request();
     int *singles_ptr = (int*) singles_buf.ptr;
 
     auto prompts_buf = prompts_count.request();
     int *prompts_ptr = (int*) prompts_buf.ptr;
 
-    int DETS = max_detector_index + 1; // Number of detectors
+    int DETS = num_detectors; // Number of detectors
     
     py::object np = py::module_::import("numpy");
     py::array_t<double> rates = np.attr("zeros")(DETS * DETS);
@@ -278,11 +305,11 @@ py::array_t<double> sp_rates(py::array_t<int> singles_count, py::array_t<int> pr
 }
 
 
-py::array_t<double> sp_correction(py::array_t<int> singles_count, int max_detector_index, double exp_prod, double TAU, double TIME) {
+py::array_t<double> sp_correction(py::array_t<int> singles_count, int num_detectors, double exp_prod, double TAU, double TIME) {
     auto singles_buf = singles_count.request();
     int *singles_ptr = (int*) singles_buf.ptr;
 
-    int DETS = max_detector_index + 1; // Number of detectors
+    int DETS = num_detectors; // Number of detectors
     
     py::object np = py::module_::import("numpy");
     py::array_t<double> result = np.attr("full")(DETS * DETS, exp_prod);
@@ -319,7 +346,7 @@ py::array_t<double> sp_correction(py::array_t<int> singles_count, int max_detect
         the multi-coincidence policy is to count each delayed window with a hit only once
         regardless of the number of hits.
 */
-py::array_t<int> dw_rates(py::array_t<double> times, py::array_t<int> detectors, int max_detector_index, double TAU, double DELAY) {
+py::array_t<int> dw_rates(py::array_t<double> times, py::array_t<int> detectors, int num_detectors, double TAU, double DELAY) {
     queue<Window> delays; 
     auto buf = times.request();
     double *ptr = (double*) buf.ptr;
@@ -330,7 +357,7 @@ py::array_t<int> dw_rates(py::array_t<double> times, py::array_t<int> detectors,
     double window_start = - 2 * TAU; // Set below intentionally
 
     // Setup results array
-    int DETS = max_detector_index + 1; // Number of detectors
+    int DETS = num_detectors; // Number of detectors
     py::object np = py::module_::import("numpy");
     py::array_t<int> rates = np.attr("zeros")(DETS * DETS);
     auto rates_buf = rates.request();
@@ -376,7 +403,7 @@ py::array_t<int> dw_rates(py::array_t<double> times, py::array_t<int> detectors,
 /* Calculates singles-rates estimate for each LOR.
     Args:
         np.array<int> singles_count - [detector index]:[number of singles]
-        int max_detector_index - maximum index of the detectors
+        int num_detectors - maximum index of the detectors
         double TAU - time coincidence window
         double TIME - total data gathering time
     
@@ -385,10 +412,10 @@ py::array_t<int> dw_rates(py::array_t<double> times, py::array_t<int> detectors,
     Notes:
         The output is a 2D NumPy array where the indices correspond to the detector indices.
 */
-py::array_t<double> sr_rates(py::array_t<int> singles_count, int max_detector_index, double TAU, double TIME) {
+py::array_t<double> sr_rates(py::array_t<int> singles_count, int num_detectors, double TAU, double TIME) {
     auto singles_buf = singles_count.request();
     int *singles_ptr = (int*) singles_buf.ptr;
-    int DETS = max_detector_index + 1;
+    int DETS = num_detectors;
 
     py::object np = py::module_::import("numpy");
     py::array_t<double> result = np.attr("zeros")(DETS * DETS);
@@ -412,7 +439,6 @@ py::array_t<double> sr_rates(py::array_t<int> singles_count, int max_detector_in
 /* Calculates actual times from coarse/raw times
     Args:
         np.array<int> coarse - coarse
-
 */
 py::array_t<double> get_times(py::array_t<int> coarse, py::array_t<int> fine, double coarse_t, double fine_t) {
     auto coarse_buf = coarse.request();
@@ -457,6 +483,203 @@ py::array_t<double> get_times(py::array_t<int> coarse, py::array_t<int> fine, do
 }
 
 
+/* Reads records defined in Record struct from bin file
+    Args:
+        ifstream in - instream
+        Record& rec - record to modify as return value
+    Returns:
+        bool - whether read was successful
+*/
+bool read_record(std::ifstream& in, Record& rec) {
+    if (!in.read(reinterpret_cast<char*>(&rec.run), sizeof(int32_t))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.event), sizeof(int32_t))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.srcID), sizeof(int32_t))) return false;
+
+    if (!in.read(reinterpret_cast<char*>(&rec.srcX), sizeof(double))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.srcY), sizeof(double))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.srcZ), sizeof(double))) return false;
+
+    for (int i = 0; i < NUM_VOL_IDS; ++i) {
+        if (!in.read(reinterpret_cast<char*>(&rec.volIDs[i]), sizeof(int32_t))) return false;
+    }
+
+    if (!in.read(reinterpret_cast<char*>(&rec.time), sizeof(double))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.Edep), sizeof(double))) return false;
+
+    if (!in.read(reinterpret_cast<char*>(&rec.detX), sizeof(double))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.detY), sizeof(double))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.detZ), sizeof(double))) return false;
+
+    if (!in.read(reinterpret_cast<char*>(&rec.nComPh), sizeof(int32_t))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.nComDet), sizeof(int32_t))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.nRayPh), sizeof(int32_t))) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.nRayDet), sizeof(int32_t))) return false;
+
+    if (!in.read(reinterpret_cast<char*>(&rec.phantomCom), 8)) return false;
+    if (!in.read(reinterpret_cast<char*>(&rec.phantomRay), 8)) return false;
+
+    return true;
+}
+
+
+/* Returns ID of detector from record
+    Args:
+        Record rec - record to consider
+    Returns:
+        int - detector ID
+*/
+int get_id(Record rec) { // TODO: investigate moving inside struct?
+    return rec.volIDs[1] * 6 * 128 + rec.volIDs[3] * 128 + rec.volIDs[4];
+}
+
+
+/* Processes binary file, extracting all as-read info
+    Args:
+        string path - path of bin file to be read
+        double TAU - coincidence time window
+        double DELAY - delay used for delay window
+        int num_detectors - max det ID + 1
+    Returns:
+        np::array<int> singles_count - singles per detector
+        np::array<int> prompts_count - prompts per detector
+        np::array<int> coin_lor - 2d of coincidences on a given LOR
+        np::array<int> dw - 2d of delayed window estimate on LOR
+        np::array<int> actuals - 2d of actual # of randoms on LOR
+*/
+py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_detectors, bool gen_lm) {
+    std::ifstream file(path, std::ios::binary);
+    if (!file) {
+        std::cerr << "Error: Could not open file.\n";
+        return py::make_tuple(0, 0);
+    }
+
+    Record rec;
+    int record_count = 0;
+
+    // Singles Count Array
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> scount = np.attr("zeros")(num_detectors);
+    auto scount_buf = scount.request();
+    int *scount_ptr = (int*) scount_buf.ptr;
+
+    // Prompts Count Array
+    py::array_t<int> pcount = np.attr("zeros")(num_detectors);
+    auto pcount_buf = pcount.request();
+    int *pcount_ptr = (int*) pcount_buf.ptr;
+
+    // Local Variables for Coincidence Bundling
+    double window_start = -2 * TAU;
+    vector<Record> possibles;
+
+    // Variables for Delayed Window
+    queue<Window> delays;
+    py::array_t<int> dw = np.attr("zeros")(num_detectors * num_detectors);
+    auto dw_buf = dw.request();
+    int *dw_ptr = (int*) dw_buf.ptr;
+
+    // Actual Randoms
+    py::array_t<int> actuals = np.attr("zeros")(num_detectors * num_detectors);
+    auto actual_buf = actuals.request();
+    int *actual_ptr = (int*) actual_buf.ptr;
+
+    // Coincidences Per LOR
+    py::array_t<int> coin_lor = np.attr("zeros")(num_detectors * num_detectors);
+    auto coin_lor_buf = coin_lor.request();
+    int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
+
+
+    // START MAIN LOOP
+    while (read_record(file, rec)) {
+        // Logging read info, updating rec in while statement.
+        record_count++;
+        if (record_count % 10000000 == 0) {
+            cout << "Processed " 
+                << record_count / 1000000 
+                << " million records." << endl;
+            cout << "Sim Time: " << rec.time << endl;
+        }
+
+        int detID = get_id(rec);
+
+        // Count singles
+        scount_ptr[detID]++;
+
+        // Coincidence Processing
+        if (rec.time - window_start >= TAU) {
+            if (possibles.size() > 2) {
+                // Do nothing, since multiple coincidence
+            }
+            else if (possibles.size() == 2) {
+                // Add to prompts count array
+                int i = get_id(possibles[0]);
+                int j = get_id(possibles[1]);
+                pcount_ptr[i]++;
+                pcount_ptr[j]++;
+                // Add to "coincidences per LOR" array
+                coin_lor_ptr[i * num_detectors + j]++;
+                coin_lor_ptr[j * num_detectors + i]++;
+                if (
+                    possibles[0].srcX != possibles[1].srcX
+                    || possibles[0].srcY != possibles[1].srcY
+                    || possibles[0].srcZ != possibles[1].srcZ
+                ) {
+                    actual_ptr[i * num_detectors + j]++;
+                    actual_ptr[j * num_detectors + i]++;
+                }
+
+                tof_mm = SPD_OF_LIGHT
+                // TODO: Save to listmode!
+            }
+            // Create new delayed window prompt
+            delays.push(Window(rec.time + DELAY, rec.time + DELAY + TAU, detID));
+            // Handle resetting
+            possibles.clear();
+            possibles.push_back(rec);
+            window_start = rec.time;
+        }
+        else {
+            possibles.push_back(rec); 
+        }
+
+        // Delayed Window Processing
+        Window w;
+        while (!delays.empty()) { 
+            w = delays.front();
+            if (w.time2 < rec.time) { // past these window(s) already
+                // Process the windows
+                if (w.events.size() == 2) {
+                    int i = w.events[0];
+                    int j = w.events[1];
+                    dw_ptr[i * num_detectors + j]++;
+                    dw_ptr[j * num_detectors + i]++;
+                }
+                delays.pop();
+            }   
+            else {
+                break; // within or before soonest window
+            }
+        }
+        // empty events indicates garbage window
+        if ((!w.events.empty()) && (w.time1 < rec.time)) { // within a delay window
+            delays.front().events.push_back(detID);
+        }
+    } // End Main Loop
+
+
+    if (file.eof()) {
+        std::cout << "Reached end of file after reading " << record_count << " records.\n";
+    } else if (file.fail()) {
+        std::cerr << "File read error occurred!\n";
+    }
+
+    coin_lor.resize({num_detectors, num_detectors});
+    dw.resize({num_detectors, num_detectors});
+    actuals.resize({num_detectors, num_detectors});
+
+    return py::make_tuple(scount, pcount, coin_lor, dw, actuals);
+}
+
+
 PYBIND11_MODULE(randoms, m) {
     m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences",
         py::arg("times"),
@@ -464,22 +687,22 @@ PYBIND11_MODULE(randoms, m) {
     );
     m.def("singles_counts", &singles_counts, "calculates singles counts per detector",
         py::arg("detector_occurances"),
-        py::arg("max_detector_index")
+        py::arg("num_detectors")
     );
     m.def("prompts_counts", &prompts_counts, "calculates prompts counts per detector",
         py::arg("det1_hits"),
         py::arg("det2_hits"),
-        py::arg("max_detector_index")
+        py::arg("num_detectors")
     );
     m.def("coincidences_per_lor", &coincidences_per_lor, "calculates coincidences per LOR",
         py::arg("det1_hits"),
         py::arg("det2_hits"),
-        py::arg("max_detector_index")
+        py::arg("num_detectors")
     );
     m.def("sp_rates", &sp_rates, "Calculates sp rates",
         py::arg("singles_count"),
         py::arg("prompts_count"),
-        py::arg("max_detector_index"),
+        py::arg("num_detectors"),
         py::arg("L"),
         py::arg("S"),
         py::arg("TAU"),
@@ -487,7 +710,7 @@ PYBIND11_MODULE(randoms, m) {
     );
     m.def("sp_correction", &sp_correction, "Calculates sp multi-correction terms",
         py::arg("singles_count"),
-        py::arg("max_detector_index"),
+        py::arg("num_detectors"),
         py::arg("exp_prod"),
         py::arg("TAU"),
         py::arg("TIME")
@@ -495,13 +718,13 @@ PYBIND11_MODULE(randoms, m) {
     m.def("dw_rates", &dw_rates, "calculates dw estimate", 
         py::arg("times"),
         py::arg("detectors"),
-        py::arg("max_detector_index"),
+        py::arg("num_detectors"),
         py::arg("TAU"),
         py::arg("DELAY")
     );
     m.def("sr_rates", &sr_rates, "calculates sr estimate",
         py::arg("singles_count"),
-        py::arg("max_detector_index"),
+        py::arg("num_detectors"),
         py::arg("TAU"),
         py::arg("TIME")
     );
@@ -510,5 +733,13 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("fine"),
         py::arg("coarse_t"),
         py::arg("fine_t")
+    );
+    m.def("read_file", &read_file, "reads file",
+        py::arg("path"),
+        py::arg("TAU"),
+        py::arg("TIME"),
+        py::arg("DELAY"),
+        py::arg("num_detectors"),
+        py::arg("gen_lm")
     );
 }
