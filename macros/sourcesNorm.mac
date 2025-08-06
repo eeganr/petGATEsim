@@ -1,0 +1,13 @@
+/gate/source/addSource CylinderSource
+/gate/source/CylinderSource/setActivity 1.5 mCi
+/gate/source/CylinderSource/setType backtoback
+/gate/source/CylinderSource/gps/particle gamma
+/gate/source/CylinderSource/gps/energytype Mono
+/gate/source/CylinderSource/gps/monoenergy 0.511 MeV
+/gate/source/CylinderSource/gps/type Plane
+/gate/source/CylinderSource/gps/shape Annulus
+/gate/source/CylinderSource/gps/radius0 300.8 mm
+/gate/source/CylinderSource/gps/radius 302.4 mm
+/gate/source/CylinderSource/gps/halfz 100 mm
+/gate/source/CylinderSource/gps/angtype iso
+/gate/source/CylinderSource/gps/centre 0. 0. 0. cm
