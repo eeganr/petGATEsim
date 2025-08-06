@@ -10,7 +10,7 @@
 
 /gate/run/initialize
 
-/control/execute flangeless.mac
+/control/execute sourcesNorm.mac
 
 /vis/scene/create
 
@@ -22,16 +22,4 @@
 
 /vis/drawVolume
 
-/gate/source/LidA/visualize 5000 red 2
-
-/gate/source/LidB/visualize 5000 red 2
-
-/gate/source/LidC/visualize 5000 red 2
-
-/gate/source/LidD/visualize 5000 red 2
-
-/gate/source/LidE/visualize 5000 red 2
-
-/gate/source/LidF/visualize 5000 red 2
-
-/gate/source/Background/visualize 5000 yellow 2
+/gate/source/AnnulusSource/visualize 5000 red 2
