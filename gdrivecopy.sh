@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=GDriveCopy
 #
-#SBATCH --time=12:00:00
+#SBATCH --time=8:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=16G
@@ -9,9 +9,7 @@
 
 ml rclone
 
-for i in $(seq 1 60); 
+for i in $(seq 61 120); 
 do
-rclone copy $SCRATCH/aug6annulus/output${i}Coincidences.dat gdrive:James/Simulation_Data/Annulus_Simulation
-rclone copy $SCRATCH/aug6annulus/output${i}Singles.dat gdrive:James/Simulation_Data/Annulus_Simulation
-rclone copy $SCRATCH/aug6annulus/output${i}Hits.dat gdrive:James/Simulation_Data/Annulus_Simulation
+rclone copy $SCRATCH/aug1flange/output${i}Singles.dat gdrive:Example_Data/Eegan/FlangelessEsserCoins
 done
