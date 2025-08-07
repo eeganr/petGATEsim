@@ -1,4 +1,5 @@
 import randoms
+import time
 
 # === CONFIG ===
 CYCLE = 1.6e-9  # clock cycle (s)
@@ -9,7 +10,8 @@ DETECTORS_REAL = 13824
 TIME = 10.0
 # ===
 
-scount, pcount, coin_lor, dw, actuals = randoms.read_file_lm("/scratch/users/eeganr/aug6flange/output1Singles.dat", "/scratch/users/eeganr/test.lm", TAU, TIME, DELAY, DETECTORS_SIM)
+t = time.time()
+# scount, pcount, coin_lor, dw, actuals = randoms.read_file("/scratch/users/eeganr/aug6flange/output1Singles.dat", TAU, TIME, DELAY, DETECTORS_SIM)
 
-
-print('done!')
+scount, pcount, coin_lor, dw, actuals = randoms.read_file_lm("/scratch/users/eeganr/aug6flange/output1Singles.dat", "/scratch/users/eeganr/test2.lm", TAU, TIME, DELAY, DETECTORS_SIM)
+print("Finished processing/writing in:", time.time() - t, "s.")

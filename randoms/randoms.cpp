@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include <filesystem>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ namespace py = pybind11;
 
 constexpr int NUM_VOL_IDS = 6;
 constexpr long SPD_OF_LIGHT = 299792458000; // mm/s
+constexpr int BUFFER_SIZE = 10; // number of records to keep in priority queue for chronology
 
 /* Struct for a single used for multi-coincidence processing.
     Constructor Args:
@@ -60,6 +62,8 @@ struct Window {
 };
 
 
+/* Struct for a Record output in the "Singles" category by GATE
+*/
 struct Record {
     int32_t run;
     int32_t event;
@@ -78,6 +82,14 @@ struct Record {
 
     char phantomCom[8];
     char phantomRay[8];
+
+    /* Returns ID of detector from this record
+        Returns:
+            int - detector ID
+    */
+    int id() {
+        return volIDs[1] * 6 * 128 + volIDs[3] * 128 + volIDs[4];
+    }
 };
 
 #pragma pack(push, 1)
@@ -536,17 +548,6 @@ bool read_record(std::ifstream& in, Record& rec) {
 }
 
 
-/* Returns ID of detector from record
-    Args:
-        Record rec - record to consider
-    Returns:
-        int - detector ID
-*/
-int get_id(Record rec) { // TODO: investigate moving inside struct?
-    return rec.volIDs[1] * 6 * 128 + rec.volIDs[3] * 128 + rec.volIDs[4];
-}
-
-
 /* Processes binary file, extracting all as-read info
     Args:
         string path - path of bin file to be read
@@ -561,14 +562,12 @@ int get_id(Record rec) { // TODO: investigate moving inside struct?
         np::array<int> actuals - 2d of actual # of randoms on LOR
 */
 py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_detectors) {
+    // Open Infile
     std::ifstream file(path, std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file.\n";
         return py::make_tuple(0, 0);
     }
-
-    Record rec;
-    int record_count = 0;
 
     // Singles Count Array
     py::object np = py::module_::import("numpy");
@@ -601,9 +600,23 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
     auto coin_lor_buf = coin_lor.request();
     int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
 
+    // Variables for Read Loop
+    Record rec;
+    int record_count = 0;
+    auto chrono = [] (Record a, Record b) {return a.time > b.time;};
+    // Buffer to ensure that records read chronologically
+    priority_queue<Record, vector<Record>, decltype(chrono)> buffer(chrono);
+
+    for (int i = 0; i < BUFFER_SIZE; i++) { // Reads in BUFFER_SIZE records to queue to start with
+        if (!read_record(file, rec)) { // breaks if end of file too soon
+            break;
+        }
+        buffer.push(rec);
+    }
+    
 
     // START MAIN LOOP
-    while (read_record(file, rec)) {
+    while (!buffer.empty()) {
         // Logging read info, updating rec in while statement.
         record_count++;
         if (record_count % 10000000 == 0) {
@@ -613,7 +626,11 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
             cout << "Sim Time: " << rec.time << endl;
         }
 
-        int detID = get_id(rec);
+        // Retrieve from Buffer
+        rec = buffer.top();
+        buffer.pop();
+
+        int detID = rec.id();
 
         // Count singles
         scount_ptr[detID]++;
@@ -625,8 +642,8 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
             }
             else if (possibles.size() == 2) {
                 // Add to prompts count array
-                int i = get_id(possibles[0]);
-                int j = get_id(possibles[1]);
+                int i = possibles[0].id();
+                int j = possibles[1].id();
                 pcount_ptr[i]++;
                 pcount_ptr[j]++;
                 // Add to "coincidences per LOR" array
@@ -676,6 +693,12 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
         if ((!w.events.empty()) && (w.time1 < rec.time)) { // within a delay window
             delays.front().events.push_back(detID);
         }
+
+        // Push next event to buffer
+        if (read_record(file, rec)) {
+            buffer.push(rec);
+        }
+
     } // End Main Loop
 
 
@@ -720,9 +743,6 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
         return py::make_tuple(0, 0);
     }
 
-    Record rec;
-    int record_count = 0;
-
     // Singles Count Array
     py::object np = py::module_::import("numpy");
     py::array_t<int> scount = np.attr("zeros")(num_detectors);
@@ -754,9 +774,22 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
     auto coin_lor_buf = coin_lor.request();
     int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
 
+    // Variables for Read Loop
+    Record rec;
+    int record_count = 0;
+    auto chrono = [] (Record a, Record b) {return a.time > b.time;};
+    // Buffer to ensure that records read chronologically
+    priority_queue<Record, vector<Record>, decltype(chrono)> buffer(chrono);
+
+    for (int i = 0; i < BUFFER_SIZE; i++) { // Reads in BUFFER_SIZE records to queue to start with
+        if (!read_record(file, rec)) { // breaks if end of file too soon
+            break;
+        }
+        buffer.push(rec);
+    }
 
     // START MAIN LOOP
-    while (read_record(file, rec)) {
+    while (!buffer.empty()) {
         // Logging read info, updating rec in while statement.
         record_count++;
         if (record_count % 10000000 == 0) {
@@ -766,7 +799,11 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
             cout << "Sim Time: " << rec.time << endl;
         }
 
-        int detID = get_id(rec);
+        // Retrieve from Buffer
+        rec = buffer.top();
+        buffer.pop();
+
+        int detID = rec.id();
 
         // Count singles
         scount_ptr[detID]++;
@@ -778,8 +815,8 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
             }
             else if (possibles.size() == 2) {
                 // Add to prompts count array
-                int i = get_id(possibles[0]);
-                int j = get_id(possibles[1]);
+                int i = possibles[0].id();
+                int j = possibles[1].id();
                 pcount_ptr[i]++;
                 pcount_ptr[j]++;
                 // Add to "coincidences per LOR" array
@@ -840,6 +877,12 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
         if ((!w.events.empty()) && (w.time1 < rec.time)) { // within a delay window
             delays.front().events.push_back(detID);
         }
+
+        // Push next event to buffer
+        if (read_record(file, rec)) {
+            buffer.push(rec);
+        }
+
     } // End Main Loop
 
 
