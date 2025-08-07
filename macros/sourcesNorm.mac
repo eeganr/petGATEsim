@@ -1,0 +1,39 @@
+/gate/source/addSource AnnulusSource
+/gate/source/AnnulusSource/setActivity 1.5 mCi
+/gate/source/AnnulusSource/gps/particle gamma
+/gate/source/AnnulusSource/gps/energytype Mono
+/gate/source/AnnulusSource/setType backtoback
+/gate/source/AnnulusSource/gps/type Volume
+/gate/source/AnnulusSource/gps/shape Cylinder
+/gate/source/AnnulusSource/gps/radius 152.4 mm
+/gate/source/AnnulusSource/gps/radius0 150.8 mm
+/gate/source/AnnulusSource/gps/halfz 100. mm
+/gate/source/AnnulusSource/gps/centre 0 0 0 mm
+/gate/source/AnnulusSource/gps/monoenergy 0.511 MeV
+/gate/source/AnnulusSource/gps/angtype iso
+
+
+/gate/world/daughters/name coldcenter
+/gate/world/daughters/insert cylinder
+/gate/coldcenter/vis/setColor white
+/gate/coldcenter/geometry/setRmax 150.8 mm
+/gate/coldcenter/geometry/setHeight 200 mm
+/gate/coldcenter/setMaterial Air
+/gate/coldcenter/placement/setTranslation  0. 0. 0. mm
+/gate/coldcenter/vis/forceWireframe
+
+/gate/coldcenter/daughters/name plastictube
+/gate/coldcenter/daughters/insert cylinder
+/gate/plastictube/vis/setColor magenta
+/gate/plastictube/geometry/setRmin 145.8 mm
+/gate/plastictube/geometry/setRmax 150.8 mm
+/gate/plastictube/geometry/setHeight 200 mm
+/gate/plastictube/setMaterial Water
+/gate/plastictube/placement/setTranslation  0. 0. 0. mm
+/gate/plastictube/vis/forceSolid
+
+# Reinitialize to allow use of new volumes
+/gate/run/initialize
+
+/gate/source/AnnulusSource/gps/Forbid plastictube
+/gate/source/AnnulusSource/gps/Forbid coldcenter

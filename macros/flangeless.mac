@@ -117,9 +117,17 @@
 /gate/source/Background/gps/monoenergy 0.511 MeV
 /gate/source/Background/gps/angtype iso
 
-
-/gate/world/daughters/name cold_area1
+/gate/world/daughters/name bgcyl
 /gate/world/daughters/insert cylinder
+/gate/bgcyl/vis/setColor purple
+/gate/bgcyl/geometry/setRmax 104.5 mm
+/gate/bgcyl/geometry/setHeight 186 mm
+/gate/bgcyl/setMaterial Water
+/gate/bgcyl/placement/setTranslation  0 0 -73.95 mm
+/gate/bgcyl/vis/forceWireframe
+
+/gate/bgcyl/daughters/name cold_area1
+/gate/bgcyl/daughters/insert cylinder
 /gate/cold_area1/vis/setColor green
 /gate/cold_area1/geometry/setRmax 4. mm
 /gate/cold_area1/geometry/setHeight 38.1 mm
@@ -127,8 +135,8 @@
 /gate/cold_area1/placement/setTranslation  -17.062 56.774 0 mm
 /gate/cold_area1/vis/forceSolid
 
-/gate/world/daughters/name cold_area2
-/gate/world/daughters/insert cylinder
+/gate/bgcyl/daughters/name cold_area2
+/gate/bgcyl/daughters/insert cylinder
 /gate/cold_area2/vis/setColor green
 /gate/cold_area2/geometry/setRmax 6. mm
 /gate/cold_area2/geometry/setHeight 38.1 mm
@@ -136,8 +144,8 @@
 /gate/cold_area2/placement/setTranslation  9.855 57.803 0 mm
 /gate/cold_area2/vis/forceSolid
 
-/gate/world/daughters/name cold_area3
-/gate/world/daughters/insert cylinder
+/gate/bgcyl/daughters/name cold_area3
+/gate/bgcyl/daughters/insert cylinder
 /gate/cold_area3/vis/setColor green
 /gate/cold_area3/geometry/setRmax 8. mm
 /gate/cold_area3/geometry/setHeight 38.1 mm
@@ -145,8 +153,8 @@
 /gate/cold_area3/placement/setTranslation  38.241 40.301 0 mm
 /gate/cold_area3/vis/forceSolid
 
-/gate/world/daughters/name cold_area4
-/gate/world/daughters/insert cylinder
+/gate/bgcyl/daughters/name cold_area4
+/gate/bgcyl/daughters/insert cylinder
 /gate/cold_area4/vis/setColor green
 /gate/cold_area4/geometry/setRmax 12.5 mm
 /gate/cold_area4/geometry/setHeight 38.1 mm
@@ -163,8 +171,8 @@
 /gate/cold_area5/placement/setTranslation  -34.417 -45.301 0 mm
 /gate/cold_area5/vis/forceSolid
 
-/gate/world/daughters/name cold_area6
-/gate/world/daughters/insert cylinder
+/gate/bgcyl/daughters/name cold_area6
+/gate/bgcyl/daughters/insert cylinder
 /gate/cold_area6/vis/setColor green
 /gate/cold_area6/geometry/setRmax 12.5 mm
 /gate/cold_area6/geometry/setHeight 38.1 mm

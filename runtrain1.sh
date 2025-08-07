@@ -48,7 +48,7 @@ then
   # change the path /home/users/fwdesai/PhytoPET below to the directory where you will keep the files for this simulation
   ####################################
 
-  cd /home/users/eeganr/petGATEsim/macros
+  cd /home/users/jamesdho/collabGATE/macros
   GATE=/gate/gate_8.2-install/bin/Gate
 fi
 
@@ -71,11 +71,11 @@ BASE_FILE="${PREFIX}_${NAME}_normr"
 
 if [ "$MODE" = "NORM" ]
 then
-  OUTPUT_FILE="/home/users/eeganr/PhytoPET_Simulation/${BASE_FILE}${i}"
+  OUTPUT_FILE="/home/users/jamesdho/petsimout/${BASE_FILE}${i}"
   echo $CAMERA_FILE
   echo $SOURCE_FILE
   echo $OUTPUT_FILE
-  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /scratch/users/eeganr/PhytoPET_Simulation/train1_normr$i.out
+  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /scratch/users/jamesdho/petsimout/train1_normr$i.out
   echo $RANDOM_SEED
 #  RANDOM_SEED=`expr $RANDOM_SEED + $INCR_SEED`
 fi
@@ -93,11 +93,11 @@ then
 # also change the path /scratch/users/fwdesai/PhytoPET/spatialres/train1_r$i.out to the same location you used for OUTPUT_FILE, 
 #	make sure this path ends with train1_r$i.out as seen below
 ####################################################
-  OUTPUT_FILE="/scratch/users/eeganr/aug1flange/output${i}"
+  OUTPUT_FILE="/scratch/users/jamesdho/aug6annulus/output${i}"
   echo $SOURCE_FILE  
   echo $OUTPUT_FILE
   echo $CAMERA_FILE
-  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /scratch/users/eeganr/PhytoPET_Simulation/train1_r$i.out
+  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /scratch/users/jamesdho/petsimout/train1_r$i.out
   echo $RANDOM_SEED
   
 #  RANDOM_SEED=`expr $RANDOM_SEED + $INCR_SEED`
