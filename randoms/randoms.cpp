@@ -14,7 +14,7 @@ using namespace std;
 namespace py = pybind11;
 
 constexpr int NUM_VOL_IDS = 6;
-constexpr int SPD_OF_LIGHT = 299792458000;
+constexpr long SPD_OF_LIGHT = 299792458000; // mm/s
 
 /* Struct for a single used for multi-coincidence processing.
     Constructor Args:
@@ -79,6 +79,20 @@ struct Record {
     char phantomCom[8];
     char phantomRay[8];
 };
+
+#pragma pack(push, 1)
+struct ListmodeRecord {
+    float x1, y1, z1;
+
+    float TOF;
+
+    float unused;
+
+    float x2, y2, z2;
+
+    float crystalID1, crystalID2;
+};
+#pragma pack(pop)
 
 
 /* Bundles list of singles into coincidences.
@@ -546,7 +560,7 @@ int get_id(Record rec) { // TODO: investigate moving inside struct?
         np::array<int> dw - 2d of delayed window estimate on LOR
         np::array<int> actuals - 2d of actual # of randoms on LOR
 */
-py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_detectors, bool gen_lm) {
+py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_detectors) {
     std::ifstream file(path, std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file.\n";
@@ -627,7 +641,6 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
                     actual_ptr[j * num_detectors + i]++;
                 }
 
-                tof_mm = SPD_OF_LIGHT
                 // TODO: Save to listmode!
             }
             // Create new delayed window prompt
@@ -675,6 +688,172 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
     coin_lor.resize({num_detectors, num_detectors});
     dw.resize({num_detectors, num_detectors});
     actuals.resize({num_detectors, num_detectors});
+
+    return py::make_tuple(scount, pcount, coin_lor, dw, actuals);
+}
+
+
+/* Processes binary file, extracting all as-read info, writes listmode file
+    Args:
+        string path - path of bin file to be read
+        string outpath - path of lm file to add to
+        double TAU - coincidence time window
+        double DELAY - delay used for delay window
+        int num_detectors - max det ID + 1
+    Returns:
+        np::array<int> singles_count - singles per detector
+        np::array<int> prompts_count - prompts per detector
+        np::array<int> coin_lor - 2d of coincidences on a given LOR
+        np::array<int> dw - 2d of delayed window estimate on LOR
+        np::array<int> actuals - 2d of actual # of randoms on LOR
+*/
+py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, double DELAY, int num_detectors) {
+    std::ifstream file(path, std::ios::binary);
+    if (!file) {
+        std::cerr << "Error: Could not open file.\n";
+        return py::make_tuple(0, 0);
+    }
+
+    std::ofstream outfile(outpath, std::ios::binary | std::ios::app);
+    if (!outfile) {
+        std::cerr << "Error: Could not open file for writing.\n";
+        return py::make_tuple(0, 0);
+    }
+
+    Record rec;
+    int record_count = 0;
+
+    // Singles Count Array
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> scount = np.attr("zeros")(num_detectors);
+    auto scount_buf = scount.request();
+    int *scount_ptr = (int*) scount_buf.ptr;
+
+    // Prompts Count Array
+    py::array_t<int> pcount = np.attr("zeros")(num_detectors);
+    auto pcount_buf = pcount.request();
+    int *pcount_ptr = (int*) pcount_buf.ptr;
+
+    // Local Variables for Coincidence Bundling
+    double window_start = -2 * TAU;
+    vector<Record> possibles;
+
+    // Variables for Delayed Window
+    queue<Window> delays;
+    py::array_t<int> dw = np.attr("zeros")(num_detectors * num_detectors);
+    auto dw_buf = dw.request();
+    int *dw_ptr = (int*) dw_buf.ptr;
+
+    // Actual Randoms
+    py::array_t<int> actuals = np.attr("zeros")(num_detectors * num_detectors);
+    auto actual_buf = actuals.request();
+    int *actual_ptr = (int*) actual_buf.ptr;
+
+    // Coincidences Per LOR
+    py::array_t<int> coin_lor = np.attr("zeros")(num_detectors * num_detectors);
+    auto coin_lor_buf = coin_lor.request();
+    int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
+
+
+    // START MAIN LOOP
+    while (read_record(file, rec)) {
+        // Logging read info, updating rec in while statement.
+        record_count++;
+        if (record_count % 10000000 == 0) {
+            cout << "Processed " 
+                << record_count / 1000000 
+                << " million records." << endl;
+            cout << "Sim Time: " << rec.time << endl;
+        }
+
+        int detID = get_id(rec);
+
+        // Count singles
+        scount_ptr[detID]++;
+
+        // Coincidence Processing
+        if (rec.time - window_start >= TAU) {
+            if (possibles.size() > 2) {
+                // Do nothing, since multiple coincidence
+            }
+            else if (possibles.size() == 2) {
+                // Add to prompts count array
+                int i = get_id(possibles[0]);
+                int j = get_id(possibles[1]);
+                pcount_ptr[i]++;
+                pcount_ptr[j]++;
+                // Add to "coincidences per LOR" array
+                coin_lor_ptr[i * num_detectors + j]++;
+                coin_lor_ptr[j * num_detectors + i]++;
+                // Determine whether it's a "true" coincidence
+                if (
+                    possibles[0].srcX != possibles[1].srcX
+                    || possibles[0].srcY != possibles[1].srcY
+                    || possibles[0].srcZ != possibles[1].srcZ
+                ) {
+                    actual_ptr[i * num_detectors + j]++;
+                    actual_ptr[j * num_detectors + i]++;
+                }
+                // Write to LM file
+                float tof_mm = SPD_OF_LIGHT * (possibles[1].time - possibles[0].time);
+
+                ListmodeRecord outrec = {
+                    (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
+                    tof_mm, 0.0, 
+                    (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
+                    (float) i, (float) j
+                };
+
+                outfile.write(reinterpret_cast<char*>(&outrec), sizeof(ListmodeRecord));
+
+            }
+            // Create new delayed window prompt
+            delays.push(Window(rec.time + DELAY, rec.time + DELAY + TAU, detID));
+            // Handle resetting
+            possibles.clear();
+            possibles.push_back(rec);
+            window_start = rec.time;
+        }
+        else {
+            possibles.push_back(rec); 
+        }
+
+        // Delayed Window Processing
+        Window w;
+        while (!delays.empty()) { 
+            w = delays.front();
+            if (w.time2 < rec.time) { // past these window(s) already
+                // Process the windows
+                if (w.events.size() == 2) {
+                    int i = w.events[0];
+                    int j = w.events[1];
+                    dw_ptr[i * num_detectors + j]++;
+                    dw_ptr[j * num_detectors + i]++;
+                }
+                delays.pop();
+            }   
+            else {
+                break; // within or before soonest window
+            }
+        }
+        // empty events indicates garbage window
+        if ((!w.events.empty()) && (w.time1 < rec.time)) { // within a delay window
+            delays.front().events.push_back(detID);
+        }
+    } // End Main Loop
+
+
+    if (file.eof()) {
+        std::cout << "Reached end of file after reading " << record_count << " records.\n";
+    } else if (file.fail()) {
+        std::cerr << "File read error occurred!\n";
+    }
+
+    coin_lor.resize({num_detectors, num_detectors});
+    dw.resize({num_detectors, num_detectors});
+    actuals.resize({num_detectors, num_detectors});
+
+    outfile.close();
 
     return py::make_tuple(scount, pcount, coin_lor, dw, actuals);
 }
@@ -739,7 +918,14 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("TAU"),
         py::arg("TIME"),
         py::arg("DELAY"),
-        py::arg("num_detectors"),
-        py::arg("gen_lm")
+        py::arg("num_detectors")
+    );
+    m.def("read_file_lm", &read_file_lm, "reads file and writes listmode",
+        py::arg("path"),
+        py::arg("outpath"),
+        py::arg("TAU"),
+        py::arg("TIME"),
+        py::arg("DELAY"),
+        py::arg("num_detectors")
     );
 }

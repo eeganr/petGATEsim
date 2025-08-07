@@ -17,7 +17,7 @@ TIME = 10.0
 
 # Arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-p", "--path", type=str, default="aug1flange/output", help="path prefix for input files")
+parser.add_argument("-p", "--path", type=str, default="aug6flange/output", help="path prefix for input files")
 parser.add_argument("-o", "--output", type=str, default="estimations.csv", help="output file name")
 parser.add_argument("-t", "--time", type=float, default=10.0, help="total simulation time in seconds")
 parser.add_argument("-l", "--list", action="store_true", help="store contamination list")
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
         # Read file and calculate as-read metrics
 
-        singles_count, prompts_count, coin_lor, dw_nums, actuals = randoms.read_file(infile, TAU, TIME, DELAY, DETECTORS_SIM, False)
+        singles_count, prompts_count, coin_lor, dw_nums, actuals = randoms.read_file(infile, TAU, TIME, DELAY, DETECTORS_SIM)
         
         # Calculate estimation methods
 

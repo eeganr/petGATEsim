@@ -9,7 +9,7 @@ DETECTORS_REAL = 13824
 TIME = 10.0
 # ===
 
-scount, pcount, coin_lor, dw, actuals = randoms.read_file("/scratch/users/eeganr/aug1flange/output1Singles.dat", TAU, TIME, DELAY, DETECTORS_SIM, False)
+scount, pcount, coin_lor, dw, actuals = randoms.read_file_lm("/scratch/users/eeganr/aug6flange/output1Singles.dat", "/scratch/users/eeganr/test.lm", TAU, TIME, DELAY, DETECTORS_SIM)
 
 
 print('done!')
