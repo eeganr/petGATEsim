@@ -10,15 +10,12 @@
 
 /gate/run/initialize
 
-/control/execute flangeless.mac
-
 /vis/scene/create
 
 /vis/sceneHandler/attach scene-0
 
 /control/execute Geometry.mac
-
-/gate/run/initialize
+/control/execute flangeless.mac
 
 /vis/drawVolume
 
