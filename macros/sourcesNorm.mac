@@ -5,7 +5,7 @@
 /gate/source/AnnulusSource/setType backtoback
 /gate/source/AnnulusSource/gps/type Volume
 /gate/source/AnnulusSource/gps/shape Cylinder
-/gate/source/AnnulusSource/gps/radius 302.4 mm
+/gate/source/AnnulusSource/gps/radius 152.4 mm
 /gate/source/AnnulusSource/gps/halfz 100. mm
 /gate/source/AnnulusSource/gps/centre 0 0 0 mm
 /gate/source/AnnulusSource/gps/monoenergy 0.511 MeV
@@ -15,11 +15,11 @@
 /gate/world/daughters/name coldcenter
 /gate/world/daughters/insert cylinder
 /gate/coldcenter/vis/setColor green
-/gate/coldcenter/geometry/setRmax 300.8 mm
+/gate/coldcenter/geometry/setRmax 150.8 mm
 /gate/coldcenter/geometry/setHeight 200 mm
 /gate/coldcenter/setMaterial Air
 /gate/coldcenter/placement/setTranslation  0. 0. 0. mm
-/gate/coldcenter/vis/forceSolid
+/gate/coldcenter/vis/forceWireframe
 
 # Reinitialize to allow use of new volumes
 /gate/run/initialize
