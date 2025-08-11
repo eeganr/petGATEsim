@@ -2,5 +2,22 @@
     "jupyter.notebookFileRoot": "${fileDirname}",
     "files.associations": {
         "xstring": "cpp"
-    }
+    },
+    "latex-workshop.latex.autoClean.run": "onSucceeded",
+    "ltex.enabled": [
+
+        "bibtex",
+        "context",
+        "context.tex",
+        "html",
+        "markdown",
+        "mdx",
+        "typst",
+        "asciidoc",
+        "neorg",
+        "org",
+        "quarto",
+        "restructuredtext",
+        "rsweave"
+    ]
 }

@@ -9,3 +9,8 @@ build
 pet
 *.nii.gz
 *.nii
+
+*.nav
+*.snm
+*.synctex.gz
+*.synctex

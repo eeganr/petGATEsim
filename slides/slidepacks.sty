@@ -1,0 +1,63 @@
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage{colortbl}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{tkz-tab}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{arrows.meta,arrows}
+\usetikzlibrary{decorations.markings}
+
+
+\usetikzlibrary{shadows,shadows.blur,shapes.misc, positioning}
+
+
+\newcommand{\rn}[2]{%% "rn": "remember node"
+    \tikz[remember picture,baseline=(#1.base)]\node [inner sep=0] (#1) {$#2$};%
+}
+
+\newcommand{\rnw}[2]{%% "rnw": "remember node words"
+    \tikz[remember picture,baseline=(#1.base)]\node [inner sep=0] (#1) {#2};%
+}
+
+\newcommand{\customanno}[5]{
+    % #1 target point
+    % #2 length
+    % #3 rotation
+    % #4 text
+	% #5 options for node
+    \begingroup
+        \def\vertshift{0.4em}
+        \def\break{0.4em}
+        \ifnum #3<0 % text below
+            \pgfmathsetmacro{\breakdist}{\break * 0.707}
+            \pgfmathsetmacro{\finalX}{#2 * cos(#3) - \breakdist}
+            \pgfmathsetmacro{\finalY}{#2 * sin(#3) - \vertshift - \breakdist}
+            \pgfmathsetmacro{\breakAx}{#2 * cos(#3) / 2}
+            \pgfmathsetmacro{\breakBx}{\breakAx - \breakdist}
+            \pgfmathsetmacro{\breakAy}{\breakAx * tan(#3) - \vertshift}
+            \pgfmathsetmacro{\breakBy}{\breakAy - \breakdist}
+            \begin{tikzpicture}[overlay, remember picture]
+                \draw[-] ([yshift=-\vertshift]#1) -- ([xshift=\breakAx, yshift =\breakAy]#1) -- ([xshift=\breakBx, yshift=\breakBy]#1) -- ([xshift=\finalX, yshift=\finalY]#1) node[right, #5]{\small #4};
+            \end{tikzpicture}
+        \else % text above
+            \pgfmathsetmacro{\finalX}{#2 * cos(#3)}
+            \pgfmathsetmacro{\finalY}{#2 * sin(#3) + \vertshift - \break}
+            \pgfmathsetmacro{\breakx}{#2 * cos(#3) / 2}
+            \pgfmathsetmacro{\breakAy}{\breakx * tan(#3) + \vertshift}
+            \pgfmathsetmacro{\breakBy}{\breakAy - \break}
+            \begin{tikzpicture}[overlay, remember picture]
+                \draw[-] ([yshift=\vertshift]#1) -- ([xshift=\breakx, yshift =\breakAy]#1) -- ([xshift=\breakx, yshift=\breakBy]#1) -- ([xshift=\finalX, yshift=\finalY]#1) node[right, #5]{\small #4};
+            \end{tikzpicture}
+        \fi
+    \endgroup
+}
+
+%\usepackage{nonpsgfx} % non-PS includes, formerly supported by the Makefile
+\endinput
