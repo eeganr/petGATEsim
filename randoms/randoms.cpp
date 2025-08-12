@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cstdint>
 #include <filesystem>
+#include <random>
 
 using namespace std;
 
@@ -91,6 +92,33 @@ struct Record {
         return volIDs[1] * 6 * 128 + volIDs[3] * 128 + volIDs[4];
     }
 };
+
+
+/* Struct for a time window used for delayed window estimation.
+    Constructor Args:
+        double t1 - start of the window
+        double t2 - end of the window
+        Record r - prompt event
+    Notes:
+        time1 != time2 indicates a non-garbage window.
+*/
+struct WindowLM {
+    double time1; // Garbage window default
+    double time2;
+    vector<Record> events;
+    
+    WindowLM(double t1, double t2, Record r) {
+        time1 = t1;
+        time2 = t2;
+        events = {r};
+    }
+
+    WindowLM() { // Garbage constructor
+        time1 = -1;
+        time2 = -1;
+    }
+};
+
 
 #pragma pack(push, 1)
 struct ListmodeRecord {
@@ -561,7 +589,7 @@ bool read_record(std::ifstream& in, Record& rec) {
         np::array<int> dw - 2d of delayed window estimate on LOR
         np::array<int> actuals - 2d of actual # of randoms on LOR
 */
-py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_detectors) {
+py::tuple read_file(string path, double TAU, double DELAY, int num_detectors) {
     // Open Infile
     std::ifstream file(path, std::ios::binary);
     if (!file) {
@@ -730,7 +758,7 @@ py::tuple read_file(string path, double TAU, double TIME, double DELAY, int num_
         np::array<int> dw - 2d of delayed window estimate on LOR
         np::array<int> actuals - 2d of actual # of randoms on LOR
 */
-py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, double DELAY, int num_detectors) {
+py::tuple read_file_lm(string path, string outpath, string outdelaypath, double TAU, double DELAY, int num_detectors) {
     std::ifstream file(path, std::ios::binary);
     if (!file) {
         std::cerr << "Error: Could not open file.\n";
@@ -739,6 +767,12 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
 
     std::ofstream outfile(outpath, std::ios::binary | std::ios::app);
     if (!outfile) {
+        std::cerr << "Error: Could not open file for writing.\n";
+        return py::make_tuple(0, 0);
+    }
+
+    std::ofstream delayfile(outdelaypath, std::ios::binary | std::ios::app);
+    if (!delayfile) {
         std::cerr << "Error: Could not open file for writing.\n";
         return py::make_tuple(0, 0);
     }
@@ -759,7 +793,7 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
     vector<Record> possibles;
 
     // Variables for Delayed Window
-    queue<Window> delays;
+    queue<WindowLM> delays;
     py::array_t<int> dw = np.attr("zeros")(num_detectors * num_detectors);
     auto dw_buf = dw.request();
     int *dw_ptr = (int*) dw_buf.ptr;
@@ -773,6 +807,10 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
     py::array_t<int> coin_lor = np.attr("zeros")(num_detectors * num_detectors);
     auto coin_lor_buf = coin_lor.request();
     int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
+
+    // Random for sign
+    default_random_engine generator;
+    uniform_int_distribution<int> distribution(0,1);
 
     // Variables for Read Loop
     Record rec;
@@ -832,20 +870,32 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
                     actual_ptr[j * num_detectors + i]++;
                 }
                 // Write to LM file
+                int sign = distribution(generator) * 2 - 1;
+
                 float tof_mm = SPD_OF_LIGHT * (possibles[1].time - possibles[0].time);
 
-                ListmodeRecord outrec = {
-                    (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
-                    tof_mm, 0.0, 
-                    (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
-                    (float) i, (float) j
-                };
+                ListmodeRecord outrec;
+                if (sign > 0) {
+                    outrec = {
+                        (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
+                        tof_mm, 0.0, 
+                        (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
+                        (float) i, (float) j
+                    };
+                } else {
+                    outrec = {
+                        (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
+                        -tof_mm, 0.0, 
+                        (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
+                        (float) j, (float) i
+                    };
+                }
 
                 outfile.write(reinterpret_cast<char*>(&outrec), sizeof(ListmodeRecord));
 
             }
             // Create new delayed window prompt
-            delays.push(Window(rec.time + DELAY, rec.time + DELAY + TAU, detID));
+            delays.push(WindowLM(rec.time + DELAY, rec.time + DELAY + TAU, rec));
             // Handle resetting
             possibles.clear();
             possibles.push_back(rec);
@@ -856,16 +906,37 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
         }
 
         // Delayed Window Processing
-        Window w;
+        WindowLM w;
         while (!delays.empty()) { 
             w = delays.front();
             if (w.time2 < rec.time) { // past these window(s) already
                 // Process the windows
                 if (w.events.size() == 2) {
-                    int i = w.events[0];
-                    int j = w.events[1];
+                    int i = w.events[0].id();
+                    int j = w.events[1].id();
                     dw_ptr[i * num_detectors + j]++;
                     dw_ptr[j * num_detectors + i]++;
+                    // Write delay coincidence
+                    ListmodeRecord outdelay;
+                    int sign = distribution(generator) * 2 - 1;
+                    float tof_mm = SPD_OF_LIGHT * (w.events[1].time - w.events[0].time - DELAY);
+                    if (sign > 0) {
+                        outdelay = {
+                            (float) w.events[0].detX, (float) w.events[0].detY, (float) w.events[0].detZ, 
+                            tof_mm, 0.0, 
+                            (float) w.events[1].detX, (float) w.events[1].detY, (float) w.events[1].detZ, 
+                            (float) i, (float) j
+                        };
+                    } else {
+                        outdelay = {
+                            (float) w.events[1].detX, (float) w.events[1].detY, (float) w.events[1].detZ, 
+                            -tof_mm, 0.0, 
+                            (float) w.events[0].detX, (float) w.events[0].detY, (float) w.events[0].detZ, 
+                            (float) j, (float) i
+                        };
+                    }
+
+                    delayfile.write(reinterpret_cast<char*>(&outdelay), sizeof(ListmodeRecord));
                 }
                 delays.pop();
             }   
@@ -875,7 +946,7 @@ py::tuple read_file_lm(string path, string outpath, double TAU, double TIME, dou
         }
         // empty events indicates garbage window
         if ((!w.events.empty()) && (w.time1 < rec.time)) { // within a delay window
-            delays.front().events.push_back(detID);
+            delays.front().events.push_back(rec);
         }
 
         // Push next event to buffer
@@ -959,15 +1030,14 @@ PYBIND11_MODULE(randoms, m) {
     m.def("read_file", &read_file, "reads file",
         py::arg("path"),
         py::arg("TAU"),
-        py::arg("TIME"),
         py::arg("DELAY"),
         py::arg("num_detectors")
     );
     m.def("read_file_lm", &read_file_lm, "reads file and writes listmode",
         py::arg("path"),
         py::arg("outpath"),
+        py::arg("outdelaypath"),
         py::arg("TAU"),
-        py::arg("TIME"),
         py::arg("DELAY"),
         py::arg("num_detectors")
     );

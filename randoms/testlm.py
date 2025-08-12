@@ -1,6 +1,6 @@
 import numpy as np
 
-filename = '/scratch/groups/cslevin/eeganr/gen2annulus/annulus.lm'
+filename = '/scratch/users/eeganr/flangelm/delay1.lm'
 
 with open(filename, 'rb') as f:
     buffer = np.fromfile(f, dtype=np.float32)
