@@ -18,6 +18,7 @@ namespace py = pybind11;
 constexpr int NUM_VOL_IDS = 6;
 constexpr long SPD_OF_LIGHT = 299792458000; // mm/s
 constexpr int BUFFER_SIZE = 10; // number of records to keep in priority queue for chronology
+constexpr int MODULES = 16;
 
 /* Struct for a single used for multi-coincidence processing.
     Constructor Args:
@@ -544,7 +545,7 @@ py::array_t<double> get_times(py::array_t<int> coarse, py::array_t<int> fine, do
     Returns:
         bool - whether read was successful
 */
-bool read_record(std::ifstream& in, Record& rec) {
+bool read_record(ifstream& in, Record& rec) {
     if (!in.read(reinterpret_cast<char*>(&rec.run), sizeof(int32_t))) return false;
     if (!in.read(reinterpret_cast<char*>(&rec.event), sizeof(int32_t))) return false;
     if (!in.read(reinterpret_cast<char*>(&rec.srcID), sizeof(int32_t))) return false;
@@ -591,9 +592,9 @@ bool read_record(std::ifstream& in, Record& rec) {
 */
 py::tuple read_file(string path, double TAU, double DELAY, int num_detectors) {
     // Open Infile
-    std::ifstream file(path, std::ios::binary);
+    ifstream file(path, ios::binary);
     if (!file) {
-        std::cerr << "Error: Could not open file.\n";
+        cerr << "Error: Could not open file.\n";
         return py::make_tuple(0, 0);
     }
 
@@ -731,9 +732,9 @@ py::tuple read_file(string path, double TAU, double DELAY, int num_detectors) {
 
 
     if (file.eof()) {
-        std::cout << "Reached end of file after reading " << record_count << " records.\n";
+        cout << "Reached end of file after reading " << record_count << " records.\n";
     } else if (file.fail()) {
-        std::cerr << "File read error occurred!\n";
+        cerr << "File read error occurred!\n";
     }
 
     coin_lor.resize({num_detectors, num_detectors});
@@ -758,22 +759,28 @@ py::tuple read_file(string path, double TAU, double DELAY, int num_detectors) {
         np::array<int> dw - 2d of delayed window estimate on LOR
         np::array<int> actuals - 2d of actual # of randoms on LOR
 */
-py::tuple read_file_lm(string path, string outpath, string outdelaypath, double TAU, double DELAY, int num_detectors) {
-    std::ifstream file(path, std::ios::binary);
+py::tuple read_file_lm(string path, string outfolder, string name, double TAU, double DELAY, int num_detectors) {
+    ifstream file(path, ios::binary);
     if (!file) {
-        std::cerr << "Error: Could not open file.\n";
+        cerr << "Error: Could not open infile.\n";
         return py::make_tuple(0, 0);
     }
 
-    std::ofstream outfile(outpath, std::ios::binary | std::ios::app);
+    ofstream outfile(outfolder + name + ".lm", ios::binary | ios::app);
     if (!outfile) {
-        std::cerr << "Error: Could not open file for writing.\n";
+        cerr << "Error: Could not open outfile for writing.\n";
         return py::make_tuple(0, 0);
     }
 
-    std::ofstream delayfile(outdelaypath, std::ios::binary | std::ios::app);
+    ofstream delayfile(outfolder + name + "_delay.lm", ios::binary | ios::app);
     if (!delayfile) {
-        std::cerr << "Error: Could not open file for writing.\n";
+        cerr << "Error: Could not open delayfile for writing.\n";
+        return py::make_tuple(0, 0);
+    }
+
+    ofstream actfile(outfolder + name + "_actual.lm", ios::binary | ios::app);
+    if (!actfile) {
+        cerr << "Error: Could not open actfile for writing.\n";
         return py::make_tuple(0, 0);
     }
 
@@ -807,10 +814,6 @@ py::tuple read_file_lm(string path, string outpath, string outdelaypath, double 
     py::array_t<int> coin_lor = np.attr("zeros")(num_detectors * num_detectors);
     auto coin_lor_buf = coin_lor.request();
     int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
-
-    // Random for sign
-    default_random_engine generator;
-    uniform_int_distribution<int> distribution(0,1);
 
     // Variables for Read Loop
     Record rec;
@@ -860,22 +863,12 @@ py::tuple read_file_lm(string path, string outpath, string outdelaypath, double 
                 // Add to "coincidences per LOR" array
                 coin_lor_ptr[i * num_detectors + j]++;
                 coin_lor_ptr[j * num_detectors + i]++;
-                // Determine whether it's a "true" coincidence
-                if (
-                    possibles[0].srcX != possibles[1].srcX
-                    || possibles[0].srcY != possibles[1].srcY
-                    || possibles[0].srcZ != possibles[1].srcZ
-                ) {
-                    actual_ptr[i * num_detectors + j]++;
-                    actual_ptr[j * num_detectors + i]++;
-                }
                 // Write to LM file
-                int sign = distribution(generator) * 2 - 1;
 
                 float tof_mm = SPD_OF_LIGHT * (possibles[1].time - possibles[0].time);
 
                 ListmodeRecord outrec;
-                if (sign > 0) {
+                if (i < j) {
                     outrec = {
                         (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
                         tof_mm, 0.0, 
@@ -892,6 +885,18 @@ py::tuple read_file_lm(string path, string outpath, string outdelaypath, double 
                 }
 
                 outfile.write(reinterpret_cast<char*>(&outrec), sizeof(ListmodeRecord));
+
+                // Determine whether it's actually a random
+                if (
+                    possibles[0].srcX != possibles[1].srcX
+                    || possibles[0].srcY != possibles[1].srcY
+                    || possibles[0].srcZ != possibles[1].srcZ
+                ) {
+                    actual_ptr[i * num_detectors + j]++;
+                    actual_ptr[j * num_detectors + i]++;
+
+                    actfile.write(reinterpret_cast<char*>(&outrec), sizeof(ListmodeRecord));
+                }
 
             }
             // Create new delayed window prompt
@@ -918,9 +923,8 @@ py::tuple read_file_lm(string path, string outpath, string outdelaypath, double 
                     dw_ptr[j * num_detectors + i]++;
                     // Write delay coincidence
                     ListmodeRecord outdelay;
-                    int sign = distribution(generator) * 2 - 1;
                     float tof_mm = SPD_OF_LIGHT * (w.events[1].time - w.events[0].time - DELAY);
-                    if (sign > 0) {
+                    if (i < j) {
                         outdelay = {
                             (float) w.events[0].detX, (float) w.events[0].detY, (float) w.events[0].detZ, 
                             tof_mm, 0.0, 
@@ -958,9 +962,9 @@ py::tuple read_file_lm(string path, string outpath, string outdelaypath, double 
 
 
     if (file.eof()) {
-        std::cout << "Reached end of file after reading " << record_count << " records.\n";
+        cout << "Reached end of file after reading " << record_count << " records.\n";
     } else if (file.fail()) {
-        std::cerr << "File read error occurred!\n";
+        cerr << "File read error occurred!\n";
     }
 
     coin_lor.resize({num_detectors, num_detectors});
@@ -970,6 +974,91 @@ py::tuple read_file_lm(string path, string outpath, string outdelaypath, double 
     outfile.close();
 
     return py::make_tuple(scount, pcount, coin_lor, dw, actuals);
+}
+
+
+py::array_t<int> hist_tof(string path, int abs_max, int num_bins) {
+    ifstream infile(path, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open file.\n";
+        return py::make_tuple(0, 0);
+    }
+    
+    int bin_size = abs_max * 2 / num_bins;
+
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> out = np.attr("zeros")(num_bins);
+    auto out_buf = out.request();
+    int *out_ptr = (int*) out_buf.ptr;
+
+    ListmodeRecord rec;
+    int read = 0;
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        read++;
+        if (read % 100000000 == 0) {
+            cout << "Read " << read << " records." << endl;
+        }
+        out_ptr[(int) (rec.TOF / bin_size + num_bins / 2)]++;
+    }
+
+    return out;
+}
+
+void split_lm(string inpath, string outpath, string name, int max_detectors) {
+    int crystal_per_lor = max_detectors / MODULES;
+
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open file.\n";
+        return;
+    }
+    
+    ofstream outs[MODULES][MODULES];
+
+    int count_same = 0;
+
+    cout << "Making outstreams..." << endl;
+    for (int i = 0; i < MODULES; i++) {
+        for (int j = i + 1; j < MODULES; j++) {
+            outs[i][j] = ofstream(outpath + to_string(i) + '_' + to_string(j) + '_' + name + ".lm", ios::binary);
+            if (!outs[i][j]) {
+                cerr << "Error: Could not open outfile for writing.\n";
+                return;
+            }
+        }
+    }
+    cout << "Made outstreams!" << endl;
+
+    int read = 0;
+
+    ListmodeRecord rec;
+
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        read++;
+        if (read % 100000000 == 0) {
+            cout << "Read " << read << " records." << endl;
+        }
+
+        if (rec.crystalID1 > rec.crystalID2) {
+            ListmodeRecord copy = rec;
+            rec.x1 = rec.x2; rec.y1 = rec.y2; rec.z1 = rec.z2;
+            rec.x2 = copy.x1; rec.y2 = copy.y1; rec.z2 = copy.z1;
+            rec.TOF *= -1;
+            rec.crystalID1 = rec.crystalID2;
+            rec.crystalID2 = copy.crystalID1;
+        }
+
+        int a = rec.crystalID1 / crystal_per_lor;
+        int b = rec.crystalID2 / crystal_per_lor;
+        int i = min(a, b);
+        int j = max(a, b);
+        if (i == j) {
+            count_same++;
+        } else {
+            outs[i][j].write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+        }
+    }
+    cout << "Counted this many on same det: " << count_same << endl;
 }
 
 
@@ -1035,10 +1124,21 @@ PYBIND11_MODULE(randoms, m) {
     );
     m.def("read_file_lm", &read_file_lm, "reads file and writes listmode",
         py::arg("path"),
-        py::arg("outpath"),
-        py::arg("outdelaypath"),
+        py::arg("outfolder"),
+        py::arg("name"),
         py::arg("TAU"),
         py::arg("DELAY"),
         py::arg("num_detectors")
+    );
+    m.def("hist_tof", &hist_tof, "generates hist of TOF",
+        py::arg("path"),
+        py::arg("abs_max"),
+        py::arg("num_bins")
+    );
+    m.def("split_lm", &split_lm, "splits lm by LORs",
+        py::arg("inpath"),
+        py::arg("outpath"),
+        py::arg("name"),
+        py::arg("detectors")
     );
 }
