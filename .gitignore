@@ -15,3 +15,4 @@ pet
 *.synctex.gz
 *.synctex
 *.npy
+*.lm
