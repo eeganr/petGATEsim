@@ -1,19 +1,18 @@
-import numpy as np
 import randoms
 
 DETECTORS_SIM = 12288
 DETECTORS_REAL = 13824
 
-infile = '/scratch/groups/cslevin/eeganr/gen2annulus3/annulus_delay.lm'
+PATH_PREFIX = '/scratch/groups/cslevin/eeganr/'
+FOLDER = 'gen2annulus3'
 
-outfolder = '/scratch/groups/cslevin/eeganr/gen2annulus3/split/'
+outfolder = f'{PATH_PREFIX}{FOLDER}/split/'
 
+infile = f'{PATH_PREFIX}{FOLDER}annulus_delay.lm'
 randoms.split_lm(infile, outfolder, 'delay', DETECTORS_SIM)
 
-infile = '/scratch/groups/cslevin/eeganr/gen2annulus3/annulus_actual.lm'
-
+infile = f'{PATH_PREFIX}{FOLDER}/annulus_actual.lm'
 randoms.split_lm(infile, outfolder, 'actual', DETECTORS_SIM)
 
-infile = '/scratch/groups/cslevin/eeganr/gen2annulus3/annulus.lm'
-
+infile = f'{PATH_PREFIX}{FOLDER}/annulus.lm'
 randoms.split_lm(infile, outfolder, 'coin', DETECTORS_SIM)

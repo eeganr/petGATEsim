@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import root_scalar
 import randoms
-import time
 
 
 # === CONFIG ===
@@ -26,48 +25,47 @@ def filter_singles(singles, energy_min=0.450, energy_max=0.750):
             This is the energy range of the 511 keV gamma photons from positron annihilation
             This is the range used in Oliver & Rafecas
     """
-    
+
     singles = singles[singles['energy'] > energy_min].reset_index()
     singles = singles[singles['energy'] < energy_max].reset_index()
     return singles
 
 
-def bundle_coincidences(singles, skew_matrix):
-    """ Bundle singles into coincidences with skew correction
-        Args:
-            singles: DataFrame with columns:
-                time, detector, energy
-                where time is in seconds, dete ctor is the detector ID,
-                and energy is the energy of the single event in MeV.
-            skew_matrix: 2d np array of skew times from detX to detY
-        Returns: 
-            DataFrame with columns:
-                time1, time2, detector1, detector2, (source1), (source2), (true)
-            np array: list of multiple coincidences by number of hits involved
-    """
+# def bundle_coincidences(singles, skew_matrix):
+#     """ Bundle singles into coincidences with skew correction
+#         Args:
+#             singles: DataFrame with columns:
+#                 time, detector, energy
+#                 where time is in seconds, dete ctor is the detector ID,
+#                 and energy is the energy of the single event in MeV.
+#             skew_matrix: 2d np array of skew times from detX to detY
+#         Returns:
+#             DataFrame with columns:
+#                 time1, time2, detector1, detector2, (source1), (source2), (true)
+#             np array: list of multiple coincidences by number of hits involved
+#     """
 
-    # If matrix is only upper triangular
-    if (np.all(np.tril(skewlut) == np.zeros(skewlut.shape))):
-        skewlut -= skewlut.T # reflects with sign change
-    
+#     # If matrix is only upper triangular
+#     if (np.all(np.tril(skewlut) == np.zeros(skewlut.shape))):
+#         skewlut -= skewlut.T # reflects with sign change
+
 
 def bundle_coincidences(singles):
-    """ Bundle singles into coincidences, 
+    """ Bundle singles into coincidences,
         Args:
             singles: DataFrame with columns:
                 time, detector, energy, (optional: source)
             where time is in seconds, dete ctor is the detector ID,
             and energy is the energy of the single event in MeV.
-        Returns: 
+        Returns:
             DataFrame with columns:
                 time1, time2, detector1, detector2, (source1), (source2), (true)
             np array: list of multiple coincidences by number of hits involved
     """
-    t = time.time()
 
     times = np.array(singles['time'])
-    detectors = np.array(singles['detector'])
-    energies = np.array(singles['energy'])
+    # detectors = np.array(singles['detector'])
+    # energies = np.array(singles['energy'])
 
     coin_indices, multis = randoms.bundle_coincidences(times, TAU)
     coins = coin_indices.reshape(-1, 2)
@@ -92,7 +90,7 @@ def bundle_coincidences(singles):
         coinci['globalPosY2'] = np.array(singles['globalPosY'].iloc[coins[:, 1]])
         coinci['globalPosZ1'] = np.array(singles['globalPosZ'].iloc[coins[:, 0]])
         coinci['globalPosZ2'] = np.array(singles['globalPosZ'].iloc[coins[:, 1]])
-    
+
     return coinci, multis
 
 
@@ -103,12 +101,11 @@ def bundle_coincidences_multi(singles):
                 time, detector, energy, (optional: source)
             where time is in seconds, dete ctor is the detector ID,
             and energy is the energy of the single event in MeV.
-        Returns: 
+        Returns:
             DataFrame with columns:
                 time1, time2, detector1, detector2, (source1), (source2), (true)
             np array: list of multiple coincidences by number of hits involved
     """
-
 
 
 def singles_prompts(singles_count, prompts_count, TIME, NUM_DETS):
@@ -135,9 +132,9 @@ def singles_prompts(singles_count, prompts_count, TIME, NUM_DETS):
     if not L.converged:
         raise RuntimeError("Failed to converge on lambda.")
     L = L.root
-    
+
     sp_rates = randoms.sp_rates(singles_count, prompts_count, NUM_DETS, L, S, TAU, TIME)
-    
+
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
     return sp_rates * TIME
@@ -167,31 +164,32 @@ def singles_prompts_multi(singles_count, prompts_count, TIME, NUM_DETS):
     if not L.converged:
         raise RuntimeError("Failed to converge on lambda.")
     L = L.root
-    
+
     sp_rates = randoms.sp_rates(singles_count, prompts_count, NUM_DETS, L, S, TAU, TIME)
 
     exp_prod = np.prod(np.exp(-(singles_count * (TAU**2) / TIME / TIME)))
 
     corrections = randoms.sp_correction(singles_count / TIME, NUM_DETS, exp_prod, TAU, TIME)
-    
+
     # Calculate the Singles-Prompts rate estimate for the whole scanner
     # summing over all pairs of detectors
     return np.multiply(sp_rates, corrections) * TIME
 
 
-def delayed_window(singles, detectors):
-    """ Calculates the Delayed Window estimate for the whole scanner
-    Args:
-        singles: DataFrame with columns:
-                time, detector, energy, (optional: source)
-            where time is in seconds, dete ctor is the detector ID,
-            and energy is the energy of the single event in MeV.
-        detectors: array of detector IDs
-    Returns:
-        Delayed Window randoms estimates for each LOR
-    """
+# def delayed_window(singles, detectors):
+#     """ Calculates the Delayed Window estimate for the whole scanner
+#     Args:
+#         singles: DataFrame with columns:
+#                 time, detector, energy, (optional: source)
+#             where time is in seconds, dete ctor is the detector ID,
+#             and energy is the energy of the single event in MeV.
+#         detectors: array of detector IDs
+#     Returns:
+#         Delayed Window randoms estimates for each LOR
+#     """
 
-    return randoms.dw_rates(np.array(singles['time']), np.array(singles['detector']), DETECTORS_SIM, TAU, DELAY)
+#     return randoms.dw_rates(np.array(singles['time']),
+#       np.array(singles['detector']), DETECTORS_SIM, TAU, DELAY)
 
 
 def singles_rate(singles_count, TIME, NUM_DETS):
@@ -205,4 +203,3 @@ def singles_rate(singles_count, TIME, NUM_DETS):
 
     sr_rates = randoms.sr_rates(singles_count, NUM_DETS, TAU, TIME)
     return sr_rates * TIME
-

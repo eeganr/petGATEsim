@@ -1,5 +1,5 @@
 import numpy as np
-from randomsutils import *
+from randomsutils import singles_prompts, singles_rate
 
 # === CONFIG ===
 OUT_FOLDER = '/scratch/groups/cslevin/eeganr/gen2annulus3/'

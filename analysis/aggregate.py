@@ -19,7 +19,7 @@ TIME = 10.0
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--start", type=int, default=1, help="start file num")
 parser.add_argument("-e", "--end", type=int, default=60, help="end file num")
-parser.add_argument("-t", "--time", type=float, default=10.0, help="total simulation time in seconds")
+parser.add_argument("-t", "--time", type=float, default=10.0, help="total sim time in seconds")
 parser.add_argument("-r", "--real", action="store_true", help="uses real detector indices")
 args = parser.parse_args()
 
@@ -40,7 +40,9 @@ for i in FILE_RANGE:
         print("Skipped!")
         continue
 
-    singles_count, prompts_count, coin_lor, dw_nums, actuals = randoms.read_file_lm(infile, OUT_FOLDER, 'annulus', TAU, DELAY, DETECTORS_SIM)
+    singles_count, prompts_count, coin_lor, dw_nums, actuals = randoms.read_file_lm(
+        infile, OUT_FOLDER, 'annulus', TAU, DELAY, DETECTORS_SIM
+    )
     sc_total += singles_count
     pc_total += prompts_count
     coin_total += coin_lor
@@ -48,17 +50,12 @@ for i in FILE_RANGE:
     actuals_total += actuals
 
 
-with open(OUT_FOLDER + 'singles_count.npy', 'wb') as f:
-    np.save(f, sc_total)
+np.save(OUT_FOLDER + 'singles_count.npy', sc_total)
 
-with open(OUT_FOLDER + 'prompts_count.npy', 'wb') as f:
-    np.save(f, pc_total)
+np.save(OUT_FOLDER + 'prompts_count.npy', pc_total)
 
-with open(OUT_FOLDER + 'coin_lor.npy', 'wb') as f:
-    np.save(f, coin_total)
+np.save(OUT_FOLDER + 'coin_lor.npy', coin_total)
 
-with open(OUT_FOLDER + 'dw_nums.npy', 'wb') as f:
-    np.save(f, dw_total)
+np.save(OUT_FOLDER + 'dw_nums.npy', dw_total)
 
-with open(OUT_FOLDER + 'actuals.npy', 'wb') as f:
-    np.save(f, actuals_total)
+np.save(OUT_FOLDER + 'actuals.npy', actuals_total)

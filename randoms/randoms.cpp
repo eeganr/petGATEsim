@@ -136,6 +136,23 @@ struct ListmodeRecord {
 #pragma pack(pop)
 
 
+#pragma pack(push, 1)
+struct ListmodeRecordAct {
+    float x1, y1, z1;
+
+    float TOF;
+
+    float unused;
+
+    float x2, y2, z2;
+
+    float crystalID1, crystalID2;
+
+    bool isRandom;
+};
+#pragma pack(pop)
+
+
 /* Bundles list of singles into coincidences.
     Args:
         np.array<double> times - arrival times of singles
@@ -745,10 +762,11 @@ py::tuple read_file(string path, double TAU, double DELAY, int num_detectors) {
 }
 
 
-/* Processes binary file, extracting all as-read info, writes listmode file
+/* Processes binary file, extracting all as-read info, writes listmode files
     Args:
         string path - path of bin file to be read
-        string outpath - path of lm file to add to
+        string outfolder - folder to save output files
+        string name - base name for output files
         double TAU - coincidence time window
         double DELAY - delay used for delay window
         int num_detectors - max det ID + 1
@@ -758,6 +776,10 @@ py::tuple read_file(string path, double TAU, double DELAY, int num_detectors) {
         np::array<int> coin_lor - 2d of coincidences on a given LOR
         np::array<int> dw - 2d of delayed window estimate on LOR
         np::array<int> actuals - 2d of actual # of randoms on LOR
+    Writes:
+        listmode file - all coincidences
+        listmode file - all delayed coincidences
+        listmode file - all actual randoms
 */
 py::tuple read_file_lm(string path, string outfolder, string name, double TAU, double DELAY, int num_detectors) {
     ifstream file(path, ios::binary);
@@ -977,6 +999,14 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
 }
 
 
+/* Histogram of Time-of-Flight (TOF) values 
+    Args:
+        path: Path to the input file
+        abs_max: Absolute maximum TOF value
+        num_bins: Number of bins for the histogram
+    Returns:
+        Histogram as a numpy array
+*/
 py::array_t<int> hist_tof(string path, int abs_max, int num_bins) {
     ifstream infile(path, ios::binary);
     if (!infile) {
@@ -1004,6 +1034,16 @@ py::array_t<int> hist_tof(string path, int abs_max, int num_bins) {
     return out;
 }
 
+
+/* Splits large listmode file into smaller chunks by LOR
+    Args:
+        inpath: Path to the input file
+        outpath: Path to the output folder
+        name: Base name for output files
+        max_detectors: Maximum number of detectors
+    Writes:
+        listmode file(s) - 1 for each LOR
+*/
 void split_lm(string inpath, string outpath, string name, int max_detectors) {
     int crystal_per_lor = max_detectors / MODULES;
 
