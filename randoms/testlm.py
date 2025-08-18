@@ -1,7 +1,9 @@
 import numpy as np
+import randoms
 
-filename = '/scratch/users/eeganr/flangelm/delay1.lm'
+filename = '/scratch/users/eeganr/0_1.lm'
+filenameold = '/scratch/groups/cslevin/eeganr/flangeless_corr/actualcorr.lm'
 
-with open(filename, 'rb') as f:
-    buffer = np.fromfile(f, dtype=np.float32)
-    buffer = buffer.reshape(-1, 10)
+x = np.memmap(filenameold, dtype=np.float32)
+
+print(x)

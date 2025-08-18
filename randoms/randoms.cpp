@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 #include <vector>
 #include <queue>
 #include <iostream>
@@ -19,6 +20,7 @@ constexpr int NUM_VOL_IDS = 6;
 constexpr long SPD_OF_LIGHT = 299792458000; // mm/s
 constexpr int BUFFER_SIZE = 10; // number of records to keep in priority queue for chronology
 constexpr int MODULES = 16;
+constexpr int LORS = 120;
 
 /* Struct for a single used for multi-coincidence processing.
     Constructor Args:
@@ -136,23 +138,6 @@ struct ListmodeRecord {
 #pragma pack(pop)
 
 
-#pragma pack(push, 1)
-struct ListmodeRecordAct {
-    float x1, y1, z1;
-
-    float TOF;
-
-    float unused;
-
-    float x2, y2, z2;
-
-    float crystalID1, crystalID2;
-
-    bool isRandom;
-};
-#pragma pack(pop)
-
-
 /* Bundles list of singles into coincidences.
     Args:
         np.array<double> times - arrival times of singles
@@ -234,7 +219,7 @@ py::tuple bundle_coincidences(py::array_t<double> times, double TAU) {
         multi_ptr[i] = multi_coincidences[i];
     }
 
-    return make_tuple(result, multis);
+    return py::make_tuple(result, multis);
 }
 
 
@@ -1102,6 +1087,27 @@ void split_lm(string inpath, string outpath, string name, int max_detectors) {
 }
 
 
+void combine_lm(string inpath, string outpath) {
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open infile for reading.\n";
+        return;
+    }
+
+        
+    ofstream outfile(outpath, ios::binary | ios::app);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+
+    ListmodeRecord rec;
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+    }
+}
+
+
 PYBIND11_MODULE(randoms, m) {
     m.def("bundle_coincidences", &bundle_coincidences, "Bundles coincidences",
         py::arg("times"),
@@ -1180,5 +1186,9 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("outpath"),
         py::arg("name"),
         py::arg("detectors")
+    );
+    m.def("combine_lm", &combine_lm, "combines listmode files",
+        py::arg("inpath"),
+        py::arg("outpath")
     );
 }

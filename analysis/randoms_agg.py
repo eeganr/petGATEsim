@@ -2,13 +2,13 @@ import numpy as np
 from randomsutils import singles_prompts, singles_rate
 
 # === CONFIG ===
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/gen2annulus3/'
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/flangeless/'
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DELAY = 10 * CYCLE  # delay for DW estimate (s)
 DETECTORS_SIM = 12288
 DETECTORS_REAL = 13824
-TIME = 597.28
+TIME = 600
 # ===
 
 

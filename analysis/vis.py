@@ -6,6 +6,17 @@ import randoms
 abs_max = 1440
 num_bins = 120
 bin_size = abs_max // num_bins * 2
+IN_FOLDER = '/scratch/groups/cslevin/eeganr/gen2annulus4/
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-s", "--start", type=int, default=1, help="start file num")
+parser.add_argument("-e", "--end", type=int, default=60, help="end file num")
+parser.add_argument("-r", "--real", action="store_true", help="uses real detector indices")
+args = parser.parse_args()
+
+
+
 
 bars = np.linspace(-abs_max, abs_max, num_bins, endpoint=False)
 

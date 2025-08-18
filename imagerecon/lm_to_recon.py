@@ -2,17 +2,18 @@ import numpy as np
 import parallelproj
 import nibabel as nib
 import os
-import cupy as cp
-xp = cp
+# import cupy as cp
+# xp = cp
+xp = np
 
 #diagonal length: ~350mm
-input_lm_file = r"G:\My Drive\PET_Insert_Gen_II\Example_Data\Gen II Study_and_Dose\Phantom_06032025\LM\Resolution_Large.lm"
+input_lm_file = "/scratch/groups/cslevin/eeganr/flangeless_corr/actualcorr.lm"
 # NORMALIZATION
-normalization_weights = xp.asarray(np.load(r"E:\LM\res_norm_att_WATER_corrected_registered2.npy"))
+normalization_weights = xp.asarray(np.load("/scratch/groups/cslevin/eeganr/reconfiles/actual_norm.npy"))
 num_iterations = 2
-num_subsets = 16
-image_shape = (512, 512, 397)
-voxel_size = (0.48606, 0.48606, 0.48606) #mm
+num_subsets = 64
+image_shape = (310, 310, 310)
+voxel_size = (1.0, 1.0, 1.0) #mm
 cont_magnitude = 1e-5
 num_TOF_bins = 351
 TOF_bin_width = 1
@@ -23,7 +24,7 @@ use_att = False
 if use_att:
     att_nifti = nib.load(r"E:\LM\registered_att_img_water.nii").get_fdata().astype(np.float32)
     att_img = xp.asarray(att_nifti)
-ref_affine = nib.load(r"E:\LM\res_attenuation_map_ct.nii").affine
+# ref_affine = nib.load(r"E:\LM\res_attenuation_map_ct.nii").affine TODO: figure out
 #efficiency_per_event = np.memmap(r"E:\LM\event_efficiency.npy", dtype=np.float32, mode='r')
 # scatter_per_event = np.load(r"E:\LM\hoffman_scatter_per_event.npy").astype(np.float32)
 
@@ -57,7 +58,7 @@ img = mask * img
 
 def lm_em_update(x_cur, op, s):
     ybar = op(x_cur) + s
-    return x_cur * op.adjoint(1 / ybar) / normalization_weights
+    return (x_cur * op.adjoint(1 / ybar) / normalization_weights)
 
 # === CHUNKED PROCESSING ===
 chunk_size = int(1e8)
@@ -127,11 +128,14 @@ with open(input_lm_file, 'rb') as f:
                 op = parallelproj.CompositeLinearOperator((proj, res_model)) #subset_lm_att_op, subset_eff_op, 
             img = lm_em_update(img, op, contamination_list)
         print(f"  Saving image at iteration {iter+1}")
-        img_np = img.get()
+        img_np = img # .get()
         # img_np = np.flip(img_np, axis=1)  # Flip y-axis
         # img_np = np.flip(img_np, axis=2)  # Flip z-axis
+        # nib.save(
+        #     nib.Nifti1Image(img_np, affine=ref_affine), f"E:\\LM\\res_ATT_registered_{iter+1:03d}.nii"
+        # )
         nib.save(
-            nib.Nifti1Image(img_np, affine=ref_affine), f"E:\\LM\\res_ATT_registered_{iter+1:03d}.nii"
+            nib.Nifti1Image(img_np, affine=np.eye(4)), f"image{iter+1:03d}.nii"
         )
 
 print("OSEM Reconstruction complete!")

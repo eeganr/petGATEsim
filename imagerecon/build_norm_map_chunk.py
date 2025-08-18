@@ -2,9 +2,15 @@ import numpy as np
 import parallelproj
 import nibabel as nib
 import os
+import argparse
 
-input_lm_file = '/Users/grantpark/Downloads/Norm_15files.lm'
-output_name = "short_norm_test.npy"
+parser = argparse.ArgumentParser()
+parser.add_argument("-i", "--infile", type=str, help="in file name")
+parser.add_argument("-o", "--outfile", type=str, help="out file name")
+args = parser.parse_args()
+
+input_lm_file = args.infile
+output_name = args.outfile
 radius_mm = 140
 shape = (310, 310, 310)
 voxel_size = (1, 1, 1) #mm
@@ -32,7 +38,7 @@ mask = make_circular_mask(shape, voxel_size, radius_mm)
 
 print("Loading and processing listmode file...")
 
-chunk_size = int(1e8)  # number of events per chunk (adjust based on available RAM)
+chunk_size = int(1e6)  # number of events per chunk (adjust based on available RAM)
 event_size_bytes = 10 * 4  # 10 float32s per event
 file_size_bytes = os.path.getsize(input_lm_file)
 num_events_total = file_size_bytes // event_size_bytes
@@ -65,6 +71,6 @@ norm_image *= mask
 norm_image[np.isnan(norm_image)] = epsilon
 norm_image[np.isinf(norm_image)] = epsilon
 norm_image = np.clip(norm_image, a_min=epsilon, a_max=None)
-np.save(output_name, norm_image)
-nib.save(nib.Nifti1Image(norm_image, affine=np.eye(4)), "short_norm_test.nii.gz")
+np.save(output_name + '.npy', norm_image)
+nib.save(nib.Nifti1Image(norm_image, affine=np.eye(4)), output_name + '.nii.gz')
 

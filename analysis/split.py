@@ -4,11 +4,11 @@ DETECTORS_SIM = 12288
 DETECTORS_REAL = 13824
 
 PATH_PREFIX = '/scratch/groups/cslevin/eeganr/'
-FOLDER = 'gen2annulus3'
+FOLDER = 'flangeless'
 
 outfolder = f'{PATH_PREFIX}{FOLDER}/split/'
 
-infile = f'{PATH_PREFIX}{FOLDER}annulus_delay.lm'
+infile = f'{PATH_PREFIX}{FOLDER}/annulus_delay.lm'
 randoms.split_lm(infile, outfolder, 'delay', DETECTORS_SIM)
 
 infile = f'{PATH_PREFIX}{FOLDER}/annulus_actual.lm'
