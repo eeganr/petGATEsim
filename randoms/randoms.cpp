@@ -11,6 +11,9 @@
 #include <cstdint>
 #include <filesystem>
 #include <random>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -1087,6 +1090,27 @@ void split_lm(string inpath, string outpath, string name, int max_detectors) {
 }
 
 
+// void combine_lm(string inpath, string outpath) {
+//     ifstream infile(inpath, ios::binary);
+//     if (!infile) {
+//         cerr << "Error: Could not open infile for reading.\n";
+//         return;
+//     }
+
+        
+//     ofstream outfile(outpath, ios::binary | ios::app);
+//     if (!outfile) {
+//         cerr << "Error: Could not open outfile for writing.\n";
+//         return;
+//     }
+
+//     ListmodeRecord rec;
+//     while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+//         outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+//     }
+// }
+
+
 void combine_lm(string inpath, string outpath) {
     ifstream infile(inpath, ios::binary);
     if (!infile) {
@@ -1106,6 +1130,58 @@ void combine_lm(string inpath, string outpath) {
         outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
     }
 }
+
+
+// void shuffle_lm(string inpath, string outpath) {
+//     py::object np = py::module_::import("numpy");
+
+//     ifstream infile(inpath, ios::binary);
+//     if (!infile) {
+//         cerr << "Error: Could not open infile for reading.\n";
+//         return;
+//     }
+
+//     ofstream outfile(outpath, ios::binary | ios::app);
+//     if (!outfile) {
+//         cerr << "Error: Could not open outfile for writing.\n";
+//         return;
+//     }
+
+//     int numrecords = filesystem::file_size(inpath) / sizeof(ListmodeRecord);
+//     if (filesystem::file_size(inpath) % sizeof(ListmodeRecord) != 0) {
+//         cerr << "Error: file size not multiple of record size. \n";
+//         return;
+//     }
+
+//     // write_indices(numrecords);
+
+//     py::array_t<int> pos = np.attr("memmap")("temp.npy", np.attr("int32"));
+//     auto pos_buf = pos.request();
+//     int *pos_ptr = (int*) pos_buf.ptr;
+
+//     ifstream indices(inpath, ios::binary);
+//     if (!indices) {
+//         cerr << "Error: Could not open indices file for reading.\n";
+//         return;
+//     }
+
+//     py::array_t<float> in = np.attr("memmap")(inpath, np.attr("float32"));
+//     auto in_buf = in.request();
+//     float *in_ptr = (float*) in_buf.ptr;
+    
+//     int npos;
+//     for (int i = 0; i < numrecords; i++) {
+//         if (i % 10000000 == 0) {
+//             cout << "Read " << i << "records" << endl;
+//         }
+
+//         npos = pos_ptr[i];
+
+        
+
+//         outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+//     }
+// }
 
 
 PYBIND11_MODULE(randoms, m) {
@@ -1191,4 +1267,8 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("inpath"),
         py::arg("outpath")
     );
+    // m.def("shuffle_lm", &shuffle_lm, "shuffles listmode files",
+    //     py::arg("inpath"),
+    //     py::arg("outpath")
+    // );
 }
