@@ -28,8 +28,8 @@
 
 \beamertemplatenavigationsymbolsempty
 
-\title[Randoms Correction]{New Randoms Correction Techniques \\ on the Gen II System}
-\author[Eegan Ram]{Eegan Ram \texorpdfstring{\\}{}
+\title[Randoms Correction]{Randoms Correction Techniques \\ on the Gen II System}
+\author[Eegan Ram]{Eegan Ram, Dr. Garry Chinn \texorpdfstring{\\}{}
 \texorpdfstring{Stanford University}{}}
 \date{\today}
 
@@ -75,8 +75,8 @@
 \begin{frame}{Singles-Rate (SR)}
     $$R_{ij} = 2 \rn{tau}{\tau} \rn{si}{S_i} \rn{sj}{S_j}$$
     \customanno{tau.north}{3em}{50}{coincidence window}{rotate=5}
-    \customanno{si.south west}{3em}{-160}{\# singles in det $i$}{xshift=-7em, yshift=-0.7em}
-    \customanno{sj.south east}{3em}{-40}{\# singles in det $j$}{}
+    \customanno{si.south west}{3em}{-160}{\# singles in crystal $i$}{xshift=-7em, yshift=-0.7em}
+    \customanno{sj.south east}{3em}{-40}{\# singles in crystal $j$}{}
 
     \vspace{2em}
 
@@ -86,47 +86,177 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Singles-Prompts (SR)}
-    $$R_{ij}^{SP} = \frac{2 \tau e^{-(\lambda + S) \tau}}{(1 - 2 \lambda \tau)^2 }$$
-\end{frame}
+\begin{frame}{Singles-Prompts (SP)}
+    $$R_{ij}^{SP} = \frac{2 \tau e^{-(\lambda + S) \tau}}{(1 - 2 \rn{lam}{\lambda} \tau)^2 } \left(S_i - e^{(\lambda + S) \tau} \rn{prompti}{P_i}\right) \left(S_j - e^{(\lambda + S) \tau} P_j\right)$$
+    \customanno{prompti.north}{3em}{30}{\# prompts in crystal $i$}{}
+    \customanno{lam.south east}{4em}{-40}{Solution to $2 \tau \lambda^2 - \lambda + S - P e^{(\lambda + S)\tau}$}{}
 
-\section{Model}
+    \vspace{3em}
 
-\begin{frame}{Radius, Area, and Volume Equations}
-    $$r(h) = \begin{cases}
-    1.1 & 0 \leq h < 2 \\
-    5.9164-6.02984h+2.52828h^2-0.418985h^3 + \\ 0.03203h^4 -0.000943h^5 & 2 < h < 9.5 \\
-    5.5 & h \geq 9.5
-\end{cases}$$
-    The area and volume equations could then be easily derived via integral.
-\end{frame}
-
-\begin{frame}{Height and Exhaust Speed Equation}
     \begin{itemize}
-        \item Used Newton's method to solve for $h(V(m))$.
-        \item Then we could solve for $u$
+        \item Estimates random coincidences from \# singles counts \textit{and} prompts counts.
+        \item Requires singles acquisition.
+        \item Incorporates prompt information for improved accuracy (second order).
     \end{itemize}
 
+\end{frame}
 
-    $$u = -\rho \sqrt{\frac{2(\rho g h - P_{atm} + P_0 (1 + \frac{m_0 - \rho V(h)}{V_0 \rho})^{-\gamma}}{\rho (1 - (\frac{A_n}{A_h})^2)}}$$
+\begin{frame}{Singles-Prompts Extension}
+    $$R_{ij} = R_{ij}^{SP} \cdot \frac{\rn{prodk}{\prod_k} e^{-S_k \tau^2 / T}}{e^{-S_i \tau^2 / T} e^{- S_j \tau^2 / T}}$$
+    \customanno{prodk.north}{3em}{30}{\# sum over all crystals $k$}{}
+
+    \vspace{2em}
+
+    \begin{itemize}
+        \item Note: typically a ``downwards'' correction.
+    \end{itemize}
+\end{frame}
+
+\section{Basic Comparison}
+
+\begin{frame}{Cylindrical Simulated Source - Sum over Crystals}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/hist1mCi.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Cylindrical Source - SP Extension}
+    \begin{itemize}
+        \item SP nearly always underestimates $R_{ij}$, downcorrection unhelpful.
+        \item Downcorrection was extremely small $\approx 10^{-4}$.
+        \item Not worth using?
+    \end{itemize}
+\end{frame}
+
+\section{Subtraction}
+
+\begin{frame}{Flangeless Esser PET Phantom}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/flangeless.png}
+    \end{figure}
+
+    \begin{itemize}
+        \item $48 \mu Ci$ over fillable capsules
+        \item $1.5 mCi$ in large volume
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Methods for Removing Randoms}
+    \begin{enumerate}
+        \item Subtraction Method: Remove coincidences on same LOR closest to TOF
+        \item Contamination List: $\frac{\text{num of randoms on LOR}}{\text{num of prompts on LOR}}$
+    \end{enumerate}
+    
+    \vspace{0.25in}
+
+    (1) is compatable with CUDA Recon (current model), (2) requires parallelproj.
+
+    \vspace{0.25in}
+
+    Note: for subtraction with SP, we assume a uniform distribution across TOF.
+\end{frame}
+
+\begin{frame}{Annulus: `True' Subtraction (Sampled LOR 0-10)}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/0_10_actual.png}
+    \end{figure}
+
+    \begin{itemize}
+        \item Pink: coincidences
+        \item Blue: estimated random coincidences
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Annulus: DW Subtraction}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/0_10_delay.png}
+    \end{figure}
+    \begin{itemize}
+        \item Pink: coincidences
+        \item Blue: estimated random coincidences
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Annulus: SP Subtraction}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/0_10_sp.png}
+    \end{figure}
+    \begin{itemize}
+        \item Pink: coincidences
+        \item Blue: estimated random coincidences
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Annulus: Trues Kept}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.65\textwidth]{figures/trueskeptann.png}
+    \end{figure}
+    Mean: 0.645 (SP), 0.602 (DW)
+\end{frame}
+
+\begin{frame}{Annulus: Randoms Caught}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.65\textwidth]{figures/randomscaughtann.png}
+    \end{figure}
+    Mean: 0.604 (SP), 0.641 (DW)
+\end{frame}
+
+\begin{frame}{Subtraction - Esser Phantom}
+
+    Mean values:
+    \begin{table}[]
+        \begin{tabular}{lllll}
+        \multicolumn{1}{l|}{}               & SP     & DW     &  &  \\ \cline{1-3}
+        \multicolumn{1}{l|}{Trues Kept}     & 88.1\% & 86.5\% &  &  \\
+        \multicolumn{1}{l|}{Randoms Caught} & 52.0\% & 50.8\% &  &  \\
+                                            &        &        &  & 
+        \end{tabular}
+    \end{table}
+
+    Marginal improvement.
+\end{frame}
+
+
+\section{Contamination}
+
+\begin{frame}{Contamination Analysis - Esser Phantom}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/esserdiff.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Contamination Analysis - Esser Phantom}
+    \begin{table}
+        \begin{tabular}{lllll}
+        \multicolumn{1}{l|}{}               & SP     & DW     &  &  \\ \cline{1-3}
+        \multicolumn{1}{l|}{Mean}     & -0.33 & 1.43 &  &  \\
+        \multicolumn{1}{l|}{STDev} & 3.57 & 5.18 &  &  \\
+                                            &        &        &  & 
+        \end{tabular}
+    \end{table}
 \end{frame}
 
 \section{Conclusion}
 
-\begin{frame}{Conclusion}
+\begin{frame}{Key Findings}
     \begin{itemize}
-        \item The rocket model did seem to match experiment quite well for masses and pressures in the middle range, but did seem to break down when the water level was too low or too high, as well as when the pressure was really low.
-        \item One clear weakness of the experiment was that we didn't account for the rocket's horizontal motion and how that might have caused error. We felt like the math was too complicated given that the $Bv^2$ drag term made decomposing the velocity tedious.
-        \item The horizontal angles made it really hard to tell what was experimental error and what wasn't.
+        \item SP and DW methods have similar performances when using our current subtraction method (SP marginally better).
+        \item With the use of the contamination list method, SP has a slight advantage.
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Future Work}
+\begin{frame}{Next Steps}
     \begin{itemize}
-        \item Work on a mathematical model to properly deal with diagonal launches.
-        \item Work on a model to better correct for large angle discrepancies with the camera recording.
-        \item More trials.
-        \item Better fins for stability so drag measurements more useful.
+        \item Reconstruct the relevant images with both methods, need to ensure parallelproj works properly.
+        \item Calculate SNR, other stats from those images to see if the difference using contamination list is worth collecting singles.
     \end{itemize}
 \end{frame}
 
@@ -135,10 +265,12 @@
 
 \begin{frame}{Acknowledgements}
 \begin{itemize}
-\item Professor Devin 
-\item Berni for figuring out that we mixed up $r$ and $d$
-\item Everyone who carried water to the launch site
-\item Everyone who we borrowed materials from
+\item Dr. Garry Chinn
+\item Dr. Nasir Ullah
+\item Sarah Zou
+\item Professor Craig Levin
+\item James Ho
+\item Grant Hee-Sung Park
 \end{itemize}
 \end{frame}
 
