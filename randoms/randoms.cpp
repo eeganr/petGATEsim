@@ -1111,13 +1111,30 @@ void split_lm(string inpath, string outpath, string name, int max_detectors) {
 // }
 
 
-void combine_lm(string inpath, string outpath) {
-    ifstream infile(inpath, ios::binary);
-    if (!infile) {
-        cerr << "Error: Could not open infile for reading.\n";
-        return;
-    }
+void combine_lm(vector<string> inpaths, string outpath) {
 
+    ifstream ins[LORS];
+    int total_recs = 0;
+    int recs[LORS];
+
+    random_device rd;  // Will be used to obtain a seed for the random number engine
+    mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    uniform_real_distribution<double> dis(0.0, 1.0);
+
+    for (int i = 0; i < LORS; i++) {
+        ins[i] = ifstream(inpaths[i], ios::binary);
+        if (!ins[i]) {
+            cerr << "Error: Could not open infile for reading. \n";
+            return;
+        }
+        if (filesystem::file_size(inpaths[i]) % sizeof(ListmodeRecord) != 0) {
+            cerr << "Error: file not sized correctly.\n";
+            return;
+        }
+        int records_here = filesystem::file_size(inpaths[i]) / sizeof(ListmodeRecord);
+        recs[i] = records_here;
+        total_recs += recs[i];
+    }
         
     ofstream outfile(outpath, ios::binary | ios::app);
     if (!outfile) {
@@ -1126,7 +1143,29 @@ void combine_lm(string inpath, string outpath) {
     }
 
     ListmodeRecord rec;
-    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+
+    while(total_recs > 0) {
+        if (total_recs % 1000000 == 0) {
+            cout << "remaining: " << total_recs << endl;
+        }
+        int index = dis(gen) * total_recs;
+        int i = 0;
+        int sum = 0;
+        for (; i < LORS; ++i) {
+            if (sum + recs[i] > index) {
+                break;
+            }
+            sum += recs[i];
+        }
+
+        if (recs[i] == 0) {
+            cout << "Error with choosing file." << endl;
+        }
+
+        recs[i]--;
+        total_recs--;
+
+        ins[i].read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
         outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
     }
 }
@@ -1264,7 +1303,7 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("detectors")
     );
     m.def("combine_lm", &combine_lm, "combines listmode files",
-        py::arg("inpath"),
+        py::arg("inpaths"),
         py::arg("outpath")
     );
     // m.def("shuffle_lm", &shuffle_lm, "shuffles listmode files",

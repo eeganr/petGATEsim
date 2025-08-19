@@ -27,7 +27,8 @@ df.to_pickle(f'{IN_FOLDER}total_stats.pkl')
 print('Combined')
 
 print(f'Combining {name}s')
+paths = []
 for i in range(MODULES):
     for j in range(i + 1, MODULES):
-        print(f'Combining {i}-{j}')
-        randoms.combine_lm(f'{IN_FOLDER}{i}_{j}_{name}corr.lm', f'{IN_FOLDER}{name}corr.lm')
+        paths.append(f'{IN_FOLDER}{i}_{j}_{name}corr.lm')
+randoms.combine_lm(paths, f'{IN_FOLDER}{name}corr.lm')

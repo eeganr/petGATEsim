@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #SBATCH --job-name=pateint_tof_S
-#
+#SBATCH --chdir=/scratch/users/eeganr/reconaug18
 #SBATCH --time=960:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
