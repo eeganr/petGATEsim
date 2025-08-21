@@ -1,6 +1,6 @@
 /gate/source/addSource LidA
 
-/gate/source/LidA/setActivity 3.451 microcurie
+/gate/source/LidA/setActivity 2.588 microcurie
 /gate/source/LidA/setType backtoback
 /gate/source/LidA/gps/particle gamma
 /gate/source/LidA/gps/energytype Mono
@@ -17,7 +17,7 @@
 
 /gate/source/addSource LidB
 
-/gate/source/LidB/setActivity 7.765 microcurie
+/gate/source/LidB/setActivity 5.824 microcurie
 /gate/source/LidB/setType backtoback
 /gate/source/LidB/gps/particle gamma
 /gate/source/LidB/gps/energytype Mono
@@ -34,7 +34,7 @@
 
 /gate/source/addSource LidC
 
-/gate/source/LidC/setActivity 13.805 microcurie
+/gate/source/LidC/setActivity 10.354 microcurie
 /gate/source/LidC/setType backtoback
 /gate/source/LidC/gps/particle gamma
 /gate/source/LidC/gps/energytype Mono
@@ -51,7 +51,7 @@
 
 /gate/source/addSource LidD
 
-/gate/source/LidD/setActivity 33.703 microcurie
+/gate/source/LidD/setActivity 25.277 microcurie
 /gate/source/LidD/setType backtoback
 /gate/source/LidD/gps/particle gamma
 /gate/source/LidD/gps/energytype Mono
