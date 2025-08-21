@@ -1171,6 +1171,24 @@ void combine_lm(vector<string> inpaths, string outpath) {
 }
 
 
+void test_source(string inpath, double x, double y, double z) {
+    // Open Infile
+    ifstream file(inpath, ios::binary);
+    if (!file) {
+        cerr << "Error: Could not open file.\n";
+        return;
+    }
+
+    Record rec;
+    while (read_record(file, rec)) {
+        if (abs(rec.srcX - x) < 1 && abs(rec.srcY - y) < 1 && abs(rec.srcZ - z) < 1) {
+            cout << "Src: " << rec.srcX << " " << rec.srcY << " " << rec.srcZ << endl;
+            break;
+        }
+    }
+}
+
+
 // void shuffle_lm(string inpath, string outpath) {
 //     py::object np = py::module_::import("numpy");
 
@@ -1305,6 +1323,12 @@ PYBIND11_MODULE(randoms, m) {
     m.def("combine_lm", &combine_lm, "combines listmode files",
         py::arg("inpaths"),
         py::arg("outpath")
+    );
+    m.def("test_source", &test_source, "tests source pos",
+        py::arg("inpath"),
+        py::arg("x"),
+        py::arg("y"),
+        py::arg("z")
     );
     // m.def("shuffle_lm", &shuffle_lm, "shuffles listmode files",
     //     py::arg("inpath"),
