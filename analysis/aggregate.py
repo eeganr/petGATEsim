@@ -4,12 +4,13 @@ import argparse
 import randoms
 
 # === CONFIG ===
-PATH_PREFIX = '/scratch/users/eeganr/aug6flange/output'
+PATH_PREFIX = '/scratch/groups/cslevin/eeganr/annulus/annulus_bin/output' # should not end in / (filename)
 PATH_POSTFIX = 'Singles.dat'
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/flangeless/'
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/annulus/annulus_nocorr/' # should end in /
+NAME = 'annulus'
 CYCLE = 1.6e-9  # clock cycle (s)
-TAU = 3 * CYCLE  # coincidence window (s)
-DELAY = 10 * CYCLE  # delay for DW estimate (s)
+TAU = 2 * CYCLE  # coincidence window (s)
+DELAY = 20 * CYCLE  # delay for DW estimate (s)
 DETECTORS_SIM = 12288
 DETECTORS_REAL = 13824
 # ===
@@ -38,7 +39,7 @@ for i in FILE_RANGE:
         continue
 
     singles_count, prompts_count, coin_lor, dw_nums, actuals = randoms.read_file_lm(
-        infile, OUT_FOLDER, 'annulus', TAU, DELAY, DETECTORS_SIM
+        infile, OUT_FOLDER, NAME, TAU, DELAY, DETECTORS_SIM
     )
     sc_total += singles_count
     pc_total += prompts_count

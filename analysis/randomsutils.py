@@ -6,8 +6,8 @@ import randoms
 
 # === CONFIG ===
 CYCLE = 1.6e-9  # clock cycle (s)
-TAU = 3 * CYCLE  # coincidence window (s)
-DELAY = 10 * CYCLE  # delay for DW estimate (s)
+TAU = 2 * CYCLE  # coincidence window (s)
+DELAY = 20 * CYCLE  # delay for DW estimate (s)
 # === END CONFIG ===
 
 

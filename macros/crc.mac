@@ -1,107 +1,3 @@
-/gate/source/addSource LidA
-
-/gate/source/LidA/setActivity 2.588 microcurie
-/gate/source/LidA/setType backtoback
-/gate/source/LidA/gps/particle gamma
-/gate/source/LidA/gps/energytype Mono
-/gate/source/LidA/gps/monoenergy 0.511 MeV
-
-/gate/source/LidA/gps/type Volume
-/gate/source/LidA/gps/shape Cylinder
-/gate/source/LidA/gps/radius 4. mm
-/gate/source/LidA/gps/halfz 19.05 mm
-
-/gate/source/LidA/gps/centre -17.062 56.774 0 mm
-
-
-
-/gate/source/addSource LidB
-
-/gate/source/LidB/setActivity 5.824 microcurie
-/gate/source/LidB/setType backtoback
-/gate/source/LidB/gps/particle gamma
-/gate/source/LidB/gps/energytype Mono
-/gate/source/LidB/gps/monoenergy 0.511 MeV
-
-/gate/source/LidB/gps/type Volume
-/gate/source/LidB/gps/shape Cylinder
-/gate/source/LidB/gps/radius 6. mm
-/gate/source/LidB/gps/halfz 19.05 mm
-
-/gate/source/LidB/gps/centre 9.855 57.803 0 mm
-
-
-
-/gate/source/addSource LidC
-
-/gate/source/LidC/setActivity 10.354 microcurie
-/gate/source/LidC/setType backtoback
-/gate/source/LidC/gps/particle gamma
-/gate/source/LidC/gps/energytype Mono
-/gate/source/LidC/gps/monoenergy 0.511 MeV
-
-/gate/source/LidC/gps/type Volume
-/gate/source/LidC/gps/shape Cylinder
-/gate/source/LidC/gps/radius 8. mm
-/gate/source/LidC/gps/halfz 19.05 mm
-
-/gate/source/LidC/gps/centre 38.241 40.301 0 mm
-
-
-
-/gate/source/addSource LidD
-
-/gate/source/LidD/setActivity 25.277 microcurie
-/gate/source/LidD/setType backtoback
-/gate/source/LidD/gps/particle gamma
-/gate/source/LidD/gps/energytype Mono
-/gate/source/LidD/gps/monoenergy 0.511 MeV
-
-/gate/source/LidD/gps/type Volume
-/gate/source/LidD/gps/shape Cylinder
-/gate/source/LidD/gps/radius 12.5 mm
-/gate/source/LidD/gps/halfz 19.05 mm
-
-/gate/source/LidD/gps/centre 52.067 -7.648 0 mm
-
-
-
-# /gate/source/addSource LidE
-# 
-# /gate/source/LidE/setActivity 12.826 microcurie
-# /gate/source/LidE/setType backtoback
-# /gate/source/LidE/gps/particle gamma
-# /gate/source/LidE/gps/energytype Mono
-# /gate/source/LidE/gps/monoenergy 0.511 MeV
-#
-# /gate/source/LidE/gps/type Volume
-# /gate/source/LidE/gps/shape Cylinder
-# /gate/source/LidE/gps/radius 12.5 mm
-# /gate/source/LidE/gps/halfz 19.05 mm
-# 
-# /gate/source/LidE/gps/centre -34.417 -45.301 0 mm
-#
-#
-#
-# /gate/source/addSource LidF
-# 
-# /gate/source/LidF/setActivity 12.826 microcurie
-# /gate/source/LidF/setType backtoback
-# /gate/source/LidF/gps/particle gamma
-# /gate/source/LidF/gps/energytype Mono
-# /gate/source/LidF/gps/monoenergy 0.511 MeV
-
-# /gate/source/LidF/gps/type Volume
-# /gate/source/LidF/gps/shape Cylinder
-# /gate/source/LidF/gps/radius 12.5 mm
-# /gate/source/LidF/gps/halfz 19.05 mm
-# 
-# /gate/source/LidF/gps/centre -60.304 3.824 0 mm
-
-
-
-
-
 /gate/source/addSource Background
 
 /gate/source/Background/setActivity 1.5 mCi
@@ -119,6 +15,77 @@
 /gate/source/Background/gps/angtype iso
 
 
+/gate/source/addSource LidA
+
+/gate/source/LidA/setActivity 3.451 muCi
+/gate/source/LidA/setType backtoback
+/gate/source/LidA/gps/particle gamma
+/gate/source/LidA/gps/energytype Mono
+/gate/source/LidA/gps/monoenergy 0.511 MeV
+/gate/source/LidA/gps/angtype iso
+
+/gate/source/LidA/gps/type Volume
+/gate/source/LidA/gps/shape Cylinder
+/gate/source/LidA/gps/radius 4. mm
+/gate/source/LidA/gps/halfz 19.05 mm
+
+/gate/source/LidA/gps/centre -17.062 56.774 0 mm
+
+
+
+/gate/source/addSource LidB
+
+/gate/source/LidB/setActivity 7.765 muCi
+/gate/source/LidB/setType backtoback
+/gate/source/LidB/gps/particle gamma
+/gate/source/LidB/gps/energytype Mono
+/gate/source/LidB/gps/monoenergy 0.511 MeV
+/gate/source/LidB/gps/angtype iso
+
+/gate/source/LidB/gps/type Volume
+/gate/source/LidB/gps/shape Cylinder
+/gate/source/LidB/gps/radius 6. mm
+/gate/source/LidB/gps/halfz 19.05 mm
+
+/gate/source/LidB/gps/centre 9.855 57.803 0 mm
+
+
+
+/gate/source/addSource LidC
+
+/gate/source/LidC/setActivity 13.805 muCi
+/gate/source/LidC/setType backtoback
+/gate/source/LidC/gps/particle gamma
+/gate/source/LidC/gps/energytype Mono
+/gate/source/LidC/gps/monoenergy 0.511 MeV
+/gate/source/LidC/gps/angtype iso
+
+/gate/source/LidC/gps/type Volume
+/gate/source/LidC/gps/shape Cylinder
+/gate/source/LidC/gps/radius 8. mm
+/gate/source/LidC/gps/halfz 19.05 mm
+
+/gate/source/LidC/gps/centre 38.241 40.301 0 mm
+
+
+/gate/source/addSource LidD
+
+/gate/source/LidD/setActivity 33.703 muCi
+/gate/source/LidD/setType backtoback
+/gate/source/LidD/gps/particle gamma
+/gate/source/LidD/gps/energytype Mono
+/gate/source/LidD/gps/monoenergy 0.511 MeV
+/gate/source/LidD/gps/angtype iso
+
+/gate/source/LidD/gps/type Volume
+/gate/source/LidD/gps/shape Cylinder
+/gate/source/LidD/gps/radius 12.5 mm
+/gate/source/LidD/gps/halfz 19.05 mm
+
+/gate/source/LidD/gps/centre 52.067 -7.648 0 mm
+
+
+
 /gate/world/daughters/name bgcyl
 /gate/world/daughters/insert cylinder
 /gate/bgcyl/vis/setColor magenta
@@ -127,6 +94,43 @@
 /gate/bgcyl/setMaterial Water
 /gate/bgcyl/placement/setTranslation  0 0 -29.95 mm
 /gate/bgcyl/vis/forceWireframe
+
+
+/gate/bgcyl/daughters/name cold_area1
+/gate/bgcyl/daughters/insert cylinder
+/gate/cold_area1/vis/setColor green
+/gate/cold_area1/geometry/setRmax 4. mm
+/gate/cold_area1/geometry/setHeight 38.1 mm
+/gate/cold_area1/setMaterial Water
+/gate/cold_area1/placement/setTranslation  -17.062 56.774 29.95 mm
+/gate/cold_area1/vis/forceSolid
+
+/gate/bgcyl/daughters/name cold_area2
+/gate/bgcyl/daughters/insert cylinder
+/gate/cold_area2/vis/setColor green
+/gate/cold_area2/geometry/setRmax 6. mm
+/gate/cold_area2/geometry/setHeight 38.1 mm
+/gate/cold_area2/setMaterial Water
+/gate/cold_area2/placement/setTranslation  9.855 57.803 29.95 mm
+/gate/cold_area2/vis/forceSolid
+
+/gate/bgcyl/daughters/name cold_area3
+/gate/bgcyl/daughters/insert cylinder
+/gate/cold_area3/vis/setColor green
+/gate/cold_area3/geometry/setRmax 8. mm
+/gate/cold_area3/geometry/setHeight 38.1 mm
+/gate/cold_area3/setMaterial Water
+/gate/cold_area3/placement/setTranslation  38.241 40.301 29.95 mm
+/gate/cold_area3/vis/forceSolid
+
+/gate/bgcyl/daughters/name cold_area4
+/gate/bgcyl/daughters/insert cylinder
+/gate/cold_area4/vis/setColor green
+/gate/cold_area4/geometry/setRmax 12.5 mm
+/gate/cold_area4/geometry/setHeight 38.1 mm
+/gate/cold_area4/setMaterial Water
+/gate/cold_area4/placement/setTranslation  52.067 -7.648 29.95 mm
+/gate/cold_area4/vis/forceSolid
 
 
 /gate/bgcyl/daughters/name cold_bone
@@ -161,7 +165,10 @@
 /gate/run/initialize
 
 
+/gate/source/Background/gps/Forbid cold_area1
+/gate/source/Background/gps/Forbid cold_area2
+/gate/source/Background/gps/Forbid cold_area3
+/gate/source/Background/gps/Forbid cold_area4
 /gate/source/Background/gps/Forbid cold_bone
 /gate/source/Background/gps/Forbid cold_water
 /gate/source/Background/gps/Forbid cold_air
-

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in $(seq 301 360);
+for i in $(seq 1 60);
 do
     sbatch customgen2.sh $i
 done

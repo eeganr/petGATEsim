@@ -1171,7 +1171,7 @@ void combine_lm(vector<string> inpaths, string outpath) {
 }
 
 
-void test_source(string inpath, double x, double y, double z) {
+void test_source(string inpath, double x, double y, double z, int count) {
     // Open Infile
     ifstream file(inpath, ios::binary);
     if (!file) {
@@ -1180,10 +1180,15 @@ void test_source(string inpath, double x, double y, double z) {
     }
 
     Record rec;
+    int found = 0;
     while (read_record(file, rec)) {
         if (abs(rec.srcX - x) < 1 && abs(rec.srcY - y) < 1 && abs(rec.srcZ - z) < 1) {
             cout << "Src: " << rec.srcX << " " << rec.srcY << " " << rec.srcZ << endl;
-            break;
+            cout << "Id: " << rec.srcID << endl;
+            found++;
+            if (found == count) {
+                break;
+            }
         }
     }
 }
@@ -1328,7 +1333,8 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("inpath"),
         py::arg("x"),
         py::arg("y"),
-        py::arg("z")
+        py::arg("z"),
+        py::arg("count")
     );
     // m.def("shuffle_lm", &shuffle_lm, "shuffles listmode files",
     //     py::arg("inpath"),
