@@ -266,6 +266,6 @@ plt.savefig(f'{OUT_FOLDER}stats/{i}_{j}_sp.png')
 
 # Save Data
 print("Saving data")
-delay_data.tofile(f'{OUT_FOLDER}{i}_{j}_actualcorr.lm')
-actual_data.tofile(f'{OUT_FOLDER}{i}_{j}_delaycorr.lm')
+delay_data.tofile(f'{OUT_FOLDER}{i}_{j}_delaycorr.lm')
+actual_data.tofile(f'{OUT_FOLDER}{i}_{j}_actualcorr.lm')
 sp_data.tofile(f'{OUT_FOLDER}{i}_{j}_spcorr.lm')

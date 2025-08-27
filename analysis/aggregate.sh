@@ -9,4 +9,4 @@
 #SBATCH --mail-type=BEGIN,FAIL,END
 
 module load python/3.12
-python3 aggregate.py -s 1 -e 240
+python3 aggregate.py -s 1 -e 120

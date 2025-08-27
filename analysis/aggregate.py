@@ -4,9 +4,9 @@ import argparse
 import randoms
 
 # === CONFIG ===
-PATH_PREFIX = '/scratch/groups/cslevin/eeganr/annulus/annulus_bin/output' # should not end in / (filename)
+PATH_PREFIX = '/scratch/users/eeganr/aug22crc/output' # should not end in / (filename)
 PATH_POSTFIX = 'Singles.dat'
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/annulus/annulus_nocorr/' # should end in /
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/crc/crc_nocorr/' # should end in /
 NAME = 'annulus'
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 2 * CYCLE  # coincidence window (s)

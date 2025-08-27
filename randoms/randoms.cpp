@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <array>
 
 using namespace std;
 
@@ -1114,8 +1115,8 @@ void split_lm(string inpath, string outpath, string name, int max_detectors) {
 void combine_lm(vector<string> inpaths, string outpath) {
 
     ifstream ins[LORS];
-    int total_recs = 0;
-    int recs[LORS];
+    long total_recs = 0;
+    array<long, LORS> recs;
 
     random_device rd;  // Will be used to obtain a seed for the random number engine
     mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
@@ -1128,13 +1129,16 @@ void combine_lm(vector<string> inpaths, string outpath) {
             return;
         }
         if (filesystem::file_size(inpaths[i]) % sizeof(ListmodeRecord) != 0) {
-            cerr << "Error: file not sized correctly.\n";
+            cerr << "Error: file " << i << " not sized correctly.\n";
             return;
         }
-        int records_here = filesystem::file_size(inpaths[i]) / sizeof(ListmodeRecord);
+        long records_here = filesystem::file_size(inpaths[i]) / sizeof(ListmodeRecord);
         recs[i] = records_here;
         total_recs += recs[i];
     }
+
+    array<long, LORS> recs_left = recs;
+    long total_recs_left = total_recs;
         
     ofstream outfile(outpath, ios::binary | ios::app);
     if (!outfile) {
@@ -1142,15 +1146,22 @@ void combine_lm(vector<string> inpaths, string outpath) {
         return;
     }
 
+    cout << "Records to start: " << total_recs << endl;
+
     ListmodeRecord rec;
 
-    while(total_recs > 0) {
-        if (total_recs % 1000000 == 0) {
-            cout << "remaining: " << total_recs << endl;
+    while(total_recs_left > 0) {
+        if (total_recs_left % 10000000 == 9999999) {
+            cout << "remaining: " << total_recs_left << endl;
+            // for (int i = 0; i < LORS; i++) {
+            //     cout << recs[i] - recs_left[i] << "+";
+            // }
+            // cout << endl;
+            // break;
         }
-        int index = dis(gen) * total_recs;
+        long index = dis(gen) * total_recs;
         int i = 0;
-        int sum = 0;
+        long sum = 0;
         for (; i < LORS; ++i) {
             if (sum + recs[i] > index) {
                 break;
@@ -1158,15 +1169,13 @@ void combine_lm(vector<string> inpaths, string outpath) {
             sum += recs[i];
         }
 
-        if (recs[i] == 0) {
-            cout << "Error with choosing file." << endl;
+        if (recs_left[i] > 0) {
+            recs_left[i]--;
+            total_recs_left--;
+
+            ins[i].read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+            outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
         }
-
-        recs[i]--;
-        total_recs--;
-
-        ins[i].read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
-        outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
     }
 }
 
