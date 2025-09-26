@@ -2,7 +2,7 @@ import numpy as np
 from randomsutils import singles_prompts, singles_rate
 
 # === CONFIG ===
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/crc/crc_nocorr/' # should end in /
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/cylinder/cyl_nocorr/' # should end in /
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 2 * CYCLE  # coincidence window (s)
 DELAY = 20 * CYCLE  # delay for DW estimate (s)

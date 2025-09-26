@@ -40,6 +40,10 @@ else:
     print("Processing LOR ", i, j)
 # ---
 
+if os.path.isfile(f'{OUT_FOLDER}{i}_{j}_spcorr.lm'):
+    print("Exists!")
+    quit()
+
 # Make stats directory
 print("Making stats dir...")
 os.makedirs(f'{OUT_FOLDER}stats', exist_ok=True)
@@ -263,6 +267,11 @@ make_plot(reg, tofs, sptofs, f'SP Pre-Subtraction \u2014 LOR {i}-{j}', max_heigh
 make_plot(sp, sp_tofs, sptofs, f'SP Post-Subtraction \u2014 LOR {i}-{j}', max_height)
 plt.savefig(f'{OUT_FOLDER}stats/{i}_{j}_sp.png')
 
+# Shuffling Data
+print("Shuffling data")
+np.random.shuffle(delay_data)
+np.random.shuffle(actual_data)
+np.random.shuffle(sp_data)
 
 # Save Data
 print("Saving data")

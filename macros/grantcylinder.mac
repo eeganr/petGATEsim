@@ -1,0 +1,18 @@
+/gate/source/addSource CYLINDER
+
+/gate/source/CYLINDER/setActivity 1.5 mCi
+/gate/source/CYLINDER/setType backtoback
+/gate/source/CYLINDER/gps/particle gamma
+/gate/source/CYLINDER/gps/energytype Mono
+/gate/source/CYLINDER/gps/monoenergy 0.511 MeV
+
+
+/gate/source/CYLINDER/gps/angtype iso
+
+/gate/source/CYLINDER/gps/type Volume
+
+/gate/source/CYLINDER/gps/shape Cylinder
+/gate/source/CYLINDER/gps/radius 120 mm
+/gate/source/CYLINDER/gps/halfz 100 mm
+
+/gate/source/CYLINDER/gps/centre 0. 0. 0. cm
