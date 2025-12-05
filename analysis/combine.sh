@@ -9,4 +9,4 @@
 #SBATCH --mail-type=FAIL,END
 
 module load python/3.12
-python3 /home/users/eeganr/petGATEsim/analysis/combine.py -i /scratch/groups/cslevin/eeganr/cylinder/cyl_corr/ -n sp
+python3 /home/users/eeganr/petGATEsim/analysis/combine.py -i /scratch/groups/cslevin/eeganr/crc_scatter/crc_scatter_corr/ -n sp

@@ -9,4 +9,4 @@
 #SBATCH --mail-type=FAIL
 
 module load python/3.12
-python3 split.py -f eeganr/cylinder/cyl_nocorr -n cyl
+python3 split.py -f eeganr/crc_scatter/crc_scatter_nocorr -n crcscatter

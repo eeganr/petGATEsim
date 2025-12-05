@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name=GetData
 #
-#SBATCH --time=14:00:00
+#SBATCH --time=20:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=20G

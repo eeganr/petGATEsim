@@ -15,10 +15,10 @@ t = time.time()
 #     "/scratch/users/eeganr/aug6flange/output1Singles.dat", TAU, TIME, DELAY, DETECTORS_SIM
 # )
 
-scount, pcount, coin_lor, dw, actuals = randoms.read_file_lm(
-    "/scratch/groups/cslevin/James/output1Singles.dat",
-    "/scratch/users/eeganr/flangelm/coins1.lm",
-    '/scratch/users/eeganr/flangelm/delay1.lm',
+tple = randoms.read_file_lm(
+    "/scratch/groups/cslevin/eeganr/cylwater/cylwater_singles/output100Singles.dat",
+    "/scratch/users/eeganr/test/",
+    'cylwat',
     TAU,
     DELAY,
     DETECTORS_SIM

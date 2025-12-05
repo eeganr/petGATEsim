@@ -15,11 +15,11 @@
 /gate/physics/addProcess PhotoElectric gamma
 /gate/physics/processes/PhotoElectric/setModel StandardModel
 
-#/gate/physics/addProcess Compton gamma
-#/gate/physics/processes/Compton/setModel StandardModel
+/gate/physics/addProcess Compton gamma
+/gate/physics/processes/Compton/setModel StandardModel
 
-#/gate/physics/addProcess RayleighScattering gamma
-#/gate/physics/processes/RayleighScattering/setModel PenelopeModel
+/gate/physics/addProcess RayleighScattering gamma
+/gate/physics/processes/RayleighScattering/setModel PenelopeModel
 
 /gate/physics/addProcess GammaConversion gamma
 /gate/physics/processes/GammaConversion/setModel StandardModel
