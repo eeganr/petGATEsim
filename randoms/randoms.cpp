@@ -142,6 +142,15 @@ struct ListmodeRecord {
 #pragma pack(pop)
 
 
+#pragma pack(push, 1)
+struct ThreeParam {
+    float crystalID1, crystalID2;
+
+    float TOF;
+};
+#pragma pack(pop)
+
+
 /* Bundles list of singles into coincidences.
     Args:
         np.array<double> times - arrival times of singles
@@ -975,6 +984,7 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
     if (file.eof()) {
         cout << "Reached end of file after reading " << record_count << " records.\n";
     } else if (file.fail()) {
+        cout << "File read error occurred!\n";
         cerr << "File read error occurred!\n";
     }
 
@@ -1203,6 +1213,75 @@ void test_source(string inpath, double x, double y, double z, int count) {
 }
 
 
+void split_lm_half(string inpath, string outpath) {
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open infile for reading.\n";
+        return;
+    }
+    
+    // Calculate total number of records
+    infile.seekg(0, ios::end);
+    long filesize = infile.tellg();
+    infile.seekg(0, ios::beg);
+    
+    if (filesize % sizeof(ListmodeRecord) != 0) {
+        cerr << "Error: file size not multiple of record size.\n";
+        return;
+    }
+    
+    long total_records = filesize / sizeof(ListmodeRecord);
+    long half_records = total_records / 2;
+    
+    ofstream outfile(outpath, ios::binary);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+    
+    ListmodeRecord rec;
+    for (long i = 0; i < half_records; i++) {
+        if (i % 100000000 == 0) {
+            cout << "Wrote " << i << " records." << endl;
+        }
+        infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+        outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+    }
+    
+    cout << "Successfully wrote " << half_records << " records to " << outpath << endl;
+}
+
+
+void lm_to_threeparam(string inpath, string outpath) {
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open infile for reading.\n";
+        return;
+    }
+
+    ofstream outfile(outpath, ios::binary);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+
+    ListmodeRecord rec;
+    int written = 0;
+
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        ThreeParam tp = {rec.crystalID1, rec.crystalID2, rec.TOF};
+        outfile.write(reinterpret_cast<char*>(&tp), sizeof(ThreeParam));
+        written++;
+        if (written % 100000000 == 0) {
+            cout << "Wrote " << written << " records." << endl;
+        }
+    }
+
+    outfile.close();
+    cout << "Conversion complete. Wrote " << written << " records." << endl;
+}
+
+
 // void shuffle_lm(string inpath, string outpath) {
 //     py::object np = py::module_::import("numpy");
 
@@ -1344,6 +1423,10 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("y"),
         py::arg("z"),
         py::arg("count")
+    );
+    m.def("lm_to_threeparam", &lm_to_threeparam, "turns listmode files into 3param format",
+        py::arg("inpath"),
+        py::arg("outpath")
     );
     // m.def("shuffle_lm", &shuffle_lm, "shuffles listmode files",
     //     py::arg("inpath"),
