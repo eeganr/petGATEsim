@@ -1,0 +1,10 @@
+/gate/world/daughters/name bgcyl
+/gate/world/daughters/insert cylinder
+/gate/bgcyl/vis/setColor magenta
+/gate/bgcyl/geometry/setRmax 120 mm
+/gate/bgcyl/geometry/setHeight 200 mm
+/gate/bgcyl/setMaterial Water
+/gate/bgcyl/placement/setTranslation  0 0 0 mm
+/gate/bgcyl/vis/forceWireframe
+
+/gate/bgcyl/attachPhantomSD

@@ -8,7 +8,7 @@ TAU = 2 * CYCLE  # coincidence window (s)
 DELAY = 20 * CYCLE  # delay for DW estimate (s)
 DETECTORS_SIM = 12288
 DETECTORS_REAL = 13824
-TIME = 10 * 240
+TIME = 10 * 120
 # ===
 
 

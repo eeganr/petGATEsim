@@ -29,6 +29,7 @@
 /control/execute                         {camerafile}
 #/control/execute                         VoxelizedPhantom.mac
 /control/execute                         physics.mac
+/control/execute                        watercylinder.mac
 
 /gate/run/initialize
 /control/execute                         digitizer.mac

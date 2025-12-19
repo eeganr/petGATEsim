@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-#SBATCH --job-name=split
+#SBATCH --job-name=filterscatters
 #
-#SBATCH --time=4:00:00
+#SBATCH --time=1:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=16G
 #SBATCH --mail-type=FAIL
 
 module load python/3.12
-python3 split.py -f eeganr/cylwater/cylwat_nocorr -n cylwat
+python3 filterscatters.py -f -n

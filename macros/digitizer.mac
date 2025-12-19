@@ -1,5 +1,6 @@
 #	D I G I T I Z E R 
-#/gate/digitizer/Singles/insert adderCompton
+/gate/digitizer/Singles/insert adderCompton
+
 /gate/digitizer/Singles/insert adder
 /gate/digitizer/Singles/insert readout
 /gate/digitizer/Singles/readout/setPolicy TakeEnergyCentroid

@@ -14,5 +14,5 @@ module load python/3.12
 
 for i in $(seq $((10*BASE)) $((10*BASE + 9)));
 do
-    python3 correct.py -i /scratch/groups/cslevin/eeganr/cylinder/cyl_nocorr/ -o /scratch/groups/cslevin/eeganr/cylinder/cyl_corr/split/ -l $i
+    python3 correct.py -i /scratch/groups/cslevin/eeganr/cylwater/cylwat_nocorr/ -o /scratch/groups/cslevin/eeganr/cylwater/cylwat_corr/split/ -l $i
 done

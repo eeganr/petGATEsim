@@ -2,7 +2,7 @@ import randoms
 import numpy as np
 
 file1 = '/scratch/groups/cslevin/eeganr/crc/crc_nocorr/split/0_2_coin.lm'
-file2 = '/scratch/groups/cslevin/eeganr/crc/crc_corr/split/0_2_delaycorr.lm'
+file2 = '/scratch/groups/cslevin/eeganr/cylwater/cylwat_corr/split/0_7_delaycorr.lm'
 
 x = np.memmap(file2, dtype=np.float32).reshape(-1, 10)
 

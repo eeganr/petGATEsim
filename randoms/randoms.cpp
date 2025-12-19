@@ -133,7 +133,7 @@ struct ListmodeRecord {
 
     float TOF;
 
-    float unused;
+    float numScatters;
 
     float x2, y2, z2;
 
@@ -144,9 +144,9 @@ struct ListmodeRecord {
 
 #pragma pack(push, 1)
 struct ThreeParam {
-    float crystalID1, crystalID2;
+    int16_t crystalID1, crystalID2;
 
-    float TOF;
+    int16_t TOF;
 };
 #pragma pack(pop)
 
@@ -891,14 +891,14 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
                 if (i < j) {
                     outrec = {
                         (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
-                        tof_mm, 0.0, 
+                        tof_mm, (float) (possibles[0].nComPh + possibles[1].nComPh), 
                         (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
                         (float) i, (float) j
                     };
                 } else {
                     outrec = {
                         (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
-                        -tof_mm, 0.0, 
+                        -tof_mm, (float) (possibles[0].nComPh + possibles[1].nComPh), 
                         (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
                         (float) j, (float) i
                     };
@@ -1101,27 +1101,6 @@ void split_lm(string inpath, string outpath, string name, int max_detectors) {
 }
 
 
-// void combine_lm(string inpath, string outpath) {
-//     ifstream infile(inpath, ios::binary);
-//     if (!infile) {
-//         cerr << "Error: Could not open infile for reading.\n";
-//         return;
-//     }
-
-        
-//     ofstream outfile(outpath, ios::binary | ios::app);
-//     if (!outfile) {
-//         cerr << "Error: Could not open outfile for writing.\n";
-//         return;
-//     }
-
-//     ListmodeRecord rec;
-//     while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
-//         outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
-//     }
-// }
-
-
 void combine_lm(vector<string> inpaths, string outpath) {
 
     ifstream ins[LORS];
@@ -1190,6 +1169,38 @@ void combine_lm(vector<string> inpaths, string outpath) {
 }
 
 
+void remove_scatters(string inpath, string outpath) {
+
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open file.\n";
+        return;
+    }
+
+    ofstream outfile(outpath, ios::binary | ios::app);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+    
+    long long read = 0;
+
+    ListmodeRecord rec;
+
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        read++;
+        if (read % 100000000 == 0) {
+            cout << "Read " << read << " records." << endl;
+        }
+        if (rec.numScatters == 0) {
+            outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+        }
+    }
+
+    cout << "Done!" << endl;
+}
+
+
 void test_source(string inpath, double x, double y, double z, int count) {
     // Open Infile
     ifstream file(inpath, ios::binary);
@@ -1252,7 +1263,7 @@ void split_lm_half(string inpath, string outpath) {
 }
 
 
-void lm_to_threeparam(string inpath, string outpath) {
+void lm_to_threeparam(string inpath, string outpath, py::array_t<int> crystal_map) {
     ifstream infile(inpath, ios::binary);
     if (!infile) {
         cerr << "Error: Could not open infile for reading.\n";
@@ -1265,16 +1276,116 @@ void lm_to_threeparam(string inpath, string outpath) {
         return;
     }
 
+    auto map_buf = crystal_map.request();
+    int *map_ptr = (int*) map_buf.ptr;
+
     ListmodeRecord rec;
     int written = 0;
 
     while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
-        ThreeParam tp = {rec.crystalID1, rec.crystalID2, rec.TOF};
+        ThreeParam tp = {
+            (int16_t) map_ptr[(int) rec.crystalID1], 
+            (int16_t) map_ptr[(int) rec.crystalID2], 
+            (int16_t) ((rec.TOF * (1e12 / SPD_OF_LIGHT)) / 1.5625) // mm -> ps -> TDC bins
+        };
         outfile.write(reinterpret_cast<char*>(&tp), sizeof(ThreeParam));
         written++;
         if (written % 100000000 == 0) {
             cout << "Wrote " << written << " records." << endl;
         }
+    }
+
+    outfile.close();
+    cout << "Conversion complete. Wrote " << written << " records." << endl;
+}
+
+
+void split_tp(string inpath, string outpath, string name, int max_detectors) {
+    int crystal_per_lor = max_detectors / MODULES;
+
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open file.\n";
+        return;
+    }
+    
+    ofstream outs[MODULES][MODULES];
+
+    int count_same = 0;
+
+    cout << "Making outstreams..." << endl;
+    for (int i = 0; i < MODULES; i++) {
+        for (int j = i + 1; j < MODULES; j++) {
+            outs[i][j] = ofstream(outpath + to_string(i) + '_' + to_string(j) + '_' + name + ".dat", ios::binary);
+            if (!outs[i][j]) {
+                cerr << "Error: Could not open outfile for writing.\n";
+                return;
+            }
+        }
+    }
+    cout << "Made outstreams!" << endl;
+
+    int read = 0;
+
+    ThreeParam rec;
+
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ThreeParam))) {
+        read++;
+        if (read % 100000000 == 0) {
+            cout << "Read " << read << " records." << endl;
+        }
+
+        int a = rec.crystalID1 / crystal_per_lor;
+        int b = rec.crystalID2 / crystal_per_lor;
+        int i = min(a, b);
+        int j = max(a, b);
+        if (i == j) {
+            count_same++;
+        } else {
+            outs[i][j].write(reinterpret_cast<char*>(&rec), sizeof(ThreeParam));
+        }
+    }
+    cout << "Counted this many on same det: " << count_same << endl;
+}
+
+
+void remap_lm(string inpath, string outpath, py::array_t<int> crystal_map, py::array_t<int> geometry) {
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open infile for reading.\n";
+        return;
+    }
+
+    ofstream outfile(outpath, ios::binary);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+
+    auto map_buf = crystal_map.request();
+    int *map_ptr = (int*) map_buf.ptr;
+
+    auto geo_buf = geometry.request();
+    int *geo_ptr = (int*) geo_buf.ptr;
+
+    ListmodeRecord rec;
+    int written = 0;
+
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        written++;
+        rec.TOF = rec.TOF * (1e12 / SPD_OF_LIGHT); // change to ps
+
+        rec.crystalID1 = map_ptr[(int) rec.crystalID1]; // change to 13824
+        rec.crystalID2 = map_ptr[(int) rec.crystalID2];
+
+        rec.x1 = geo_ptr[(int) (3 * rec.crystalID1)]; // update XYZ from geometry file
+        rec.y1 = geo_ptr[(int) (3 * rec.crystalID1 + 1)];
+        rec.z1 = geo_ptr[(int) (3 * rec.crystalID1 + 2)];
+        rec.x2 = geo_ptr[(int) (3 * rec.crystalID2)];
+        rec.y2 = geo_ptr[(int) (3 * rec.crystalID2 + 1)];
+        rec.z2 = geo_ptr[(int) (3 * rec.crystalID2 + 2)];
+
+        outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
     }
 
     outfile.close();
@@ -1426,10 +1537,23 @@ PYBIND11_MODULE(randoms, m) {
     );
     m.def("lm_to_threeparam", &lm_to_threeparam, "turns listmode files into 3param format",
         py::arg("inpath"),
+        py::arg("outpath"),
+        py::arg("crystal_map")
+    );
+    m.def("remove_scatters", &remove_scatters, "removes scatters from lm file",
+        py::arg("inpath"),
         py::arg("outpath")
     );
-    // m.def("shuffle_lm", &shuffle_lm, "shuffles listmode files",
-    //     py::arg("inpath"),
-    //     py::arg("outpath")
-    // );
+    m.def("split_tp", &split_tp, "splits tp by LORs",
+        py::arg("inpath"),
+        py::arg("outpath"),
+        py::arg("name"),
+        py::arg("detectors")
+    );
+    m.def("remap_lm", &remap_lm, "turns listmode files into lab compat format",
+        py::arg("inpath"),
+        py::arg("outpath"),
+        py::arg("crystal_map"),
+        py::arg("geometry")
+    );
 }
