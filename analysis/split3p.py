@@ -19,7 +19,7 @@ NAME = args.name
 
 DETS = DETECTORS_REAL if args.real else DETECTORS_SIM
 
-outfolder = f'{PATH_PREFIX}{FOLDER}/split-gt/'
+outfolder = f'{PATH_PREFIX}{FOLDER}/split/'
 
 os.makedirs(outfolder[:-1])
 

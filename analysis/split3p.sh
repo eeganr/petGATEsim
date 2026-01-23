@@ -9,4 +9,4 @@
 #SBATCH --mail-type=FAIL
 
 module load python/3.12
-python3 split3p.py -f eeganr/cylinder/cyl_eval -n coin-rand -i cyl -r
+python3 split3p.py -f eeganr/crc_sp -n coin_corrected -i spcorr -r

@@ -9,4 +9,4 @@
 #SBATCH --mail-type=FAIL
 
 module load python/3.12
-python3 3param.py -f eeganr/cylinder/cyl_nocorr -n cyl
+python3 3param.py -f eeganr/crctest -n spcorr
