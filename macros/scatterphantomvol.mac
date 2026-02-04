@@ -1,0 +1,24 @@
+/gate/world/daughters/name scattercyl
+/gate/world/daughters/insert cylinder
+/gate/scattercyl/vis/setColor magenta
+/gate/scattercyl/geometry/setRmax 101.5 mm
+/gate/scattercyl/geometry/setHeight 700 mm
+/gate/scattercyl/setMaterial Water
+/gate/scattercyl/placement/setTranslation  0 0 0 mm
+/gate/scattercyl/vis/forceWireframe
+
+/gate/scattercyl/attachPhantomSD
+
+
+
+/gate/scattercyl/daughters/name waterline
+/gate/scattercyl/daughters/insert cylinder
+/gate/waterline/vis/setColor green
+/gate/waterline/geometry/setRmax 1.5 mm
+/gate/waterline/geometry/setHeight 700 mm
+/gate/waterline/setMaterial Water
+/gate/waterline/placement/setTranslation  45 0 0 mm
+/gate/waterline/vis/forceWireframe
+
+/gate/waterline/attachPhantomSD
+

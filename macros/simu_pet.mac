@@ -29,7 +29,8 @@
 /control/execute                         {camerafile}
 #/control/execute                         VoxelizedPhantom.mac
 /control/execute                         physics.mac
-/control/execute                        watercylinder.mac
+# add volume information to phantom
+/control/execute                        scatterphantomvol.mac
 
 /gate/run/initialize
 /control/execute                         digitizer.mac

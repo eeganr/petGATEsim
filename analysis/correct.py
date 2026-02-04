@@ -16,7 +16,7 @@ RandomMode = 'Hybrid'
 # --- NEW HYBRID PARAMETERS ---
 TOF_BIN_SIZE_PS = 10 # Finer binning to reduce local variance (e.g., 10 ps)
 TOF_BIN_SIZE_MM = TOF_BIN_SIZE_PS * 1e-12 * 299792458 * 1e3
-TOF_RANGE_PS = 1.6e3 * 2 # Total range -5000 ps to 5000 ps
+TOF_RANGE_PS = 1.6e3 * 3 # Total range -5000 ps to 5000 ps
 TOF_RANGE_MM = TOF_RANGE_PS * 1e-12 * 299792458 * 1e3 * 2
 NUM_TOF_BINS = int(TOF_RANGE_MM / TOF_BIN_SIZE_MM) + 1 # 1001 bins for 10 ps
 TAIL_LIMIT_MM = 800 # mm

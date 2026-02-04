@@ -151,6 +151,17 @@ struct ThreeParam {
 #pragma pack(pop)
 
 
+#pragma pack(push, 1)
+struct CoinLUT {
+    float crystalID1, crystalID2;
+
+    float TOF;
+
+    float type;
+};
+#pragma pack(pop)
+
+
 /* Bundles list of singles into coincidences.
     Args:
         np.array<double> times - arrival times of singles
@@ -1393,6 +1404,129 @@ void remap_lm(string inpath, string outpath, py::array_t<int> crystal_map, py::a
 }
 
 
+/* Processes binary file, extracting all as-read info, writes listmode files
+    Args:
+        string path - path of bin file to be read
+        string outfolder - folder to save output files
+        string name - base name for output files
+        double TAU - coincidence time window
+        int num_detectors - max det ID + 1
+    Writes:
+        CoinLUT file 
+*/
+void write_lut(string path, string outfolder, string name, double TAU, int num_detectors) {
+    ifstream file(path, ios::binary);
+    if (!file) {
+        cerr << "Error: Could not open infile.\n";
+        return;
+    }
+
+    ofstream outfile(outfolder + name + ".lut", ios::binary | ios::app);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+
+    // Local Variables for Coincidence Bundling
+    double window_start = -2 * TAU;
+    vector<Record> possibles;
+
+    // Variables for Read Loop
+    Record rec;
+    int record_count = 0;
+    auto chrono = [] (Record a, Record b) {return a.time > b.time;};
+    // Buffer to ensure that records read chronologically
+    priority_queue<Record, vector<Record>, decltype(chrono)> buffer(chrono);
+
+    for (int i = 0; i < BUFFER_SIZE; i++) { // Reads in BUFFER_SIZE records to queue to start with
+        if (!read_record(file, rec)) { // breaks if end of file too soon
+            break;
+        }
+        buffer.push(rec);
+    }
+
+    // START MAIN LOOP
+    while (!buffer.empty()) {
+        // Logging read info, updating rec in while statement.
+        record_count++;
+        if (record_count % 10000000 == 0) {
+            cout << "Processed " 
+                << record_count / 1000000 
+                << " million records." << endl;
+            cout << "Sim Time: " << rec.time << endl;
+        }
+
+        // Retrieve from Buffer
+        rec = buffer.top();
+        buffer.pop();
+
+        int detID = rec.id();
+
+        // Coincidence Processing
+        if (rec.time - window_start >= TAU) {
+            if (possibles.size() == 2) { // only if 2 are in there
+                float i = possibles[0].id();
+                float j = possibles[1].id();
+                // Write to lut file
+
+                float tof_tdc = (possibles[1].time - possibles[0].time) * 1e12 / 1.5625;
+
+                float type = 0;
+                if (possibles[0].nComPh + possibles[1].nComPh > 0) { // is scatter
+                    type = 1;
+                }
+                if (
+                    possibles[0].srcX != possibles[1].srcX
+                    || possibles[0].srcY != possibles[1].srcY
+                    || possibles[0].srcZ != possibles[1].srcZ
+                ) { // is random
+                    type = 2;
+                }
+
+                CoinLUT outrec;
+                if (i < j) {
+                    outrec = {
+                        i, j,
+                        tof_tdc, type
+                    };
+                } else {
+                    outrec = {
+                        j, i,
+                        -tof_tdc, type
+                    };
+                }
+
+                outfile.write(reinterpret_cast<char*>(&outrec), sizeof(CoinLUT));
+
+            }
+            // Handle resetting
+            possibles.clear();
+            possibles.push_back(rec);
+            window_start = rec.time;
+        }
+        else {
+            possibles.push_back(rec); 
+        }
+
+        // Push next event to buffer
+        if (read_record(file, rec)) {
+            buffer.push(rec);
+        }
+
+    } // End Main Loop
+
+
+    if (file.eof()) {
+        cout << "Reached end of file after reading " << record_count << " records.\n";
+    } else if (file.fail()) {
+        cout << "File read error occurred!\n";
+        cerr << "File read error occurred!\n";
+    }
+
+    outfile.close();
+}
+
+
 // void shuffle_lm(string inpath, string outpath) {
 //     py::object np = py::module_::import("numpy");
 
@@ -1555,5 +1689,12 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("outpath"),
         py::arg("crystal_map"),
         py::arg("geometry")
+    );
+    m.def("write_lut", &write_lut, "reads file and writes coin_lut file",
+        py::arg("path"),
+        py::arg("outfolder"),
+        py::arg("name"),
+        py::arg("TAU"),
+        py::arg("num_detectors")
     );
 }

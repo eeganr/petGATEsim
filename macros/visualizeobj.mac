@@ -15,16 +15,11 @@
 /vis/sceneHandler/attach scene-0
 
 /control/execute Geometry.mac
-/control/execute flangeless.mac
+/control/execute scatterphantomvol.mac
+
+/gate/run/initialize
 
 /vis/drawVolume
 
-/gate/source/LidA/visualize 5000 red 2
-
-/gate/source/LidB/visualize 5000 red 2
-
-/gate/source/LidC/visualize 5000 red 2
-
-/gate/source/LidD/visualize 5000 red 2
-
-/gate/source/Background/visualize 5000 yellow 2
+/control/execute scatterphantom.mac
+/gate/source/LINE/visualize 5000 red 2

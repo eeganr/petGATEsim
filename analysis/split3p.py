@@ -21,7 +21,7 @@ DETS = DETECTORS_REAL if args.real else DETECTORS_SIM
 
 outfolder = f'{PATH_PREFIX}{FOLDER}/split/'
 
-os.makedirs(outfolder[:-1])
+os.makedirs(outfolder[:-1], exist_ok=True)
 
 infile = f'{PATH_PREFIX}{FOLDER}/{args.inname}.tp'
-randoms.split_tp(infile, outfolder, 'coin', DETS)
+randoms.split_tp(infile, outfolder, NAME, DETS)

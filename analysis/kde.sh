@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=32G
-#SBATCH --mail-type=FAIL
+#SBATCH --mail-type=FAIL,END
 
 module load python/3.12
-python3 kde.py /scratch/groups/cslevin/eeganr/crc_sp
+python3 kde.py /scratch/groups/cslevin/eeganr/cylwater/cylwat_eval/split --workers 8 --debug --plot-all

@@ -14,4 +14,6 @@ NAME = args.name
 
 crystal_map = np.load('convert_768-864.npy')[:, 1]
 
+crystal_map = np.arange(864*16)
+
 randoms.lm_to_threeparam(FOLDER + NAME + '.lm', FOLDER + NAME + '.tp', crystal_map)
