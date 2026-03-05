@@ -934,12 +934,14 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
                     || possibles[0].srcY != possibles[1].srcY
                     || possibles[0].srcZ != possibles[1].srcZ
                 ) {
+                    // This is a random, log in "actual randoms" area.
                     actual_ptr[i * num_detectors + j]++;
                     actual_ptr[j * num_detectors + i]++;
 
                     actfile.write(reinterpret_cast<char*>(&outrec), sizeof(ListmodeRecord));
                 }
                 else if (possibles[0].nComPh + possibles[1].nComPh > 0) {
+                    // If it's not a random, check if it's a scatter. If so, log there.
                     scatter_ptr[i * num_detectors + j]++;
                     scatter_ptr[j * num_detectors + i]++;
                 }
