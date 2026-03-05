@@ -4,10 +4,10 @@ import argparse
 import randoms
 
 # === CONFIG ===
-PATH_PREFIX = '/scratch/groups/cslevin/eeganr/cylwater/cylwat_singles/output' # should not end in / (filename)
+PATH_PREFIX = '/scratch/groups/cslevin/eeganr/scatter/scatter_singles2/output' # should not end in / (filename)
 PATH_POSTFIX = 'Singles.dat'
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/cylwater/cylwat_nocorr/' # should end in /
-NAME = 'cylwat'
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/' # should end in /
+NAME = 'scatter'
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DELAY = 10 * CYCLE  # delay for DW estimate (s)
@@ -30,6 +30,7 @@ pc_total = np.zeros(DETS)
 coin_total = np.zeros((DETS, DETS))
 dw_total = np.zeros((DETS, DETS))
 actuals_total = np.zeros((DETS, DETS))
+scatters_total = np.zeros((DETS, DETS))
 
 for i in FILE_RANGE:
     infile = PATH_PREFIX + str(i) + PATH_POSTFIX
@@ -38,7 +39,7 @@ for i in FILE_RANGE:
         print("Skipped!")
         continue
 
-    singles_count, prompts_count, coin_lor, dw_nums, actuals = randoms.read_file_lm(
+    singles_count, prompts_count, coin_lor, dw_nums, actuals, scatters = randoms.read_file_lm(
         infile, OUT_FOLDER, NAME, TAU, DELAY, DETECTORS_SIM
     )
     sc_total += singles_count
@@ -46,6 +47,7 @@ for i in FILE_RANGE:
     coin_total += coin_lor
     dw_total += dw_nums
     actuals_total += actuals
+    scatters_total += scatters
 
 
 np.save(OUT_FOLDER + 'singles_count.npy', sc_total)
@@ -57,3 +59,5 @@ np.save(OUT_FOLDER + 'coin_lor.npy', coin_total)
 np.save(OUT_FOLDER + 'dw_nums.npy', dw_total)
 
 np.save(OUT_FOLDER + 'actuals.npy', actuals_total)
+
+np.save(OUT_FOLDER + 'scatters.npy', scatters_total)

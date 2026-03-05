@@ -3,8 +3,9 @@
 /gate/scattercyl/vis/setColor magenta
 /gate/scattercyl/geometry/setRmax 101.5 mm
 /gate/scattercyl/geometry/setHeight 700 mm
-/gate/scattercyl/setMaterial Water
-/gate/scattercyl/placement/setTranslation  0 0 0 mm
+/gate/scattercyl/setMaterial Polyethylene
+# 350 mm - 77 mm = 273 mm (adjust by half width of scanner)
+/gate/scattercyl/placement/setTranslation  0 0 273 mm
 /gate/scattercyl/vis/forceWireframe
 
 /gate/scattercyl/attachPhantomSD

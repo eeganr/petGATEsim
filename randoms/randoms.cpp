@@ -846,6 +846,11 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
     auto coin_lor_buf = coin_lor.request();
     int *coin_lor_ptr = (int*) coin_lor_buf.ptr;
 
+    // Scatters
+    py::array_t<int> scatters = np.attr("zeros")(num_detectors * num_detectors);
+    auto scatter_buf = scatters.request();
+    int *scatter_ptr = (int*) scatter_buf.ptr;
+
     // Variables for Read Loop
     Record rec;
     int record_count = 0;
@@ -874,6 +879,12 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
         // Retrieve from Buffer
         rec = buffer.top();
         buffer.pop();
+        if (rec.Edep < 0.450 || rec.Edep > 0.650) {
+            if (read_record(file, rec)) {
+                buffer.push(rec);
+            }
+            continue;
+        }
 
         int detID = rec.id();
 
@@ -927,6 +938,10 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
                     actual_ptr[j * num_detectors + i]++;
 
                     actfile.write(reinterpret_cast<char*>(&outrec), sizeof(ListmodeRecord));
+                }
+                else if (possibles[0].nComPh + possibles[1].nComPh > 0) {
+                    scatter_ptr[i * num_detectors + j]++;
+                    scatter_ptr[j * num_detectors + i]++;
                 }
 
             }
@@ -1002,10 +1017,11 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
     coin_lor.resize({num_detectors, num_detectors});
     dw.resize({num_detectors, num_detectors});
     actuals.resize({num_detectors, num_detectors});
+    scatters.resize({num_detectors, num_detectors});
 
     outfile.close();
 
-    return py::make_tuple(scount, pcount, coin_lor, dw, actuals);
+    return py::make_tuple(scount, pcount, coin_lor, dw, actuals, scatters);
 }
 
 
@@ -1460,7 +1476,11 @@ void write_lut(string path, string outfolder, string name, double TAU, int num_d
         rec = buffer.top();
         buffer.pop();
 
-        int detID = rec.id();
+        if (rec.Edep < 0.450 || rec.Edep > 0.650) {
+            if (read_record(file, rec))
+                buffer.push(rec);
+            continue;
+        }
 
         // Coincidence Processing
         if (rec.time - window_start >= TAU) {
@@ -1524,6 +1544,139 @@ void write_lut(string path, string outfolder, string name, double TAU, int num_d
     }
 
     outfile.close();
+}
+
+
+py::array_t<int> tally_scatters(string inpath, int num_detectors, float TAU) {
+
+    py::object np = py::module_::import("numpy");
+    py::array_t<int> scatters = np.attr("zeros")(num_detectors * num_detectors);
+    auto scatter_buf = scatters.request();
+    int *scatter_ptr = (int*) scatter_buf.ptr;
+
+    ifstream file(inpath, ios::binary);
+    if (!file) {
+        cerr << "Error: Could not open file.\n";
+        cout << "Error: Could not open file.\n" << endl;
+        return scatters;
+    }
+
+    vector<Record> possibles;
+    double window_start = -2 * TAU;
+
+    Record rec;
+    int record_count = 0;
+    auto chrono = [] (Record a, Record b) {return a.time > b.time;};
+    // Buffer to ensure that records read chronologically
+    priority_queue<Record, vector<Record>, decltype(chrono)> buffer(chrono);
+
+    for (int i = 0; i < BUFFER_SIZE; i++) { // Reads in BUFFER_SIZE records to queue to start with
+        if (!read_record(file, rec)) { // breaks if end of file too soon
+            break;
+        }
+        buffer.push(rec);
+    }
+
+    // START MAIN LOOP
+    while (!buffer.empty()) {
+        // Logging read info, updating rec in while statement.
+        record_count++;
+        if (record_count % 10000000 == 0) {
+            cout << "Processed " 
+                << record_count / 1000000 
+                << " million records." << endl;
+            cout << "Sim Time: " << rec.time << endl;
+        }
+
+        // Retrieve from Buffer
+        rec = buffer.top();
+        buffer.pop();
+
+        // Coincidence Processing
+        if (rec.time - window_start >= TAU) {
+            if (possibles.size() > 2) {
+                // Do nothing, since multiple coincidence
+            }
+            else if (possibles.size() == 2) {
+                // Add to prompts count array
+                int i = possibles[0].id();
+                int j = possibles[1].id();
+                // Determine whether it's actually a real coincidence
+                if (
+                    possibles[0].srcX == possibles[1].srcX
+                    && possibles[0].srcY == possibles[1].srcY
+                    && possibles[0].srcZ == possibles[1].srcZ
+                ) {
+                    if (possibles[0].nComPh + possibles[1].nComPh > 0) {
+                        scatter_ptr[i * num_detectors + j]++;
+                        scatter_ptr[j * num_detectors + i]++;
+                    }
+                }
+
+            }
+            // Handle resetting
+            possibles.clear();
+            possibles.push_back(rec);
+            window_start = rec.time;
+        }
+        else {
+            possibles.push_back(rec); 
+        }
+
+        // Push next event to buffer
+        if (read_record(file, rec)) {
+            buffer.push(rec);
+        }
+
+    } // End Main Loop
+
+    scatters.resize({num_detectors, num_detectors});
+    cout << "Done!" << endl;
+    return scatters;
+}
+
+
+void tag_listmode(string inpath, string outpath, py::array_t<double> r_frac, py::array_t<double> s_frac, int num_detectors) {
+    auto r_buf = r_frac.request();
+    double *r_ptr = (double*) r_buf.ptr;
+    auto s_buf = s_frac.request();
+    double *s_ptr = (double*) s_buf.ptr;
+
+    ifstream infile(inpath, ios::binary);
+    if (!infile) {
+        cerr << "Error: Could not open infile for reading.\n";
+        return;
+    }
+
+    ofstream outfile(outpath, ios::binary);
+    if (!outfile) {
+        cerr << "Error: Could not open outfile for writing.\n";
+        return;
+    }
+    
+    ListmodeRecord rec;
+    int written = 0;
+
+    while (infile.read(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord))) {
+        written++;
+        if (written % 100000000 == 0) {
+            cout << "wrote " << written << "records"; 
+        }
+        int i = rec.crystalID1;
+        int j = rec.crystalID2;
+
+
+        rec.numScatters = s_ptr[i * num_detectors + j];
+        rec.crystalID2 = r_ptr[i * num_detectors + j];
+        rec.crystalID1 = 0;
+
+        outfile.write(reinterpret_cast<char*>(&rec), sizeof(ListmodeRecord));
+    }
+
+    outfile.close();
+    cout << "Tagging complete. Wrote " << written << " records." << endl;
+
+    return;
 }
 
 
@@ -1695,6 +1848,18 @@ PYBIND11_MODULE(randoms, m) {
         py::arg("outfolder"),
         py::arg("name"),
         py::arg("TAU"),
+        py::arg("num_detectors")
+    );
+    m.def("tally_scatters", &tally_scatters, "reads file and writes scatter lut file",
+        py::arg("inpath"),
+        py::arg("num_detectors"),
+        py::arg("tau")
+    );
+    m.def("tag_listmode", &tag_listmode, "reads file and writes scatter lut file",
+        py::arg("inpath"),
+        py::arg("outpath"),
+        py::arg("r_frac"),
+        py::arg("s_frac"),
         py::arg("num_detectors")
     );
 }

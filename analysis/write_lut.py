@@ -4,10 +4,10 @@ import argparse
 import randoms
 
 # === CONFIG ===
-PATH_PREFIX = '/scratch/groups/cslevin/eeganr/cylwater/cylwat_singles/output' # should not end in / (filename)
+PATH_PREFIX = '/scratch/groups/cslevin/eeganr/scatter/scatter_singles2/output' # should not end in / (filename)
 PATH_POSTFIX = 'Singles.dat'
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/cylwater/cylwat_nocorr/' # should end in /
-NAME = 'cylwat'
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/' # should end in /
+NAME = 'scatter'
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DETECTORS_SIM = 12288

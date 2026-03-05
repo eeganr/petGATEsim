@@ -1,10 +1,16 @@
 import randoms
 import numpy as np
 
-file1 = '/scratch/groups/cslevin/eeganr/crc/crc_nocorr/split/0_2_coin.lm'
-file2 = '/scratch/groups/cslevin/eeganr/cylwater/cylwat_nocorr/cylwat.lut'
+file1 = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/scatter.lut'
+f_s = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/scatters.npy'
+f_r = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/actuals.npy'
+f_c = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/coin_lor.npy'
 
-x = np.memmap(file2, dtype=np.float32).reshape(-1, 4)
+x = np.memmap(file1, dtype=np.float32).reshape(-1, 4)
+s = np.load(f_s)
+r = np.load(f_r)
+c = np.load(f_c)
+
 
 # bigfolder = '/scratch/groups/cslevin/eeganr/crc/crc_corr'
 #splitfolder = bigfolder + '/split'
