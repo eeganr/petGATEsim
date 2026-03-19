@@ -7,7 +7,7 @@ import randoms
 PATH_PREFIX = '/scratch/groups/cslevin/eeganr/scatter/scatter_singles2/output' # should not end in / (filename)
 PATH_POSTFIX = 'Singles.dat'
 OUT_FOLDER = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/' # should end in /
-NAME = 'scatter'
+NAME = 'scatter' # name of output files
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DELAY = 10 * CYCLE  # delay for DW estimate (s)
