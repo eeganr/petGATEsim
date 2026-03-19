@@ -10,13 +10,13 @@
 /gate/cylindricalPET/vis/setColor white
 
 #water cyl for norm
-/gate/world/daughters/name cold_area
-/gate/world/daughters/insert cylinder
-/gate/cold_area/placement/setTranslation 0.0 0.0 0.0 cm
-/gate/cold_area/geometry/setRmax 28 mm
-/gate/cold_area/geometry/setRmin 27 mm
-/gate/cold_area/geometry/setHeight 40 mm
-/gate/cold_area/setMaterial Water
+#/gate/world/daughters/name cold_area
+#/gate/world/daughters/insert cylinder
+#/gate/cold_area/placement/setTranslation 0.0 0.0 0.0 cm
+#/gate/cold_area/geometry/setRmax 28 mm
+#/gate/cold_area/geometry/setRmin 27 mm
+#/gate/cold_area/geometry/setHeight 40 mm
+#/gate/cold_area/setMaterial Water
 
 # water cyl 
 #/gate/world/daughters/name cold_area
