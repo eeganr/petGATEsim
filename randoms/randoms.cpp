@@ -25,6 +25,7 @@ constexpr long SPD_OF_LIGHT = 299792458000; // mm/s
 constexpr int BUFFER_SIZE = 10; // number of records to keep in priority queue for chronology
 constexpr int MODULES = 16;
 constexpr int LORS = 120;
+constexpr double EPS = 0.0001;
 
 /* Struct for a single used for multi-coincidence processing.
     Constructor Args:
@@ -913,14 +914,14 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
                 if (i < j) {
                     outrec = {
                         (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
-                        tof_mm, (float) (possibles[0].nComPh + possibles[1].nComPh), 
+                        tof_mm, (float) (possibles[0].Edep + possibles[1].Edep), 
                         (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
                         (float) i, (float) j
                     };
                 } else {
                     outrec = {
                         (float) possibles[1].detX, (float) possibles[1].detY, (float) possibles[1].detZ, 
-                        -tof_mm, (float) (possibles[0].nComPh + possibles[1].nComPh), 
+                        -tof_mm, (float) (possibles[0].Edep + possibles[1].Edep), 
                         (float) possibles[0].detX, (float) possibles[0].detY, (float) possibles[0].detZ, 
                         (float) j, (float) i
                     };
@@ -930,9 +931,9 @@ py::tuple read_file_lm(string path, string outfolder, string name, double TAU, d
 
                 // Determine whether it's actually a random
                 if (
-                    possibles[0].srcX != possibles[1].srcX
-                    || possibles[0].srcY != possibles[1].srcY
-                    || possibles[0].srcZ != possibles[1].srcZ
+                    abs(possibles[0].srcX - possibles[1].srcX) > EPS
+                    || abs(possibles[0].srcY - possibles[1].srcY) > EPS
+                    || abs(possibles[0].srcZ - possibles[1].srcZ) > EPS
                 ) {
                     // This is a random, log in "actual randoms" area.
                     actual_ptr[i * num_detectors + j]++;

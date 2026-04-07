@@ -5,6 +5,7 @@ i=$1
 j=$2
 x=$3
 r=$4
+outfolder=$5
 
 SOURCE="${j##*/}"
 NAME="PhytoPET_${SOURCE}_$r"
@@ -93,7 +94,7 @@ then
 # also change the path /scratch/users/fwdesai/PhytoPET/spatialres/train1_r$i.out to the same location you used for OUTPUT_FILE, 
 #	make sure this path ends with train1_r$i.out as seen below
 ####################################################
-  OUTPUT_FILE="/scratch/groups/cslevin/eeganr/scatter/scatter_singles2/output${i}"
+  OUTPUT_FILE="/scratch/groups/cslevin/eeganr/${outfolder}/output${i}"
   echo $SOURCE_FILE  
   echo $OUTPUT_FILE
   echo $CAMERA_FILE

@@ -1,0 +1,19 @@
+/gate/source/addSource LINE
+
+/gate/source/LINE/setActivity 0.6 mCi
+/gate/source/LINE/setType backtoback
+/gate/source/LINE/gps/particle gamma
+/gate/source/LINE/gps/energytype Mono
+/gate/source/LINE/gps/monoenergy 0.511 MeV
+
+
+/gate/source/LINE/gps/angtype iso
+
+/gate/source/LINE/gps/type Volume
+
+/gate/source/LINE/gps/shape Cylinder
+/gate/source/LINE/gps/radius 3 mm
+/gate/source/LINE/gps/halfz 350 mm
+
+# 350 mm - 77 mm = 273 mm (adjust by half width of scanner)
+/gate/source/LINE/gps/centre 45. 0. 273. mm

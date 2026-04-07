@@ -68,8 +68,8 @@
 /gate/output/binary/setFileName {filename} 
 /gate/output/binary/setOutFileHitsFlag 0
 /gate/output/binary/setOutFileSinglesFlag 1
-/gate/output/binary/setOutFileCoincidencesFlag 1
-/gate/output/binary/setOutFileSizeLimit 20000000000
+/gate/output/binary/setOutFileCoincidencesFlag 0
+/gate/output/binary/setOutFileSizeLimit 200000000000
 
 # /gate/output/ascii/enable
 # /gate/output/ascii/setFileName {filename}
