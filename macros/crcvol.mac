@@ -6,7 +6,7 @@
 /gate/bgcyl/setMaterial Water
 /gate/bgcyl/placement/setTranslation  0 0 -29.95 mm
 /gate/bgcyl/vis/forceWireframe
-
+/gate/bgcyl/attachPhantomSD
 
 /gate/bgcyl/daughters/name cold_area1
 /gate/bgcyl/daughters/insert cylinder
@@ -16,6 +16,7 @@
 /gate/cold_area1/setMaterial Water
 /gate/cold_area1/placement/setTranslation  -17.062 56.774 29.95 mm
 /gate/cold_area1/vis/forceSolid
+/gate/cold_area1/attachPhantomSD
 
 /gate/bgcyl/daughters/name cold_area2
 /gate/bgcyl/daughters/insert cylinder
@@ -25,6 +26,7 @@
 /gate/cold_area2/setMaterial Water
 /gate/cold_area2/placement/setTranslation  9.855 57.803 29.95 mm
 /gate/cold_area2/vis/forceSolid
+/gate/cold_area2/attachPhantomSD
 
 /gate/bgcyl/daughters/name cold_area3
 /gate/bgcyl/daughters/insert cylinder
@@ -34,6 +36,7 @@
 /gate/cold_area3/setMaterial Water
 /gate/cold_area3/placement/setTranslation  38.241 40.301 29.95 mm
 /gate/cold_area3/vis/forceSolid
+/gate/cold_area3/attachPhantomSD
 
 /gate/bgcyl/daughters/name cold_area4
 /gate/bgcyl/daughters/insert cylinder
@@ -43,6 +46,7 @@
 /gate/cold_area4/setMaterial Water
 /gate/cold_area4/placement/setTranslation  52.067 -7.648 29.95 mm
 /gate/cold_area4/vis/forceSolid
+/gate/cold_area4/attachPhantomSD
 
 
 /gate/bgcyl/daughters/name cold_bone
@@ -53,6 +57,7 @@
 /gate/cold_bone/setMaterial Teflon
 /gate/cold_bone/placement/setTranslation  21.180 -50.890 29.95 mm
 /gate/cold_bone/vis/forceSolid
+/gate/cold_bone/attachPhantomSD
 
 /gate/bgcyl/daughters/name cold_air
 /gate/bgcyl/daughters/insert cylinder
@@ -62,6 +67,7 @@
 /gate/cold_air/setMaterial Air
 /gate/cold_air/placement/setTranslation  -34.417 -45.301 29.95 mm
 /gate/cold_air/vis/forceSolid
+/gate/cold_air/attachPhantomSD
 
 /gate/bgcyl/daughters/name cold_water
 /gate/bgcyl/daughters/insert cylinder
@@ -71,3 +77,4 @@
 /gate/cold_water/setMaterial Water
 /gate/cold_water/placement/setTranslation  -60.304 3.824 29.95 mm
 /gate/cold_water/vis/forceSolid
+/gate/cold_water/attachPhantomSD

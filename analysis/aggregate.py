@@ -4,10 +4,8 @@ import argparse
 import randoms
 
 # === CONFIG ===
-PATH_PREFIX = '/scratch/groups/cslevin/eeganr/scatter/scatter_singles2/output' # should not end in / (filename)
+PATH_PREFIX = '/scratch/groups/cslevin/eeganr/'
 PATH_POSTFIX = 'Singles.dat'
-OUT_FOLDER = '/scratch/groups/cslevin/eeganr/scatter/scatter_nocorr2/' # should end in /
-NAME = 'scatter' # name of output files
 CYCLE = 1.6e-9  # clock cycle (s)
 TAU = 3 * CYCLE  # coincidence window (s)
 DELAY = 10 * CYCLE  # delay for DW estimate (s)
@@ -20,7 +18,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--start", type=int, default=1, help="start file num")
 parser.add_argument("-e", "--end", type=int, default=60, help="end file num")
 parser.add_argument("-r", "--real", action="store_true", help="uses real detector indices")
+parser.add_argument("-i", "--infolder", type=str, default="")
+parser.add_argument("-o", "--out", type=str, default="")
+parser.add_argument("-n", "--name", type=str, default="", help="name of output files")
+
 args = parser.parse_args()
+
+NAME = args.name
+OUT_FOLDER = '/scratch/groups/cslevin/eeganr/' + args.out
+
+os.makedirs(OUT_FOLDER, exist_ok=True)
 
 FILE_RANGE = range(args.start, args.end + 1)
 DETS = DETECTORS_REAL if args.real else DETECTORS_SIM
@@ -33,13 +40,13 @@ actuals_total = np.zeros((DETS, DETS))
 scatters_total = np.zeros((DETS, DETS))
 
 for i in FILE_RANGE:
-    infile = PATH_PREFIX + str(i) + PATH_POSTFIX
+    infile = PATH_PREFIX + args.infolder + str(i) + PATH_POSTFIX
     print("Reading file", infile)
     if not os.path.isfile(infile):
         print("Skipped!")
         continue
 
-    singles_count, prompts_count, coin_lor, dw_nums, actuals, scatters = randoms.read_file_lm(
+    singles_count, prompts_count, coin_lor, dw_nums, actuals, scatters = randoms.read_file_lm_v2(
         infile, OUT_FOLDER, NAME, TAU, DELAY, DETECTORS_SIM
     )
     sc_total += singles_count

@@ -12,7 +12,7 @@ args = parser.parse_args()
 FOLDER = '/scratch/groups/cslevin/' + args.folder + '/'
 NAME = args.name
 
-crystal_map = np.load('convert_768-864.npy')[:, 1]
+# crystal_map = np.load('convert_768-864.npy')[:, 1]
 
 crystal_map = np.arange(864*16)
 

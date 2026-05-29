@@ -9,4 +9,5 @@
 #SBATCH --mail-type=FAIL
 
 module load python/3.12
-python3 tag.py
+python3 tag.py -f crc2/crc2_nocorr2/ -n crc
+# python3 tag.py -f scatter/scatter_nocorr/$1/ -n scatter$1

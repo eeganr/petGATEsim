@@ -3,9 +3,10 @@
 
 i=$1
 j=$2
-x=$3
-r=$4
-outfolder=$5
+VOL_FILE=$3
+x=$4
+r=$5
+outfolder=$6
 
 SOURCE="${j##*/}"
 NAME="PhytoPET_${SOURCE}_$r"
@@ -98,7 +99,8 @@ then
   echo $SOURCE_FILE  
   echo $OUTPUT_FILE
   echo $CAMERA_FILE
-  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /scratch/users/eeganr/outfiles/train1_r$i.out
+  echo $VOL_FILE
+  $GATE -a [randomseed,$RANDOM_SEED][filename,$OUTPUT_FILE][camerafile,$CAMERA_FILE][sourcefile,$SOURCE_FILE][volfile,$VOL_FILE][timestart,$TSTART][timeslice,$TSLICE][timestop,$TSTOP] simu_pet.mac > /scratch/users/eeganr/outfiles/train1_r$i.out
   echo $RANDOM_SEED
   
 #  RANDOM_SEED=`expr $RANDOM_SEED + $INCR_SEED`

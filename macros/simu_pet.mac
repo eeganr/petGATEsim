@@ -6,6 +6,7 @@
 # Need to set variables for:
 #   {camerafile}    Name of macro file specifying system geometry
 #   {sourcefile}    Name of macro file specifying source activity
+#   {volfile}       Name of macro file specifying volume info for source
 #   {filename}      Name of output root file
 #   {randomseed}    Random seed value
 #   {timeslice}     Amount of time per slice
@@ -30,7 +31,7 @@
 #/control/execute                         VoxelizedPhantom.mac
 /control/execute                         physics.mac
 # add volume information to phantom
-/control/execute                        scatterphantomvol.mac
+/control/execute                        {volfile}
 
 /gate/run/initialize
 /control/execute                         digitizer.mac
@@ -68,6 +69,7 @@
 /gate/output/binary/setFileName {filename} 
 /gate/output/binary/setOutFileHitsFlag 0
 /gate/output/binary/setOutFileSinglesFlag 1
+/gate/output/binary/setOutFiledelayFlag 0
 /gate/output/binary/setOutFileCoincidencesFlag 0
 /gate/output/binary/setOutFileSizeLimit 200000000000
 
